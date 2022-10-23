@@ -21,6 +21,7 @@ from .tap192 import Tap192
 #from .mk2minilab import Mk2Control, Mk2Keyboard
 #from .jmjkeyboard import JmjKeyboard
 #from .joystick import Joystick
+from .pytaVSL import PytaVSL
 
 
 """
@@ -41,6 +42,11 @@ pedalboard = PedalBoard('PedalBoard', 'osc', 3001)
 #mk2Control = Mk2Control('Mk2Control', 'midi')
 #joystick = Joystick('Joystick', 'osc', 3004)
 
+
+"""
+VJing
+"""
+pytaVSL = PytaVSL('pytaVSL', 'osc', 4000)
 
 """
 Loopers

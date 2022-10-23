@@ -19,7 +19,6 @@ class Chapitre1(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
-
     @pedalboard_button(1)
     def stop(self):
         """
@@ -33,4 +32,18 @@ class Chapitre1(Video, Light, RouteBase):
         """
         INTRO
         """
-        pass
+        pytaVSL.trijc_io('in', 1, 'elastic')
+
+    @pedalboard_button(3)
+    def outro(self):
+        """
+        OUTRO
+        """
+        pytaVSL.trijc_io('out')
+
+    @pedalboard_button(4)
+    def m_intro(self):
+        """
+        INTRO MIREILLE
+        """
+        pytaVSL.miraye_in()
