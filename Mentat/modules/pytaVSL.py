@@ -26,6 +26,46 @@ class PytaVSL(Module):
     #     """
     #     if address == '/setup/pytaVSL/slides_list':
     #         self.slides = args[1:]
+    #    return False
 
+    def miraye_in(self, duration, easing):
+        """
+        Having Miraye Leparket starting her storytelling
+        """
+        pass
 
-        return False
+    def miraye_out(self, duration, easing):
+        """
+        Having Miraye Leparket stopping her storytelling
+        """
+        pass
+
+    def movie_in(self, duration, easing):
+        """
+        Having Moving coming to front
+        """
+        pass
+
+    def movie_out(self, duration, easing):
+        """
+        Having Movie going back
+        """
+        pass
+
+    def movie_split(self, splitmode, number, duration, easing):
+        """
+        Having several movies being split over the screen
+        """
+        pass
+
+    def jcJingle_in(self, origin, duration, easing):
+        """
+        Having Jack Caesar Jingle dropping in
+        """
+        pass
+
+    def jcJingle_out(self, destination, duration, easing):
+        """
+        Having Jack Caesar Jingle dropping out
+        """
+        pass
