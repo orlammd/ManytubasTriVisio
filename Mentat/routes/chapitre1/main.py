@@ -19,20 +19,42 @@ class Chapitre1(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
+        # Chargement des vidéos
+        pytaVSL.load_slides_from_dir('Chapitre1')
+
     @pedalboard_button(1)
-    def stop(self):
+    def aspipub(self):
         """
-        STOP
+        Aspiration des pubs
         """
-        transport.stop()
-        self.pause_loops()
+
+        self.start_scene('sequences/aspipub', lambda: [
+            pytaVSL.trijc_io('in', 2, 'linear'),
+            self.wait(4, 's'),
+            ### ASPIRATION
+            self.wait(1, 's'),
+            pytaVSL.trijc_io('out', 1, 'elastic'),
+            self.wait(1.2, 's'),
+            pytaVSL.trijc_io('in', 1, 'elastic'),
+            self.wait(1.2, 's'),
+            pytaVSL.miraye_in('ch1-1', 1)
+            ]
+        )
 
     @pedalboard_button(2)
-    def intro(self):
+    def test(self):
         """
         INTRO
         """
-        pytaVSL.trijc_io('in', 1, 'elastic')
+        self.start_scene('sequences/aspipub', lambda: [
+            [
+                pytaVSL.sanimate_prop('ch1-1', 'warp_1', [0, 0, 0, -0.49, 1, 'elastic']), pytaVSL.sanimate_prop('ch1-1', 'warp_4', [0, 0, 0, 0.49, 1, 'elastic']),
+                pytaVSL.sanimate_prop('MirayeLayout', 'warp_1', [0, 0, 0, -0.49, 1, 'elastic']), pytaVSL.sanimate_prop('MirayeLayout', 'warp_4', [0, 0, 0, 0.49, 1, 'elastic'])
+                ],
+            self.wait(0.8, 's'),
+            pytaVSL.sanimate_prop('mirayelayout', 'zoom', [0.7, 0.035, 1, 'elastic' ]), pytaVSL.sanimate_prop('mirayelayout', 'position', [0, 0, 0, -0.3, -0.2, 0, 0.5, 'elastic']),
+            pytaVSL.sanimate_prop('ch1-1', 'zoom', [0.7, 0.035, 1, 'elastic' ]), pytaVSL.sanimate_prop('ch1-1', 'position', [0, 0, 0, -0.3, -0.2, 0, 0.5, 'elastic']),
+        ])
 
     @pedalboard_button(3)
     def outro(self):

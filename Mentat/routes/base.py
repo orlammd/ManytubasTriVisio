@@ -66,11 +66,11 @@ class RouteBase(Route):
         if address == '/set_route':
             engine.set_route(args[0])
 
-        if address == '/load_slides':
+        if address == '/load_slides_from_dir':
             if len(args) > 0:
-                pytaVSL.load_slides(args[0])
+                pytaVSL.load_slides_from_dir(args[0])
             else:
-                pytaVSL.load_slides()
+                pytaVSL.load_slides_from_dir()
 
         if address == '/position_overlay':
             pytaVSL.position_overlay()

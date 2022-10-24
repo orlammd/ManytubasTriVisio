@@ -1,5 +1,16 @@
 from mentat import Module
 from random import randint
+from os import listdir as _ls
+
+class Slide(Module):
+        """
+        PytaVSL Slide
+        """
+
+        def __init__(self, *args, **kwargs):
+
+            super().__init__(*args, **kwargs)
+
 
 class PytaVSL(Module):
     """
@@ -16,8 +27,8 @@ class PytaVSL(Module):
         self.m_TriJC = ['TriJC_Socle', 'TriJC_Tarte', 'TriJC_Head']
         self.w_TriJC = ['TriJC_Socle', 'TriJC_Tarte', 'TriJC_Head', 'TriJC_Tuba']
 
-        self.w_TriJC_outpos = -0.3
-        self.w_TriJC_inpos = 0
+        self.w_TriJC_xinpos = 0
+        self.w_TriJC_xoutpos = -0.3
 
 
         # if self.name == 'ProdSampler':
@@ -28,31 +39,84 @@ class PytaVSL(Module):
         #self.send('')
 
 
-    def load_slides(self, chapter='common'):
+    def load_slide(self, f):
+        """
+        Chargement + Suivi d'un nouveau calques
+        """
+
+        self.logger.info('grrr: ' + f)
+
+        dir = f.partition('/')[0]
+        if dir == 'Common':
+            slide_name = f.partition('/')[2].partition('/')[2].partition('.')[0]
+        else:
+            slide_name = f.partition('/')[2].partition('.')[0]
+
+        if slide_name not in self.submodules:
+            self.send('/pyta/load', f)
+            self.logger.info('file ' + f + ' in new slide: ' + slide_name)
+            slide = Slide(slide_name, parent=self)
+            self.add_submodule(slide)
+            slide.add_parameter('position_x', None, 'f', default=0)
+            slide.add_parameter('position_y', None, 'f', default=0)
+            slide.add_parameter('position_z', None, 'f', default=0)
+            slide.add_parameter('rotate_x', None, 'f', default=0)
+            slide.add_parameter('rotate_y', None, 'f', default=0)
+            slide.add_parameter('rotate_z', None, 'f', default=0)
+            slide.add_parameter('scale_x', None, 'f', default=1)
+            slide.add_parameter('scale_y', None, 'f', default=1)
+            slide.add_parameter('zoom', None, 'f', default=1) # ORL -> à réécrire pour que ça dépend de scale et réciproquement
+            slide.add_parameter('video_time', None, 'f', default=0)
+            slide.add_parameter('video_speed', None, 'f', default=0)
+            slide.add_parameter('video_loop', None, 'f', default=0)
+            slide.add_parameter('visible', None, 'i', default=0)
+
+
+
+
+
+    def load_slides_from_dir(self, dir='Common'):
         """
         Chargement des calques
         """
-        if chapter=='common':
-            ## Fond
-            self.send('/pyta/load', 'Common/Back/Back.png')
 
-            ## Lumières
-            self.send('/pyta/load', 'Common/Lights/*')
+        self.logger.info('load slides from dir: ' + dir)
+        path_to_pyta = '/home/jeaneudes/OrageOTournage/ManytubasTriVisio/PytaVSL'
 
-            ## Panneaux MANYTUBAS
-            self.send('/pyta/load', 'Common/Signs/*')
-
-            ## Jack Caesar Automate
-            self.send('/pyta/load', 'Common/TriJC/*')
-
+        if dir == 'Common':
+            for d in _ls(path_to_pyta + '/' + dir):
+                filelist = _ls(path_to_pyta + '/' + dir + '/' + d)
+                for f in filelist:
+                    self.load_slide(dir + "/" + d + "/" + f)
         else:
-            self.send('/pyta/load', chapter + '/*')
+            filelist = _ls(path_to_pyta + '/' + dir)
+            for f in filelist:
+                self.load_slide(dir + "/" + f)
+
+        # if chapter=='common':
+        #     ## Fond
+        #     self.send('/pyta/load', 'Common/Back/Back.png')
+        #
+        #     ## Lumières
+        #     self.send('/pyta/load', 'Common/Lights/*')
+        #
+        #     ## Panneaux MANYTUBAS
+        #     self.send('/pyta/load', 'Common/Signs/*')
+        #
+        #     ## Jack Caesar Automate
+        #     self.send('/pyta/load', 'Common/TriJC/*')
+        #
+        # else:
+        #     self.send('/pyta/load', chapter + '/*')
 
 
     def position_overlay(self):
         """
         Position des éléments de décor
         """
+
+        self.logger.info('positionning overlay')
+
         ## Fond
         self.send('/pyta/slide/back/set', 'visible', 1)
         self.send('/pyta/slide/back/set', 'position', 0, 0, 100)
@@ -109,10 +173,13 @@ class PytaVSL(Module):
 
         ## Jack Caesar Automate
         self.sset_prop('TriJC_*', 'visible', [1])
-        self.sset_prop('TriJC_Socle', 'position', [0, 0, -15])
-        self.sset_prop('TriJC_Tarte', 'position', [0, 0, -15.1])
-        self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
-        self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
+        i = 0
+        for s in self.w_TriJC:
+            self.sset_prop(s, 'position', [self.w_TriJC_xoutpos, 0, -15 - i])
+            i = i + 0.1
+        # self.sset_prop('TriJC_Tarte', 'position', [0, 0, -15.1])
+        # self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
+        # self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
 
 
         ## UTILE ?
@@ -133,11 +200,11 @@ class PytaVSL(Module):
     def trijc_io(self, direction, duration=0.5, easing='linear'):
         s = "TriJC_*"
         if direction == 'in':
-            end = self.w_TriJC_inpos
-            start = self.w_TriJC_outpos
+            end = self.w_TriJC_xinpos
+            start = self.w_TriJC_xoutpos
         elif direction == 'out':
-            start = self.w_TriJC_inpos
-            end = self.w_TriJC_outpos
+            start = self.w_TriJC_xinpos
+            end = self.w_TriJC_xoutpos
 
         self.start_scene('sequences/triJC_io', lambda: [
             self.sanimate_prop(s, 'position_x', [start, end, duration, easing]),
@@ -147,7 +214,7 @@ class PytaVSL(Module):
             ]
         )
 
-    def miraye_in(self, duration=1, easing='linear'):
+    def miraye_in(self, filename, duration=1, easing='linear'):
         """
         Having Miraye Leparket starting her storytelling
         """
@@ -160,6 +227,7 @@ class PytaVSL(Module):
             "y": -0.01,
             "z": -10,
             "zo": 0.04,
+            "zof": 0.035,
             "rot": -130
         }
         dest = {
@@ -167,18 +235,29 @@ class PytaVSL(Module):
             "y": 0.016,
             "z": -10,
             "zo": 0.837,
+            "zof": 0.7,
             "rot": -720
         }
 
+        self.sset_prop('MirayeLayout', 'position', [orig["x"], orig["y"], orig["z"]])
+        self.sset_prop('MirayeLayout', 'visible', [1])
+
+        self.sset_prop(filename, 'position', [orig["x"], orig["y"], orig["z"] + 0.1])
+        self.sset_prop(filename, 'zoom', [orig["zof"]])
+        self.sset_prop(filename, 'visible', [1])
+
+
         self.start_scene('sequences/miraye_in', lambda:[
-            self.sanimate_prop('MirayeLayout', 'position_x', [orig["x"], dest["x"], duration*3/4., easing]),
-            self.sanimate_prop('MirayeLayout', 'rotate_z', [orig["rot"], dest["rot"], duration*3/4., easing]),
-            self.sanimate_prop('MirayeLayout', 'zoom', [orig["zo"], dest["zo"]*0.8/2, duration*3/4., easing]),
-            self.sanimate_prop('MirayeLayout', 'position_y', [orig["y"], 0.3, duration*1/2., easing]),
+            self.sset_prop(filename, 'video_speed', [1]),
+            self.sset_prop(filename, 'video_time', [0]),
+            [self.sanimate_prop('MirayeLayout', 'position_x', [orig["x"], dest["x"], duration*3/4., easing]),self.sanimate_prop(filename, 'position_x', [orig["x"], dest["x"], duration*3/4., easing])],
+            [self.sanimate_prop('MirayeLayout', 'rotate_z', [orig["rot"], dest["rot"], duration*3/4., easing]), self.sanimate_prop(filename, 'rotate_z', [orig["rot"], dest["rot"], duration*3/4., easing])],
+            [self.sanimate_prop('MirayeLayout', 'zoom', [orig["zo"], dest["zo"]*0.8/2, duration*3/4., easing]), self.sanimate_prop(filename, 'zoom', [orig["zof"], dest["zof"]*0.8/2, duration*3/4., easing])],
+            [self.sanimate_prop('MirayeLayout', 'position_y', [orig["y"], 0.3, duration*1/2., easing]), self.sanimate_prop(filename, 'position_y', [orig["y"], 0.3, duration*1/2., easing])],
             self.wait(1/2.*duration, 's'),
-            self.sanimate_prop('MirayeLayout', 'position_y', [0.3, dest["y"], duration*1/4., easing]),
+            [self.sanimate_prop('MirayeLayout', 'position_y', [0.3, dest["y"], duration*1/4., easing]), self.sanimate_prop(filename, 'position_y', [0.3, dest["y"], duration*1/4., easing])],
             self.wait(1/4.*duration, 's'),
-            self.sanimate_prop('MirayeLayout', 'zoom', [dest["zo"]*1/2., dest["zo"], duration/4, easing]),
+            [self.sanimate_prop('MirayeLayout', 'zoom', [dest["zo"]*1/2., dest["zo"], duration/4, easing]), self.sanimate_prop(filename, 'zoom', [dest["zof"]*1/2., dest["zof"], duration/4, easing])],
         ])
 
 
