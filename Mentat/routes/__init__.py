@@ -1,3 +1,4 @@
+from .intro import Intro
 from .chapitre1.main import Chapitre1
 # from .snapshat.main import Snapshat
 # from .mcob.main import Mcob
@@ -9,6 +10,7 @@ from .chapitre1.main import Chapitre1
 # from .ramenermooncup.main import RamenerMooncup
 #
 
+intro = Intro('Intro')
 chapitre1 = Chapitre1('Chapitre 1')
 # snapshat = Snapshat('Snapshat')
 # mcob = Mcob('Mcob')

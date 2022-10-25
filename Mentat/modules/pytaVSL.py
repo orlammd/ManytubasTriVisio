@@ -23,6 +23,10 @@ class PytaVSL(Module):
 
         self.slides = []
 
+        self.ready = False
+        self.pending_overlay = None
+
+
         # Objects JC Manytubas
         self.m_TriJC = ['TriJC_Socle', 'TriJC_Tarte', 'TriJC_Head']
         # self.w_TriJC = ['TriJC_Socle', 'TriJC_Tarte', 'TriJC_Head', 'TriJC_Tuba']
@@ -51,6 +55,27 @@ class PytaVSL(Module):
         ### TODO - récupérer liste calques
         #self.send('')
 
+    def create_meta_parameters(self):
+        for slide_name in self.submodules:
+            def closure(slide_name):
+                metaparam_name = 'position'
+                def getter(position_x, position_y, position_z):
+                    return [position_x, position_y, position_z]
+
+                def setter(position):
+                    i = 0
+                    for axe in ['x', 'y', 'z']:
+                        self.set(slide_name, 'position_' + axe, position[i])
+                        i++
+
+                self.add_meta_parameter(
+                    metaparam_name,
+                    [self.get(slide_name, 'position_x'), self.get(slide_name, 'position_y'), self.get(slide_name, 'position_z')],                                                   # params
+                    getter, setter
+                )
+
+            closure(slide_name)
+
 
     def load_slide(self, f):
         """
@@ -71,17 +96,13 @@ class PytaVSL(Module):
             self.add_submodule(slide)
             for param in ['visible', 'position_x', 'position_y', 'rotate_x', 'rotate_y', 'rotate_z', 'scale_x', 'scale_y']:
                 slide.add_parameter(param, None, 'i', default=0)
-                self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
+                # self.send('/pyta/slide/' + slide_name + '/get', param, 2001) ORL -> Inutile ?
             # ORL -> vérifier pour position/rotate vs [x, y, z], zoom vs scale...
             if f.endswith('.mp4'):
                 for vparam in ['video_time', 'video_speed', 'video_loop', 'video_end']:
                     slide.add_parameter(vparam, None, 'f', default=0)
-                    self.send('/pyta/slide/' + slide_name + '/get', vparam, 2001)
-
-            # populating
-
-
-
+                    if vparam == 'video_end':
+                        self.send('/pyta/slide/' + slide_name + '/get', vparam, 2001)
 
 
     def load_slides_from_dir(self, dir='Common'):
@@ -119,84 +140,88 @@ class PytaVSL(Module):
         #     self.send('/pyta/load', chapter + '/*')
 
 
-    def position_overlay(self):
+    def position_overlay(self, overlay='Common'):
         """
         Position des éléments de décor
         """
 
-        self.logger.info('positionning overlay')
+        if self.ready:
+            ## Fond
+            self.send('/pyta/slide/back/set', 'visible', 1)
+            self.send('/pyta/slide/back/set', 'position', 0, 0, 100)
 
-        ## Fond
-        self.send('/pyta/slide/back/set', 'visible', 1)
-        self.send('/pyta/slide/back/set', 'position', 0, 0, 100)
+            ## Lights
+            self.send('/pyta/slide/lights_stageleft/set', 'visible', 1)
+            self.send('/pyta/slide/lights_stageleft/set', 'position', 0, 0, -20)
+            self.send('/pyta/slide/lights_stageright/set', 'visible', 1)
+            self.send('/pyta/slide/lights_stageright/set', 'position', 0, 0, -20.1)
 
-        ## Lights
-        self.send('/pyta/slide/lights_stageleft/set', 'visible', 1)
-        self.send('/pyta/slide/lights_stageleft/set', 'position', 0, 0, -20)
-        self.send('/pyta/slide/lights_stageright/set', 'visible', 1)
-        self.send('/pyta/slide/lights_stageright/set', 'position', 0, 0, -20.1)
+            ## Panneaux Manytubas
+            #### Clone des barres de maintien
+            for sign in ['jack', 'caesar', 'manytubas', 'tri', 'visio']:
+                self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standright_' + sign)
 
-        ## Panneaux Manytubas
-        #### Clone des barres de maintien
-        for sign in ['jack', 'caesar', 'manytubas', 'tri', 'visio']:
-            self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standright_' + sign)
+                if not sign == 'jack':
+                    self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standleft_' + sign)
 
-            if not sign == 'jack':
-                self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standleft_' + sign)
+                if sign == 'manytubas':
+                    self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standcenter_' + sign)
+                    self.send('/pyta/slide/signs_standcenter_' + sign + '/set', 'rotate_z', randint(-30, 30))
 
-            if sign == 'manytubas':
-                self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standcenter_' + sign)
-                self.send('/pyta/slide/signs_standcenter_' + sign + '/set', 'rotate_z', randint(-30, 30))
+                self.send('/pyta/slide/signs_standleft_' + sign + '/set', 'rotate_z', randint(-30, 30))
+                self.send('/pyta/slide/signs_standright_' + sign + '/set', 'rotate_z', randint(-30, 30))
 
-            self.send('/pyta/slide/signs_standleft_' + sign + '/set', 'rotate_z', randint(-30, 30))
-            self.send('/pyta/slide/signs_standright_' + sign + '/set', 'rotate_z', randint(-30, 30))
+            #### Scaling des barres de maintien
+            self.send('/pyta/slide/signs_stand*/set', 'zoom', 0.05)
 
-        #### Scaling des barres de maintien
-        self.send('/pyta/slide/signs_stand*/set', 'zoom', 0.05)
+            stands_hpos = 0.5
+            #### Positionnement
+            self.send('/pyta/slide/signs_jack/set', 'position', 0, 0, -19.1)
+            self.send('/pyta/slide/signs_standleft_jack/set', 'position', -0.35, stands_hpos, -19.01)
+            self.send('/pyta/slide/signs_standright_jack/set', 'position', -0.3, stands_hpos, -19.02)
 
-        stands_hpos = 0.5
-        #### Positionnement
-        self.send('/pyta/slide/signs_jack/set', 'position', 0, 0, -19.1)
-        self.send('/pyta/slide/signs_standleft_jack/set', 'position', -0.35, stands_hpos, -19.01)
-        self.send('/pyta/slide/signs_standright_jack/set', 'position', -0.3, stands_hpos, -19.02)
+            self.send('/pyta/slide/signs_caesar/set', 'position', 0, 0, -19.2)
+            self.send('/pyta/slide/signs_standleft_caesar/set', 'position', -0.24, stands_hpos, -19.03)
+            self.send('/pyta/slide/signs_standright_caesar/set', 'position', -0.17, stands_hpos, -19.04)
 
-        self.send('/pyta/slide/signs_caesar/set', 'position', 0, 0, -19.2)
-        self.send('/pyta/slide/signs_standleft_caesar/set', 'position', -0.24, stands_hpos, -19.03)
-        self.send('/pyta/slide/signs_standright_caesar/set', 'position', -0.17, stands_hpos, -19.04)
+            self.send('/pyta/slide/signs_manytubas/set', 'position', 0, 0, -19.3)
+            self.send('/pyta/slide/signs_standleft_manytubas/set', 'position', -0.11, stands_hpos, -19.03)
+            self.send('/pyta/slide/signs_standcenter_manytubas/set', 'position', -0.02, stands_hpos, -19.04)
+            self.send('/pyta/slide/signs_standright_manytubas/set', 'position', 0.075, stands_hpos, -19.04)
 
-        self.send('/pyta/slide/signs_manytubas/set', 'position', 0, 0, -19.3)
-        self.send('/pyta/slide/signs_standleft_manytubas/set', 'position', -0.11, stands_hpos, -19.03)
-        self.send('/pyta/slide/signs_standcenter_manytubas/set', 'position', -0.02, stands_hpos, -19.04)
-        self.send('/pyta/slide/signs_standright_manytubas/set', 'position', 0.075, stands_hpos, -19.04)
+            self.send('/pyta/slide/signs_tri/set', 'position', 0, 0, -19.4)
+            self.send('/pyta/slide/signs_standleft_tri/set', 'position', 0.16, stands_hpos, -19.03)
+            self.send('/pyta/slide/signs_standright_tri/set', 'position', 0.19, stands_hpos, -19.04)
 
-        self.send('/pyta/slide/signs_tri/set', 'position', 0, 0, -19.4)
-        self.send('/pyta/slide/signs_standleft_tri/set', 'position', 0.16, stands_hpos, -19.03)
-        self.send('/pyta/slide/signs_standright_tri/set', 'position', 0.19, stands_hpos, -19.04)
+            self.send('/pyta/slide/signs_visio/set', 'position', 0, 0, -19.5)
+            self.send('/pyta/slide/signs_standleft_visio/set', 'position', 0.24, stands_hpos, -19.03)
+            self.send('/pyta/slide/signs_standright_visio/set', 'position', 0.3, stands_hpos, -19.04)
 
-        self.send('/pyta/slide/signs_visio/set', 'position', 0, 0, -19.5)
-        self.send('/pyta/slide/signs_standleft_visio/set', 'position', 0.24, stands_hpos, -19.03)
-        self.send('/pyta/slide/signs_standright_visio/set', 'position', 0.3, stands_hpos, -19.04)
-
-        self.send('/pyta/slide/signs_*/set', 'visible', 1)
+            self.send('/pyta/slide/signs_*/set', 'visible', 1)
 
 
-        ## Jack Caesar Automate
-        self.sset_prop('TriJC_*', 'visible', [1])
-        i = 0
-        for s in self.m_TriJC:
-            self.sset_prop(s, 'position', [self.TriJC_xinpos + self.TriJC_xoutoffset, 0, -15 - i])
-            i = i + 0.1
+            ## Jack Caesar Automate
+            self.sset_prop('TriJC_*', 'visible', [1])
+            i = 0
+            for s in self.m_TriJC:
+                self.sset_prop(s, 'position', [self.TriJC_xinpos + self.TriJC_xoutoffset, 0, -15 - i])
+                i = i + 0.1
 
-        i = 0
-        for tool in ['Tuba', 'Aspi']:
-            self.sset_prop('t_TriJC_' + tool, 'position', [self.Tool_TriJC_xinpos[tool] + self.TriJC_xoutoffset, self.Tool_TriJC_yinpos[tool], -16 - i])
-            self.sset_prop('t_TriJC_' + tool, 'zoom', [self.Tool_TriJC_zoom[tool]])
-            self.sset_prop('t_TriJC_' + tool, 'visible', [1])
-            i = i + 0.1
+            i = 0
+            for tool in ['Tuba', 'Aspi']:
+                self.sset_prop('t_TriJC_' + tool, 'position', [self.Tool_TriJC_xinpos[tool] + self.TriJC_xoutoffset, self.Tool_TriJC_yinpos[tool], -16 - i])
+                self.sset_prop('t_TriJC_' + tool, 'zoom', [self.Tool_TriJC_zoom[tool]])
+                self.sset_prop('t_TriJC_' + tool, 'visible', [1])
+                i = i + 0.1
 
-        # self.sset_prop('TriJC_Tarte', 'position', [0, 0, -15.1])
-        # self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
-        # self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
+            # self.sset_prop('TriJC_Tarte', 'position', [0, 0, -15.1])
+            # self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
+            # self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
+
+        else:
+            self.pending_overlay(overlay)
+            self.logger.info('not ready yet: position_overlay() call deffered')
+
 
 
     def sset_prop(self, name, property, args):
@@ -328,3 +353,12 @@ class PytaVSL(Module):
             if slide_name in self.submodules:
                 self.set(slide_name, args[0], args[1])
                 self.logger.info(slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
+
+        if address == '/pyta/subscribe/update' and args[0]== 'status':
+            if not self.ready:
+                self.ready = True
+                if self.pending_overlay:
+                    self.logger.info('ready now: calling set_kit()')
+                    self.overlay(overlay)
+
+        return False
