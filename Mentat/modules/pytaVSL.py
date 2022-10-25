@@ -1,6 +1,7 @@
 from mentat import Module
 from random import randint
 from os import listdir as _ls
+import toml
 
 class Slide(Module):
         """
@@ -21,10 +22,19 @@ class PytaVSL(Module):
 
         super().__init__(*args, **kwargs)
 
+        self.path_to_pyta = '/home/jeaneudes/OrageOTournage/ManytubasTriVisio/PytaVSL'
+
         self.slides = []
 
+        self.slide_params = ['visible', 'position', 'position_x', 'position_y', 'position_z', 'rotate', 'rotate_x', 'rotate_y', 'rotate_z', 'scale', 'zoom',
+            'video_time', 'video_speed', 'video_loop', 'video_end', 'rgbwave', 'noise', 'warp_1', 'warp_2', 'warp_3', 'warp_4']
+
+        self.send('/pyta/subscribe', 'status', 2001)
+        self.send('/pyta/subscribe', 'status', 23456)
         self.ready = False
         self.pending_overlay = None
+
+        self.add_event_callback('parameter_changed', self.parameter_changed)
 
 
         # Objects JC Manytubas
@@ -48,38 +58,21 @@ class PytaVSL(Module):
         }
 
 
-        # if self.name == 'ProdSampler':
-        #     self.add_parameter('kit', '/kit/select', 's', default='s:Snapshat')
-        #     self.send('/setup/get/kits_list', 'Plagiat')
-
-        ### TODO - récupérer liste calques
-        #self.send('')
-
-    def create_meta_parameters(self):
-        for slide_name in self.submodules:
-            def closure(slide_name):
-                metaparam_name = 'position'
-                def getter(position_x, position_y, position_z):
-                    return [position_x, position_y, position_z]
-
-                def setter(position):
-                    i = 0
-                    for axe in ['x', 'y', 'z']:
-                        self.set(slide_name, 'position_' + axe, position[i])
-                        i++
-
-                self.add_meta_parameter(
-                    metaparam_name,
-                    [self.get(slide_name, 'position_x'), self.get(slide_name, 'position_y'), self.get(slide_name, 'position_z')],                                                   # params
-                    getter, setter
-                )
-
-            closure(slide_name)
-
+    def parameter_changed(self, module, name, value):
+        if name in ['position', 'rotate']:
+            i = 0
+            for axe in ['_x', '_y', '_z']:
+                if axe == '_z':
+                    pass
+                else:
+                    self.set(module.name, name + axe, value[i])
+                    i = i+1
+        elif name == 'zoom':
+            self.set(module.name, 'scale', value[0], value[0])
 
     def load_slide(self, f):
         """
-        Chargement + Suivi d'un nouveau calques
+        Chargement + Suivi d'un nouveau calque
         """
 
         dir = f.partition('/')[0]
@@ -94,15 +87,19 @@ class PytaVSL(Module):
             slide = Slide(slide_name, parent=self)
 
             self.add_submodule(slide)
-            for param in ['visible', 'position_x', 'position_y', 'rotate_x', 'rotate_y', 'rotate_z', 'scale_x', 'scale_y']:
-                slide.add_parameter(param, None, 'i', default=0)
-                # self.send('/pyta/slide/' + slide_name + '/get', param, 2001) ORL -> Inutile ?
-            # ORL -> vérifier pour position/rotate vs [x, y, z], zoom vs scale...
-            if f.endswith('.mp4'):
-                for vparam in ['video_time', 'video_speed', 'video_loop', 'video_end']:
-                    slide.add_parameter(vparam, None, 'f', default=0)
-                    if vparam == 'video_end':
-                        self.send('/pyta/slide/' + slide_name + '/get', vparam, 2001)
+            for param in self.slide_params:
+                if param in ['position', 'rotate']:
+                    slide.add_parameter(param, None, 'sfff', [param])
+                elif param in ['warp_1', 'warp_2', 'warp_3', 'warp_4', 'scale']:
+                    slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sff', [param])
+                elif param in ['zoom']:
+                    slide.add_parameter(param, None, 'sff', [param])
+                else:
+                    slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sf', [param])
+
+                if param == 'video_end':
+                    self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
+
 
 
     def load_slides_from_dir(self, dir='Common'):
@@ -111,33 +108,22 @@ class PytaVSL(Module):
         """
 
         self.logger.info('load slides from dir: ' + dir)
-        path_to_pyta = '/home/jeaneudes/OrageOTournage/ManytubasTriVisio/PytaVSL'
 
         if dir == 'Common':
-            for d in _ls(path_to_pyta + '/' + dir):
-                filelist = _ls(path_to_pyta + '/' + dir + '/' + d)
-                for f in filelist:
-                    self.load_slide(dir + "/" + d + "/" + f)
+            for d in _ls(self.path_to_pyta + '/' + dir):
+                if not d == 'overlay':
+                    filelist = _ls(self.path_to_pyta + '/' + dir + '/' + d)
+                    for f in filelist:
+                        if not f == 'overlay':
+                            self.load_slide(dir + "/" + d + "/" + f)
         else:
-            filelist = _ls(path_to_pyta + '/' + dir)
+            filelist = _ls(self.path_to_pyta + '/' + dir)
             for f in filelist:
-                self.load_slide(dir + "/" + f)
+                if not f == 'overlay':
+                    self.load_slide(dir + "/" + f)
 
-        # if chapter=='common':
-        #     ## Fond
-        #     self.send('/pyta/load', 'Common/Back/Back.png')
-        #
-        #     ## Lumières
-        #     self.send('/pyta/load', 'Common/Lights/*')
-        #
-        #     ## Panneaux MANYTUBAS
-        #     self.send('/pyta/load', 'Common/Signs/*')
-        #
-        #     ## Jack Caesar Automate
-        #     self.send('/pyta/load', 'Common/TriJC/*')
-        #
-        # else:
-        #     self.send('/pyta/load', chapter + '/*')
+
+
 
 
     def position_overlay(self, overlay='Common'):
@@ -146,6 +132,44 @@ class PytaVSL(Module):
         """
 
         if self.ready:
+
+            try:
+                _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+                # content = ''
+                # for line in _content.split('\n'):
+                #     if '=' in line:
+                #         line += ']'
+                #     content += line + '\n'
+                # content = content.replace('=', '= [')
+                scene = toml.loads(_content)
+                self.logger.info('Fichier lu')
+
+                for slide in self.submodules:
+                    if slide.lower() in scene['slides']:
+                        for param in self.slide_params:
+                            self.logger.info(slide + "/" + param)
+                            if param in scene['slides'][slide.lower()]:
+                                param_value = scene['slides'][slide.lower()][param]
+                                if len(param_value) == 1:
+                                    self.set(slide, param, param_value[0])
+                                elif len(param_value) == 2:
+                                    self.set(slide, param, param_value[0], param_value[1])
+                                elif len(param_value) == 3:
+                                    self.set(slide, param, param_value[0], param_value[1], param_value[2])
+
+
+
+            except Exception as e:
+                self.logger.error('could not load scene file in dir %s' % overlay)
+
+
+
+        else:
+            self.pending_overlay = overlay
+            self.logger.info('not ready yet: position_overlay() call deffered')
+
+        back = False
+        if back:
             ## Fond
             self.send('/pyta/slide/back/set', 'visible', 1)
             self.send('/pyta/slide/back/set', 'position', 0, 0, 100)
@@ -218,9 +242,7 @@ class PytaVSL(Module):
             # self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
             # self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
 
-        else:
-            self.pending_overlay(overlay)
-            self.logger.info('not ready yet: position_overlay() call deffered')
+
 
 
 
@@ -354,11 +376,13 @@ class PytaVSL(Module):
                 self.set(slide_name, args[0], args[1])
                 self.logger.info(slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
 
-        if address == '/pyta/subscribe/update' and args[0]== 'status':
+        if address == '/pyta/subscribe/update' and args[0]== 'status' and args[1] == 'ready':
+
             if not self.ready:
                 self.ready = True
+
                 if self.pending_overlay:
-                    self.logger.info('ready now: calling set_kit()')
-                    self.overlay(overlay)
+                    self.logger.info('ready now: calling position_overlay()')
+                    self.position_overlay(self.pending_overlay)
 
         return False

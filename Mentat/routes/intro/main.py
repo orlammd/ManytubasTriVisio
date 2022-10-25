@@ -1,4 +1,4 @@
-from ..base import RouteBase, mk2_button, pedalboard_button
+from ..base import RouteBase, pedalboard_button
 from .video import Video
 from .light import Light
 
@@ -19,13 +19,11 @@ class Intro(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
-        pytaVSL.load_slides_from_dir('Common')
-
-    def overlay(self):
-        """
-        Positionning slides in overlay
-        """
-        pytaVSL.set('back', 'position', [])
+        self.start_scene('load_and_overlay', lambda: [
+            pytaVSL.load_slides_from_dir('Common'),
+            self.wait(0.5, 's'),
+            pytaVSL.position_overlay('Common')
+        ])
 
     def intro(self):
         """
