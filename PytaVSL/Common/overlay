@@ -1416,14 +1416,14 @@ target = [ "signs_standleft_jack" ]
 [clones.signs_standleft_visio]
 target = [ "signs_standleft_jack" ]
 
-[clones.Plane_Horn_5]
+[clones.plane_horn_5]
 target = [ "plane_horn" ]
 
-[clones.Plane_Horn_4]
+[clones.plane_horn_4]
 target = [ "plane_horn" ]
 
-[clones.Plane_Horn_3]
+[clones.plane_horn_3]
 target = [ "plane_horn" ]
 
-[clones.Plane_Horn_2]
+[clones.plane_horn_2]
 target = [ "plane_horn" ]

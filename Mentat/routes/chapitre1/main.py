@@ -32,11 +32,11 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('sequence/aspipub', lambda: [
             ### Aspiration des pubs
-            pytaVSL.trijc_io('in', 'Aspi', 2, 'linear'),
+            pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),
             self.wait(4, 's'),
             # ASPIRATION
             self.wait(1, 's'),
-            pytaVSL.trijc_io('out', 'Aspi', 1, 'elastic'),
+            pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
             ]
         )
 
@@ -46,7 +46,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('sequence/lancementmirage1', lambda: [
             ### Lancement du mFilm
-            pytaVSL.trijc_io('in', 'Tuba', 1, 'elastic'),
+            pytaVSL.trijc_io('in', 'tuba', 1, 'elastic'),
             self.wait(1.2, 's'),
             pytaVSL.miraye_in('m_ch1-2', 1)
             ]
@@ -187,7 +187,7 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('sequence/aspimiraye', lambda: [
             [
                 pytaVSL.sanimate_prop('m_ch1-2', 'warp_1', [0, 0, 0, -0.49, 1, 'elastic']), pytaVSL.sanimate_prop('m_ch1-2', 'warp_4', [0, 0, 0, 0.49, 1, 'elastic']),
-                pytaVSL.sanimate_prop('MirayeLayout', 'warp_1', [0, 0, 0, -0.49, 1, 'elastic']), pytaVSL.sanimate_prop('MirayeLayout', 'warp_4', [0, 0, 0, 0.49, 1, 'elastic'])
+                pytaVSL.sanimate_prop('mirayelayout', 'warp_1', [0, 0, 0, -0.49, 1, 'elastic']), pytaVSL.sanimate_prop('mirayelayout', 'warp_4', [0, 0, 0, 0.49, 1, 'elastic'])
                 ],
             self.wait(0.8, 's'),
             pytaVSL.sanimate_prop('mirayelayout', 'zoom', [0.7, 0.035, 1, 'elastic' ]), pytaVSL.sanimate_prop('mirayelayout', 'position', [0, 0, 0, -0.3, -0.2, 0, 0.5, 'elastic']),
