@@ -168,83 +168,6 @@ class PytaVSL(Module):
             self.pending_overlay = overlay
             self.logger.info('not ready yet: position_overlay() call deffered')
 
-        back = False
-        if back:
-            ## Fond
-            self.send('/pyta/slide/back/set', 'visible', 1)
-            self.send('/pyta/slide/back/set', 'position', 0, 0, 100)
-
-            ## Lights
-            self.send('/pyta/slide/lights_stageleft/set', 'visible', 1)
-            self.send('/pyta/slide/lights_stageleft/set', 'position', 0, 0, -20)
-            self.send('/pyta/slide/lights_stageright/set', 'visible', 1)
-            self.send('/pyta/slide/lights_stageright/set', 'position', 0, 0, -20.1)
-
-            ## Panneaux Manytubas
-            #### Clone des barres de maintien
-            for sign in ['jack', 'caesar', 'manytubas', 'tri', 'visio']:
-                self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standright_' + sign)
-
-                if not sign == 'jack':
-                    self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standleft_' + sign)
-
-                if sign == 'manytubas':
-                    self.send('/pyta/clone', 'signs_standleft_jack', 'signs_standcenter_' + sign)
-                    self.send('/pyta/slide/signs_standcenter_' + sign + '/set', 'rotate_z', randint(-30, 30))
-
-                self.send('/pyta/slide/signs_standleft_' + sign + '/set', 'rotate_z', randint(-30, 30))
-                self.send('/pyta/slide/signs_standright_' + sign + '/set', 'rotate_z', randint(-30, 30))
-
-            #### Scaling des barres de maintien
-            self.send('/pyta/slide/signs_stand*/set', 'zoom', 0.05)
-
-            stands_hpos = 0.5
-            #### Positionnement
-            self.send('/pyta/slide/signs_jack/set', 'position', 0, 0, -19.1)
-            self.send('/pyta/slide/signs_standleft_jack/set', 'position', -0.35, stands_hpos, -19.01)
-            self.send('/pyta/slide/signs_standright_jack/set', 'position', -0.3, stands_hpos, -19.02)
-
-            self.send('/pyta/slide/signs_caesar/set', 'position', 0, 0, -19.2)
-            self.send('/pyta/slide/signs_standleft_caesar/set', 'position', -0.24, stands_hpos, -19.03)
-            self.send('/pyta/slide/signs_standright_caesar/set', 'position', -0.17, stands_hpos, -19.04)
-
-            self.send('/pyta/slide/signs_manytubas/set', 'position', 0, 0, -19.3)
-            self.send('/pyta/slide/signs_standleft_manytubas/set', 'position', -0.11, stands_hpos, -19.03)
-            self.send('/pyta/slide/signs_standcenter_manytubas/set', 'position', -0.02, stands_hpos, -19.04)
-            self.send('/pyta/slide/signs_standright_manytubas/set', 'position', 0.075, stands_hpos, -19.04)
-
-            self.send('/pyta/slide/signs_tri/set', 'position', 0, 0, -19.4)
-            self.send('/pyta/slide/signs_standleft_tri/set', 'position', 0.16, stands_hpos, -19.03)
-            self.send('/pyta/slide/signs_standright_tri/set', 'position', 0.19, stands_hpos, -19.04)
-
-            self.send('/pyta/slide/signs_visio/set', 'position', 0, 0, -19.5)
-            self.send('/pyta/slide/signs_standleft_visio/set', 'position', 0.24, stands_hpos, -19.03)
-            self.send('/pyta/slide/signs_standright_visio/set', 'position', 0.3, stands_hpos, -19.04)
-
-            self.send('/pyta/slide/signs_*/set', 'visible', 1)
-
-
-            ## Jack Caesar Automate
-            self.sset_prop('TriJC_*', 'visible', [1])
-            i = 0
-            for s in self.m_TriJC:
-                self.sset_prop(s, 'position', [self.TriJC_xinpos + self.TriJC_xoutoffset, 0, -15 - i])
-                i = i + 0.1
-
-            i = 0
-            for tool in ['Tuba', 'Aspi']:
-                self.sset_prop('t_TriJC_' + tool, 'position', [self.Tool_TriJC_xinpos[tool] + self.TriJC_xoutoffset, self.Tool_TriJC_yinpos[tool], -16 - i])
-                self.sset_prop('t_TriJC_' + tool, 'zoom', [self.Tool_TriJC_zoom[tool]])
-                self.sset_prop('t_TriJC_' + tool, 'visible', [1])
-                i = i + 0.1
-
-            # self.sset_prop('TriJC_Tarte', 'position', [0, 0, -15.1])
-            # self.sset_prop('TriJC_Head', 'position', [0, 0, -15.2])
-            # self.sset_prop('TriJC_Tuba', 'position', [0, 0, -15.3])
-
-
-
-
 
     def sset_prop(self, name, property, args):
         #### ORL TODO -> remplacer par set
@@ -256,6 +179,7 @@ class PytaVSL(Module):
 
     def trijc_io(self, direction='in', tool="Tuba", duration=0.5, easing='linear'):
         s = "TriJC_*"
+        xoffset = -0.3
 
         if direction == 'in':
             end = self.TriJC_xinpos

@@ -13,14 +13,18 @@ class Chapitre1(Video, Light, RouteBase):
 
         super().activate()
 
-        transport.set_tempo(150)
+        transport.set_tempo(60)
         transport.set_cycle('4/4', pattern="Xxxx")
 
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
         # Chargement des vidéos
-        pytaVSL.load_slides_from_dir('Chapitre1')
+        self.start_scene('load_and_overlay', lambda: [
+            pytaVSL.load_slides_from_dir('Chapitre1'),
+            self.wait(0.5, 's'),
+            pytaVSL.position_overlay('Chapitre1')
+        ])        
 
     def aspipub(self):
         """
