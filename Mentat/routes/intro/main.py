@@ -19,36 +19,86 @@ class Intro(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
+        xyzpos = {
+            'main': [0, -0.17, -17.5],
+            '1' : [-0.35, 0.2, -17.1],
+            '2' : [-0.05, 0.2, -17.2],
+            '3' : [0.25, 0.2, -17.3],
+            '4' : [0.55, 0.2, -17.4]
+        }
         self.start_scene('load_and_overlay', lambda: [
             pytaVSL.load_slides_from_dir('Common'),
             self.wait(0.5, 's'),
-            pytaVSL.position_overlay('Common')
+            pytaVSL.position_overlay('Common'),
+            self.wait(10, 's'),
+
+            self.start_sequence('ronde_des_pubs', [
+                {
+                1: lambda: [
+                    pytaVSL.animate('Plane_Horn', 'position', None, xyzpos['main'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_2', 'position', None, xyzpos['1'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_3', 'position', None, xyzpos['2'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_4', 'position', None, xyzpos['3'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_5', 'position', None, xyzpos['4'], 1, 's', 'linear'),
+                ],
+
+                3: lambda: [
+                    pytaVSL.animate('Plane_Horn_2', 'position', None, xyzpos['main'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_3', 'position', None, xyzpos['1'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_4', 'position', None, xyzpos['2'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_5', 'position', None, xyzpos['3'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn', 'position', None, xyzpos['4'], 1, 's', 'linear'),
+                ]
+                },
+                {
+                1: lambda: [
+                    pytaVSL.animate('Plane_Horn_3', 'position', None, xyzpos['main'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_4', 'position', None, xyzpos['1'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_5', 'position', None, xyzpos['2'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn', 'position', None, xyzpos['3'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_2', 'position', None, xyzpos['4'], 1, 's', 'linear'),
+                ],
+                3: lambda: [
+                    pytaVSL.animate('Plane_Horn_4', 'position', None, xyzpos['main'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_5', 'position', None, xyzpos['1'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn', 'position', None, xyzpos['2'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_2', 'position', None, xyzpos['3'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_3', 'position', None, xyzpos['4'], 1, 's', 'linear'),
+                ]
+                },
+                {
+                1: lambda: [
+                    pytaVSL.animate('Plane_Horn_5', 'position', None, xyzpos['main'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn', 'position', None, xyzpos['1'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_2', 'position', None, xyzpos['2'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_3', 'position', None, xyzpos['3'], 1, 's', 'linear'),
+                    pytaVSL.animate('Plane_Horn_4', 'position', None, xyzpos['4'], 1, 's', 'linear'),
+                ]
+                }
+            ], loop = True)
         ])
 
     @pedalboard_button(2)
-    def intro(self):
+    def test(self):
         """
         INTRO
         """
         pytaVSL.trijc_io()
-        # self.start_sequence('aight', [{
-        #     1: lambda: [pytaVSL.animate('Back', 'scale', [0.5, 0.5], [0.7, 0.7], 4, 's', 'linear')],
-        #     2: lambda: [pytaVSL.animate('TriJC_*', 'position', None, [0.7, 0.7, 0.7],5, 's', 'linear')],
-        #     3: lambda: [pytaVSL.animate('t_TriJC_*', 'rotate', [10, -40, 0], [30, 30, 30], 8, 's', 'linear')],
-        #     4: lambda: [pytaVSL.animate('ot_TriJC_*', 'rgbwave', None, 0.5, 3, 's', 'linear')],
-        # },
-        # {1: lambda: pytaVSL.animate('*', 'rotate_z', 30, -880, 3)}], loop=True)
 
     @pedalboard_button(3)
-    def intro2(self):
+    def test2(self):
         """
         INTRO
         """
-        pytaVSL.trijc_io('out')
-        # self.start_sequence('aight', [{
-        #     1: lambda: [pytaVSL.animate('Back', 'scale', [0.5, 0.5], [0.7, 0.7], 4, 's', 'linear')],
-        #     2: lambda: [pytaVSL.animate('TriJC_*', 'position', None, [0.7, 0.7, 0.7],5, 's', 'linear')],
-        #     3: lambda: [pytaVSL.animate('t_TriJC_*', 'rotate', [10, -40, 0], [30, 30, 30], 8, 's', 'linear')],
-        #     4: lambda: [pytaVSL.animate('ot_TriJC_*', 'rgbwave', None, 0.5, 3, 's', 'linear')],
-        # },
-        # {1: lambda: pytaVSL.animate('*', 'rotate_z', 30, -880, 3)}], loop=True)
+        pytaVSL.trijc_io('out', 'Tuba', 1, 'elastic')
+
+    @pedalboard_button(4)
+    def test3(self):
+        pytaVSL.set('Plane_Horn', 'scale', 0.7, 0.7)
+        pytaVSL.animate('Plane_Horn', 'rotate_z', 0, 180, 1, 's', 'linear')
+
+        # pytaVSL.animate('plane_horn', 'position', None, [0, -0.17, -17.5], 1, 's', 'linear'),
+        # pytaVSL.animate('plane_horn_2', 'position', None, [-0.35, 0.2, -17.1], 1, 's', 'linear'),
+        # pytaVSL.animate('plane_horn_3', 'position', None, [-0.05, 0.2, -17.2], 1, 's', 'linear'),
+        # pytaVSL.animate('plane_horn_4', 'position', None, [0.25, 0.2, -17.3], 1, 's', 'linear'),
+        # pytaVSL.animate('plane_horn_5', 'position', None, [0.55, 0.2, -17.4], 1, 's', 'linear'),

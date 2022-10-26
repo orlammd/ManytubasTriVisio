@@ -77,6 +77,7 @@ class PytaVSL(Module):
         slide = Slide(slide_name, parent=self)
 
         self.add_submodule(slide)
+        self.logger.info('Adding slide ' + slide_name + ' as a submodule')
         for param in self.slide_params:
             if param in ['position', 'rotate']:
                 slide.add_parameter(param, None, 'sfff', [param])
@@ -167,6 +168,10 @@ class PytaVSL(Module):
                     time.sleep(0.1)
                     self.add_slide_and_params(clone)
 
+                    # self.logger.info('Submodules list:')
+                    # for sub in self.submodules:
+                    #     self.logger.info(sub)
+
                 for slide in self.submodules:
                     log = False
                     if slide.lower() in scene['slides']:
@@ -235,45 +240,14 @@ class PytaVSL(Module):
         if self.check_jack_caesar_consistency():
             if direction == 'in':
                 end = self.TriJC_xinpos
-
-                # cur_pos_x = self.get('TriJC_Head', 'position_x')
-                # if  cur_pos_x == self.TriJC_xinpos:
-                #     self.logger.info('TriJC already in')
-                #     return -1
-                # else:
-                #     end = cur_pos_x - self.TriJC_xoutoffset
-                #     start = cur_pos_x
-                #     y = self.get('TriJC_Head', 'position_y')
-                #
-                #     t_start = start + self.t_TriJC_xoffset
-                #     t_end = end + self.t_TriJC_xoffset
-                #     t_y = self.get('t_TriJC_' + tool, 'position_y')
-                #
-                #     ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
-                #     ot_start = start + ot_offset
-                #     ot_end = end + ot_offset
             elif direction == 'out':
                 end = self.TriJC_xoutoffset
-                # if  cur_pos_x == self.TriJC_xinpos + self.TriJC_xoutpos:
-                #     self.logger.info('TriJC already out')
-                #     return -1
-                # else:
-                #     end = cur_pos_x - self.TriJC_xoutoffset
-                #     start = cur_pos_x
-                #     y = self.get('TriJC_Head', 'position_y')
-                #
-                #     t_start = start + self.t_TriJC_xoffset
-                #     t_end = end + self.t_TriJC_xoffset
-                #     t_y = self.get('t_TriJC_' + tool, 'position_y')
-                #
-                #     ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
-                #     ot_start = start + ot_offset
-                #     ot_end = end + ot_offset
 
             y = self.get('TriJC_Head', 'position_y')
             t_y = self.get('t_TriJC_' + tool, 'position_y')
 
             t_end = end + self.t_TriJC_xoffset
+
             self.start_scene('sequences/triJC_io', lambda: [
                 [self.set('TriJC*', 'visible', 1), self.set('t_TriJC_*', 'visible', 0), self.set('t_TriJC_' + tool, 'visible', 1)],
                 [self.animate('TriJC_*', 'position_x', None, end, duration, 's', easing), self.animate('t_TriJC_*', 'position_x', None, t_end, duration, 's', easing)],
@@ -383,12 +357,13 @@ class PytaVSL(Module):
                 # self.logger.info(slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
 
         if address == '/pyta/subscribe/update' and args[0]== 'status' and args[1] == 'ready':
-
             if not self.ready:
                 self.ready = True
 
                 if self.pending_overlay:
                     self.logger.info('ready now: calling position_overlay()')
                     self.position_overlay(self.pending_overlay)
+
+
 
         return False

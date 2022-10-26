@@ -23,8 +23,8 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('load_and_overlay', lambda: [
             pytaVSL.load_slides_from_dir('Chapitre1'),
             self.wait(0.5, 's'),
-            pytaVSL.position_overlay('Chapitre1')
-        ])        
+            # pytaVSL.position_overlay('Chapitre1')
+        ])
 
     def aspipub(self):
         """

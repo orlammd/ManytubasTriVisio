@@ -75,6 +75,10 @@ class RouteBase(Route):
         if address == '/position_overlay':
             pytaVSL.position_overlay()
 
+        if address == '/trijc_io':
+            self.logger.info('trijc_io osc trigged')
+            pytaVSL.trijc_io(*args)
+
     def start_sequence(self, name, sequence, loop=True):
         """
         Start scene with sequence prefix and self.play_sequence() as method

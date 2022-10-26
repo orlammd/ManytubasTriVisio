@@ -1,4 +1,4 @@
-# pytaVSL scene file
+# pytaVSL Intro scene file
 
 [slides.signs_jack]
 align = [ "center", "center" ]
@@ -1416,14 +1416,14 @@ target = [ "signs_standleft_jack" ]
 [clones.signs_standleft_visio]
 target = [ "signs_standleft_jack" ]
 
-[clones.plane_horn_5]
+[clones.Plane_Horn_5]
 target = [ "plane_horn" ]
 
-[clones.plane_horn_4]
+[clones.Plane_Horn_4]
 target = [ "plane_horn" ]
 
-[clones.plane_horn_3]
+[clones.Plane_Horn_3]
 target = [ "plane_horn" ]
 
-[clones.plane_horn_2]
+[clones.Plane_Horn_2]
 target = [ "plane_horn" ]
