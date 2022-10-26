@@ -221,7 +221,7 @@ class PytaVSL(Module):
     def check_jack_caesar_consistency(self):
         pos = 0
         firstpass = True
-        for slide_name in self.mTriJC:
+        for slide_name in self.m_TriJC:
             if self.get(slide_name, 'position_x') == pos or firstpass == True:
                 pos = self.get(slide_name, 'position_x')
                 firstpass = False
@@ -234,45 +234,52 @@ class PytaVSL(Module):
 
         if self.check_jack_caesar_consistency():
             if direction == 'in':
-                cur_pos_x = self.get('TriJC_Head', 'position_x')
-                if  cur_pos_x == self.TriJC_xinpos:
-                    self.logger.info('TriJC already in')
-                    return -1
-                else:
-                    end = cur_pos_x - self.TriJC_xoutoffset
-                    start = cur_pos_x
-                    y = self.get('TriJC_Head', 'position_y')
+                end = self.TriJC_xinpos
 
-                    t_start = start + self.t_TriJC_xoffset
-                    t_end = end + self.t_TriJC_xofsset
-                    t_y = self.get('t_TriJC_' + tool, 'position_y')
-
-                    ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
-                    ot_start = start + ot_offset
-                    ot_end = end + ot_offset
+                # cur_pos_x = self.get('TriJC_Head', 'position_x')
+                # if  cur_pos_x == self.TriJC_xinpos:
+                #     self.logger.info('TriJC already in')
+                #     return -1
+                # else:
+                #     end = cur_pos_x - self.TriJC_xoutoffset
+                #     start = cur_pos_x
+                #     y = self.get('TriJC_Head', 'position_y')
+                #
+                #     t_start = start + self.t_TriJC_xoffset
+                #     t_end = end + self.t_TriJC_xoffset
+                #     t_y = self.get('t_TriJC_' + tool, 'position_y')
+                #
+                #     ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
+                #     ot_start = start + ot_offset
+                #     ot_end = end + ot_offset
             elif direction == 'out':
-                if  cur_pos_x == self.TriJC_xinpos + self.TriJC_xoutpos:
-                    self.logger.info('TriJC already out')
-                    return -1
-                else:
-                    end = cur_pos_x - self.TriJC_xoutoffset
-                    start = cur_pos_x
-                    y = self.get('TriJC_Head', 'position_y')
+                end = self.TriJC_xoutoffset
+                # if  cur_pos_x == self.TriJC_xinpos + self.TriJC_xoutpos:
+                #     self.logger.info('TriJC already out')
+                #     return -1
+                # else:
+                #     end = cur_pos_x - self.TriJC_xoutoffset
+                #     start = cur_pos_x
+                #     y = self.get('TriJC_Head', 'position_y')
+                #
+                #     t_start = start + self.t_TriJC_xoffset
+                #     t_end = end + self.t_TriJC_xoffset
+                #     t_y = self.get('t_TriJC_' + tool, 'position_y')
+                #
+                #     ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
+                #     ot_start = start + ot_offset
+                #     ot_end = end + ot_offset
 
-                    t_start = start + self.t_TriJC_xoffset
-                    t_end = end + self.t_TriJC_xosset
-                    t_y = self.get('t_TriJC_' + tool, 'position_y')
+            y = self.get('TriJC_Head', 'position_y')
+            t_y = self.get('t_TriJC_' + tool, 'position_y')
 
-                    ot_offset = self.get('ot_TriJC_Taser', 'position_x') - start
-                    ot_start = start + ot_offset
-                    ot_end = end + ot_offset
-
+            t_end = end + self.t_TriJC_xoffset
             self.start_scene('sequences/triJC_io', lambda: [
-                [self.set('TriJC*', visible, 1), self.set('t_TriJC_*', 'visible', 0), self.set('t_TriJC_' + tool, 'visible', 1)],
-                [self.animate('TriJC_*', 'position_x', start, end, duration, easing), self.animate('t_TriJC_*', 'position_x', t_start, t_end, duration, easing), self.animate('ot_TriJC_Taser', 'position_x', ot_start, ot_end, duration, easing)],
-                [self.sanimate_prop('TriJC_*', 'position_y', [y, y + 0.01, duration/2., 'random']), self.sanimate_prop('t_TriJC_' + tool, 'position_y', [t_y, t_y + 0.01, duration/2., 'random'])],
+                [self.set('TriJC*', 'visible', 1), self.set('t_TriJC_*', 'visible', 0), self.set('t_TriJC_' + tool, 'visible', 1)],
+                [self.animate('TriJC_*', 'position_x', None, end, duration, 's', easing), self.animate('t_TriJC_*', 'position_x', None, t_end, duration, 's', easing)],
+                [self.animate('TriJC_*', 'position_y', y, y + 0.01, duration/2., 's', 'random'), self.animate('t_TriJC_' + tool, 'position_y', t_y, t_y + 0.01, duration/2., 's', 'random')],
                 self.wait(duration/2., 's'),
-                [self.sanimate_prop('TriJC_*', 'position_y', [y + 0.01, y, duration/2., 'random']), self.sanimate_prop('t_TriJC_' + tool, 'position_y', [t_y + 0.01, t_y, duration/2., 'random'])]
+                [self.animate('TriJC_*', 'position_y', y + 0.01, y, duration/2., 's', 'random'), self.animate('t_TriJC_' + tool, 'position_y', t_y + 0.01, t_y, duration/2., 's', 'random')]
                 ]
             )
         else:
