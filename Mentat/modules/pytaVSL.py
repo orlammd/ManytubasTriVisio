@@ -33,6 +33,7 @@ class PytaVSL(Module):
         self.send('/pyta/subscribe', 'status', 2001)
         self.send('/pyta/subscribe', 'status', 23456)
         self.ready = False
+        self.status_locked = True
         self.pending_overlay = None
 
         self.add_event_callback('parameter_changed', self.parameter_changed)
@@ -78,7 +79,7 @@ class PytaVSL(Module):
         slide = Slide(slide_name, parent=self)
 
         self.add_submodule(slide)
-        self.logger.info('Adding slide ' + slide_name + ' as a submodule')
+        # self.logger.info('Adding slide ' + slide_name + ' as a submodule')
         for param in self.slide_params:
             if param in ['position', 'rotate']:
                 slide.add_parameter(param, None, 'sfff', [param])
@@ -89,8 +90,8 @@ class PytaVSL(Module):
             else:
                 slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sf', [param])
 
-            if param == 'video_end':
-                self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
+            # if param == 'video_end': #TODO pertinent ? devrait arriver après le ready...
+            #     self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
 
     def load_slide(self, f):
         """
@@ -106,21 +107,7 @@ class PytaVSL(Module):
         if slide_name not in self.submodules:
             self.send('/pyta/load', f)
             self.add_slide_and_params(slide_name)
-            # slide = Slide(slide_name, parent=self)
-            #
-            # self.add_submodule(slide)
-            # for param in self.slide_params:
-            #     if param in ['position', 'rotate']:
-            #         slide.add_parameter(param, None, 'sfff', [param])
-            #     elif param in ['warp_1', 'warp_2', 'warp_3', 'warp_4', 'scale']:
-            #         slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sff', [param])
-            #     elif param in ['zoom']:
-            #         slide.add_parameter(param, None, 'sff', [param])
-            #     else:
-            #         slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sf', [param])
-            #
-            #     if param == 'video_end':
-            #         self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
+
 
 
 
@@ -145,64 +132,65 @@ class PytaVSL(Module):
                     self.load_slide(dir + "/" + f)
 
 
-
-
-
     def position_overlay(self, overlay='Common'):
         """
         Position des éléments de décor
         """
+        self.logger.info('Positionning overlay')
 
-        if self.ready:
+        try:
+            _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+            scene = toml.loads(_content)
+            for clone in scene['clones']:
+                self.add_slide_and_params(clone)
 
-            try:
-                _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-                scene = toml.loads(_content)
-                # firstpass = True
-                for clone in scene['clones']:
-                    # if firstpass:
-                    #     self.logger.info(scene['clones'][clone]['target'][0])
-                    #     firstpass = False
-                    # self.logger.info(clone)
-                    # self.logger.info(scene['clones'][clone]['target'][0])
-                    self.send('/pyta/clone', scene['clones'][clone]['target'][0], clone)
-                    time.sleep(0.1)
-                    self.add_slide_and_params(clone)
+        except Exception as e:
+            self.logger.error('could not load scene file in dir %s' % overlay)
 
-                    # self.logger.info('Submodules list:')
-                    # for sub in self.submodules:
-                    #     self.logger.info(sub)
 
-                for slide in self.submodules:
-                    log = False
-                    if slide.lower() in scene['slides']:
-                        if slide.lower() == 'Dummy':
-                            log = True
-                            self.logger.info('Slide observé:' + slide)
-                        for param in self.slide_params:
-                            if log == True:
-                                self.logger.info("Reading scene file : " + slide + "/" + param)
-                            if param in scene['slides'][slide.lower()]:
-                                param_value = scene['slides'][slide.lower()][param]
-                                if len(param_value) == 1:
-                                    self.set(slide, param, param_value[0], force_send=True)
-                                    # if log == True:
-                                    #     self.logger.info('value: ' + str(param_value[0]))
-                                elif len(param_value) == 2:
-                                    self.set(slide, param, param_value[0], param_value[1], force_send=True)
-                                    if log == True:
-                                        self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
-                                elif len(param_value) == 3:
-                                    self.set(slide, param, param_value[0], param_value[1], param_value[2], force_send=True)
-                                    # if log == True:
-                                    #     self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
+        self.send('/pyta/scene_import', overlay + '/overlay')
+        self.send('/pyta/scene_recall', 'overlay')
 
-            except Exception as e:
-                self.logger.error('could not load scene file in dir %s' % overlay)
+        # try:
+        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+        #     scene = toml.loads(_content)
+        #     for clone in scene['clones']:
+        #
+        #         self.send('/pyta/clone', scene['clones'][clone]['target'][0], clone)
+        #         time.sleep(0.1)
+        #         self.add_slide_and_params(clone)
+        #
+        #     for slide in self.submodules:
+        #         log = False
+        #         if slide.lower() in scene['slides']:
+        #             if slide.lower() == 'lights_stageleft':
+        #                 log = True
+        #                 self.logger.info('Slide observé:' + slide)
+        #             for param in self.slide_params:
+        #                 if log == True:
+        #                     self.logger.info("Reading scene file : " + slide + "/" + param)
+        #                 if param in scene['slides'][slide.lower()]:
+        #                     param_value = scene['slides'][slide.lower()][param]
+        #                     if len(param_value) == 1:
+        #                         self.set(slide, param, param_value[0], force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('value: ' + str(param_value[0]))
+        #                     elif len(param_value) == 2:
+        #                         self.set(slide, param, param_value[0], param_value[1], force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
+        #                     elif len(param_value) == 3:
+        #                         self.set(slide, param, param_value[0], param_value[1], param_value[2], force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
+        #
+        #
+        # except Exception as e:
+        #     self.logger.error('could not load scene file in dir %s' % overlay)
 
-        else:
-            self.pending_overlay = overlay
-            self.logger.info('not ready yet: position_overlay() call deffered')
+        # else:
+        #     self.pending_overlay = overlay
+        #     self.logger.info('not ready yet: position_overlay() call deffered')
 
 
     def sset_prop(self, name, property, args):
@@ -357,13 +345,22 @@ class PytaVSL(Module):
                 self.set(slide_name, args[0], args[1])
                 # self.logger.info(slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
 
-        if address == '/pyta/subscribe/update' and args[0]== 'status' and args[1] == 'ready':
-            if not self.ready:
-                self.ready = True
-
-                if self.pending_overlay:
-                    self.logger.info('ready now: calling position_overlay()')
-                    self.position_overlay(self.pending_overlay)
+        # if address == '/pyta/subscribe/update' and args[0]== 'status':
+        #     # if self.status_locked:
+        #     #     self.status_locked = False
+        #     #     return
+        #     if args[1] == 'ready':
+        #         if not self.ready:
+        #             self.ready = True
+        #
+        #             if self.pending_overlay:
+        #                 self.logger.info('ready now: calling position_overlay()')
+        #                 # self.position_overlay(self.pending_overlay)
+        #             else:
+        #                 self.logger.info('Ready but no pending overylay')
+        #     elif args[1] == 'loading':
+        #         self.ready = False
+        #         self.logger.info('loading now: defering position_overlay()')
 
 
 
