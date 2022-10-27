@@ -140,8 +140,8 @@ class Intro(Video, Light, RouteBase):
                     pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear')
 
         def desplats_scene(plat):
-            if plat == 6:
-                plat = 1
+            if plat == 0:
+                plat = 5
             self.start_scene('sequence/plat' + str(plat), lambda:[
                 self.logger.info('Début scène des plats'),
                 pytaVSL.animate('p_pub*', 'noise', 0, 1, 1, 's', 'random'),
@@ -165,14 +165,20 @@ class Intro(Video, Light, RouteBase):
                     4: lambda: vibrate_pos(2, 2),
                     4.5: lambda: vibrate_pos(1, 0.5)
                 }], loop=True),
-                self.wait(5-1.1, 's'), #pytaVSL.get('p_pub' + str(plat), 'video_end'), 's'),
+                self.wait(pytaVSL.get('p_pub' + str(plat), 'video_end') - 1.1, 's'),
                 self.logger.info('Fin scène des plats'),
-                desplats_scene(plat+1)
+                desplats_scene(plat-1)
             ])
 
 
-        desplats_scene(1)
+        desplats_scene(4)
 
+    @pedalboard_button(4)
+    def chapitre1(self):
+        """
+        Switch vers chapitre 1
+        """
+        engine.set_route('Chapitre 1')
 
     @pedalboard_button(98)
     def test(self):

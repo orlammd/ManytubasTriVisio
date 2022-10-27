@@ -21,6 +21,7 @@ class Chapitre1(Video, Light, RouteBase):
 
         # Chargement des vidéos
         self.start_scene('load_and_overlay', lambda: [
+            self.aspipub(),
             pytaVSL.load_slides_from_dir('Chapitre1'),
             self.wait(0.5, 's'),
             # pytaVSL.position_overlay('Chapitre1')
