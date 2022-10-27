@@ -21,23 +21,30 @@ class Chapitre1(Video, Light, RouteBase):
 
         # Chargement des vidéos
         self.start_scene('load_and_overlay', lambda: [
-            self.aspipub(),
+            self.aspi_pubs(),
             pytaVSL.load_slides_from_dir('Chapitre1'),
             self.wait(0.5, 's'),
             # pytaVSL.position_overlay('Chapitre1')
         ])
 
-    def aspipub(self):
+    def aspi_pub(self):
+        """
+        Aspiration d'une pub
+        """
+        pass
+
+    def aspi_pubs(self):
         """
         Aspiration des pubs
         """
-        self.start_scene('sequence/aspipub', lambda: [
+        self.start_scene('sequence/aspi_pubs', lambda: [
             ### Aspiration des pubs
             pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),
             self.wait(4, 's'),
             # ASPIRATION
+
             self.wait(1, 's'),
-            pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
+            # pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
             ]
         )
 
@@ -142,7 +149,7 @@ class Chapitre1(Video, Light, RouteBase):
         Intro
         """
         self.start_scene('sequence/intro', lambda: [
-            self.aspipub(),
+            self.aspi_pubs(),
             self.wait(5, 's'),
             self.wait(1.2, 's'),
             self.lancementmiraye1(),
