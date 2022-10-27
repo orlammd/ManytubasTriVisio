@@ -27,24 +27,123 @@ class Chapitre1(Video, Light, RouteBase):
             # pytaVSL.position_overlay('Chapitre1')
         ])
 
-    def aspi_pub(self):
+    def aspi_pub(self, number):
         """
         Aspiration d'une pub
         """
-        pass
+        tv = 'plane_horn_' + str(number) if number > 1 else 'plane_horn'
+        p = 'p_pub' + str(number)
+
+        # self.start_scene('sequence/aspi_pub', lambda: [
+        #     [
+        #         pytaVSL.animate(tv, 'warp_1', [0, 0], [0, -0.35], 1, 's', 'elastic'), pytaVSL.animate(tv, 'warp_4', [0, 0], [0, 0.63], 1, 's', 'elastic'),
+        #         pytaVSL.animate(p, 'warp_1', [0, 0], [-0.0755, -0.11], 1, 's', 'elastic'), pytaVSL.animate(p, 'warp_4', [0, 0], [-0.0755, 0.86], 1, 's', 'elastic')
+        #         ],
+        #     self.wait(0.8, 's'),
+        #     pytaVSL.animate(tv, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic' ), pytaVSL.animate(tv, 'position', None, [-0.33, 0.035, pytaVSL.get(tv, 'position_z')], 0.5, 's', 'elastic'),
+        #     pytaVSL.animate(p, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic'), pytaVSL.animate(p, 'position', None, [-0.33, 0.035, pytaVSL.get(p, 'position_z')], 0.5, 's', 'elastic'),
+        #     pytaVSL.set(tv, 'visible', 0),
+        #     pytaVSL.set(p, 'visible', 0)
+        # ])
+        self.start_scene('sequence/aspi_pub', lambda: [
+            [
+                pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_1', 0, 0, 0, -0.35, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_4', 0, 0, 0, 0.63, 1, 'elastic'),
+                pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_1', 0, 0, -0.0755, -0.11, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_4', 0, 0, -0.0755, 0.86, 1, 'elastic')
+                ],
+            self.wait(0.8, 's'),
+            pytaVSL.send('/pyta/slide/' + tv + '/animate', 'scale', pytaVSL.get(tv, 'scale')[0], pytaVSL.get(tv, 'scale')[1], 0.035, 0.035, 0.5, 'elastic' ), pytaVSL.send('/pyta/slide' + tv + '/animate', 'position', pytaVSL.get(tv, 'position_x'), pytaVSL.get(tv, 'position_y'), pytaVSL.get(tv, 'position_z'), -0.33, 0.035, pytaVSL.get(tv, 'position_z'), 0.5, 'elastic'),
+            pytaVSL.send('/pyta/slide/' + p + '/animate', 'scale', pytaVSL.get(p, 'scale')[0], pytaVSL.get(p, 'scale')[1], 0.035, 0.035, 0.5, 's', 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'position', pytaVSL.get(p, 'position_x'), pytaVSL.get(p, 'position_y'), pytaVSL.get(p, 'position_z'), -0.33, 0.035, pytaVSL.get(p, 'position_z'), 0.5, 'elastic'),
+            pytaVSL.set(tv, 'visible', 0),
+            pytaVSL.set(p, 'visible', 0)
+        ])
+
+
+    def desaspis(self, plat):
+        xyzpos = {
+            'main': [0, -0.07, -7.5],
+            '1' : [-0.35, 0.2, -7.1],
+            '2' : [-0.05, 0.2, -7.2],
+            '3' : [0.25, 0.2, -7.3],
+            '4' : [0.55, 0.2, -7.4],
+            'scale_main': [0.8, 0.8],
+            'scale_others': [0.3, 0.3],
+            'pmain': [0, -0.135, -7.49],
+            'p1' : [-0.35, 0.175, -7.09],
+            'p2' : [-0.05, 0.175, -7.19],
+            'p3' : [0.25, 0.175, -7.29],
+            'p4' : [0.55, 0.175, -7.39],
+            'pscale_main': [0.465, 0.465],
+            'pscale_others': [0.18, 0.18],
+        }
+
+
+        if plat == 1:
+            pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
+            pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+
+        else:
+            pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
+            pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+
+
+        pytaVSL.animate('p_pub' + str(plat), 'position', None, xyzpos['pmain'], 1, 's', 'linear')
+        pytaVSL.animate('p_pub' + str(plat), 'scale', None, xyzpos['pscale_main'], 1, 's', 'linear')
+
+        for i in range(1,5):
+            ind = i + plat
+            if ind > 5:
+                ind = ind - 5
+            if ind == 1:
+                pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+                pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+            else:
+                pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+                pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+            pytaVSL.animate('p_pub' + str(ind), 'position', None, xyzpos['p' + str(i)], 1, 's', 'linear')
+            pytaVSL.animate('p_pub' + str(ind), 'scale', None, xyzpos['pscale_others'], 1, 's', 'linear')
+
 
     def aspi_pubs(self):
         """
         Aspiration des pubs
         """
+        #### On stoppe la séquence de ronde, pour éviter que les valeurs ne changent au milieu de l'aspiration
+        self.stop_scene('sequence/plat')
+        start = 1
+        zoom = 0
+        for i in range(1,6):
+            if(pytaVSL.get('p_pub' + str(i), 'scale')[0] > zoom):
+                zoom = pytaVSL.get('p_pub' + str(i), 'scale')[0]
+                start = i
+        sorted = []
+        for i in range(0,5):
+            sorted.append(start + i if start + i < 6 else start + i - 5)
+            # ranger dans l'ordre
+
         self.start_scene('sequence/aspi_pubs', lambda: [
             ### Aspiration des pubs
             pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),
             self.wait(4, 's'),
-            # ASPIRATION
-
+            self.aspi_pub(sorted[0]),
             self.wait(1, 's'),
-            # pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
+            self.desaspis(sorted[4]),
+            self.wait(1.1, 's'),
+            self.aspi_pub(sorted[4]),
+            self.wait(1, 's'),
+            self.desaspis(sorted[3]),
+            self.wait(1.1, 's'),
+            self.aspi_pub(sorted[3]),
+            self.wait(1, 's'),
+            self.desaspis(sorted[2]),
+            self.wait(1.1, 's'),
+            self.aspi_pub(sorted[2]),
+            self.wait(1, 's'),
+            self.desaspis(sorted[1]),
+            self.wait(1.1, 's'),
+            self.aspi_pub(sorted[1]),
+            # ASPIRATION
+            self.wait(1, 's'),
+            pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
             ]
         )
 
@@ -80,7 +179,6 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('sequence/mirayeccanwait', lambda: [
             pytaVSL.sset_prop('m_ch1-7', 'position', [0.0915, 0.016, -9.91]),
-            pytaVSL.sset_prop('m_ch1-7', 'zoom', [0.71]),
             pytaVSL.sset_prop('m_ch1-7_waiting', 'video_speed', [1]), pytaVSL.sset_prop('m_ch1-7', 'video_speed', [1]),
             [pytaVSL.sanimate_prop('m_ch1-2_waiting', 'noise', [0, 0.2, 0.2]), pytaVSL.sanimate_prop('m_ch1-2_waiting', 'rgbwave', [0, 0.5, 0.2])],
             self.wait(0.2, 's'),
@@ -113,6 +211,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Les actes de JC
         """
+        pytaVSL.sset_prop('m_ch1-7', 'zoom', [0.71]),
         ### TODO mettre le placement ailleurs
         for i in range (3, 7):
             pytaVSL.sset_prop('p_ch1-' + str(i), 'position', [1, 0, -11])
@@ -229,6 +328,10 @@ class Chapitre1(Video, Light, RouteBase):
 
         ])
 
-        @pedalboard_button(12)
-        def stop(self):
-            self.stop_sequence('*')
+    @pedalboard_button(12)
+    def stop(self):
+        self.stop_sequence('*')
+
+    @pedalboard_button(99)
+    def testaspi(self):
+        self.aspi_pub()
