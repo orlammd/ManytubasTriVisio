@@ -338,6 +338,10 @@ class Chapitre1(Video, Light, RouteBase):
 
         ])
 
+    @pedalboard_button(5)
+    def miraye_in(self):
+        pytaVSL.miraye_in('m_ch1-1')
+
     @pedalboard_button(12)
     def stop(self):
         self.stop_sequence('*')

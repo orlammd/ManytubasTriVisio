@@ -208,18 +208,18 @@ class PytaVSL(Module):
 
     def sanimate_prop(self, name, property, args):
         ### ORL TODO -> remplacer par animate
-        if isinstance(args[len(args) - 1], str):
-            duration = args[len(args)- 2]
-        elif isinstance(args[len(args) - 1], int) or isinstance(args[len(args) -1], float):
-            duration = args[len(args) - 1]
+        # if isinstance(args[len(args) - 1], str):
+        #     duration = args[len(args)- 2]
+        # elif isinstance(args[len(args) - 1], int) or isinstance(args[len(args) -1], float):
+        #     duration = args[len(args) - 1]
 
-        self.logger.info('Durée' + str(duration))
+        # self.logger.info('Durée' + str(duration))
 
         self.send('/pyta/slide/' + name + '/animate', property, *args)
-        self.scene_start('wait_until_animate_finished', lambda: [
-            self.wait(duration, 's'),
-            self.set(name, property, *args)
-        ])
+        # self.scene_start('wait_until_animate_finished', lambda: [
+        #     self.wait(duration, 's'),
+        #     self.set(name, property, *args)
+        # ])
 
     def check_jack_caesar_consistency(self):
         pos = 0
