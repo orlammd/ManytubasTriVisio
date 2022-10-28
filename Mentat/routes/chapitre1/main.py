@@ -34,28 +34,38 @@ class Chapitre1(Video, Light, RouteBase):
         tv = 'plane_horn_' + str(number) if number > 1 else 'plane_horn'
         p = 'p_pub' + str(number)
 
-        # self.start_scene('sequence/aspi_pub', lambda: [
-        #     [
-        #         pytaVSL.animate(tv, 'warp_1', [0, 0], [0, -0.35], 1, 's', 'elastic'), pytaVSL.animate(tv, 'warp_4', [0, 0], [0, 0.63], 1, 's', 'elastic'),
-        #         pytaVSL.animate(p, 'warp_1', [0, 0], [-0.0755, -0.11], 1, 's', 'elastic'), pytaVSL.animate(p, 'warp_4', [0, 0], [-0.0755, 0.86], 1, 's', 'elastic')
-        #         ],
-        #     self.wait(0.8, 's'),
-        #     pytaVSL.animate(tv, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic' ), pytaVSL.animate(tv, 'position', None, [-0.33, 0.035, pytaVSL.get(tv, 'position_z')], 0.5, 's', 'elastic'),
-        #     pytaVSL.animate(p, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic'), pytaVSL.animate(p, 'position', None, [-0.33, 0.035, pytaVSL.get(p, 'position_z')], 0.5, 's', 'elastic'),
-        #     pytaVSL.set(tv, 'visible', 0),
-        #     pytaVSL.set(p, 'visible', 0)
-        # ])
+        pytaVSL.stop_animate(tv, 'position_x')
+        pytaVSL.stop_animate(tv, 'position_y')
+
+        pytaVSL.stop_animate(p, 'position_x')
+        pytaVSL.stop_animate(p, 'position_y')
+
+
+        # if anim == 'mentat':
         self.start_scene('sequence/aspi_pub', lambda: [
             [
-                pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_1', 0, 0, 0, -0.35, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_4', 0, 0, 0, 0.63, 1, 'elastic'),
-                pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_1', 0, 0, -0.0755, -0.11, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_4', 0, 0, -0.0755, 0.86, 1, 'elastic')
+                pytaVSL.animate(tv, 'warp_1', [0, 0], [0, -0.35], 1, 's', 'elastic-inout'), pytaVSL.animate(tv, 'warp_4', [0, 0], [0, 0.63], 1, 's', 'elastic-inout'),
+                pytaVSL.animate(p, 'warp_1', [0, 0], [-0.0755, -0.11], 1, 's', 'elastic-inout'), pytaVSL.animate(p, 'warp_4', [0, 0], [-0.0755, 0.86], 1, 's', 'elastic-inout')
                 ],
             self.wait(0.8, 's'),
-            pytaVSL.send('/pyta/slide/' + tv + '/animate', 'scale', pytaVSL.get(tv, 'scale')[0], pytaVSL.get(tv, 'scale')[1], 0.035, 0.035, 0.5, 'elastic' ), pytaVSL.send('/pyta/slide' + tv + '/animate', 'position', pytaVSL.get(tv, 'position_x'), pytaVSL.get(tv, 'position_y'), pytaVSL.get(tv, 'position_z'), -0.33, 0.035, pytaVSL.get(tv, 'position_z'), 0.5, 'elastic'),
-            pytaVSL.send('/pyta/slide/' + p + '/animate', 'scale', pytaVSL.get(p, 'scale')[0], pytaVSL.get(p, 'scale')[1], 0.035, 0.035, 0.5, 's', 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'position', pytaVSL.get(p, 'position_x'), pytaVSL.get(p, 'position_y'), pytaVSL.get(p, 'position_z'), -0.33, 0.035, pytaVSL.get(p, 'position_z'), 0.5, 'elastic'),
+            pytaVSL.animate(tv, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic-inout' ), pytaVSL.animate(tv, 'position', None, [-0.33, 0.035, pytaVSL.get(tv, 'position_z')], 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate(p, 'scale', None, [0.035, 0.035], 0.5, 's', 'elastic-inout'), pytaVSL.animate(p, 'position', None, [-0.33, 0.035, pytaVSL.get(p, 'position_z')], 0.5, 's', 'elastic-inout'),
+            self.wait(0.5, 's'),
             pytaVSL.set(tv, 'visible', 0),
             pytaVSL.set(p, 'visible', 0)
         ])
+        # else:
+        #     self.start_scene('sequence/aspi_pub', lambda: [
+        #         [
+        #             pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_1', 0, 0, 0, -0.35, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_4', 0, 0, 0, 0.63, 1, 'elastic'),
+        #             pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_1', 0, 0, -0.0755, -0.11, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_4', 0, 0, -0.0755, 0.86, 1, 'elastic')
+        #             ],
+        #         self.wait(0.8, 's'),
+        #         pytaVSL.send('/pyta/slide/' + tv + '/animate', 'scale', pytaVSL.get(tv, 'scale')[0], pytaVSL.get(tv, 'scale')[1], 0.035, 0.035, 0.5, 'elastic' ), pytaVSL.send('/pyta/slide' + tv + '/animate', 'position', pytaVSL.get(tv, 'position_x'), pytaVSL.get(tv, 'position_y'), pytaVSL.get(tv, 'position_z'), -0.33, 0.035, pytaVSL.get(tv, 'position_z'), 0.5, 'elastic'),
+        #         pytaVSL.send('/pyta/slide/' + p + '/animate', 'scale', pytaVSL.get(p, 'scale')[0], pytaVSL.get(p, 'scale')[1], 0.035, 0.035, 0.5, 's', 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'position', pytaVSL.get(p, 'position_x'), pytaVSL.get(p, 'position_y'), pytaVSL.get(p, 'position_z'), -0.33, 0.035, pytaVSL.get(p, 'position_z'), 0.5, 'elastic'),
+        #         pytaVSL.set(tv, 'visible', 0),
+        #         pytaVSL.set(p, 'visible', 0)
+        #     ])
 
 
     def desaspis(self, plat):
@@ -123,21 +133,21 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('sequence/aspi_pubs', lambda: [
             ### Aspiration des pubs
             pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),
-            self.wait(4, 's'),
+            self.wait(2, 's'),
             self.aspi_pub(sorted[0]),
-            self.wait(1, 's'),
+            self.wait(1.3, 's'),
             self.desaspis(sorted[4]),
             self.wait(1.1, 's'),
             self.aspi_pub(sorted[4]),
-            self.wait(1, 's'),
+            self.wait(1.3, 's'),
             self.desaspis(sorted[3]),
             self.wait(1.1, 's'),
             self.aspi_pub(sorted[3]),
-            self.wait(1, 's'),
+            self.wait(1.3, 's'),
             self.desaspis(sorted[2]),
             self.wait(1.1, 's'),
             self.aspi_pub(sorted[2]),
-            self.wait(1, 's'),
+            self.wait(1.3, 's'),
             self.desaspis(sorted[1]),
             self.wait(1.1, 's'),
             self.aspi_pub(sorted[1]),
@@ -334,4 +344,5 @@ class Chapitre1(Video, Light, RouteBase):
 
     @pedalboard_button(99)
     def testaspi(self):
-        self.aspi_pub()
+        # self.aspi_pub()
+        pytaVSL.animate('back', 'position_x', 0, 0.5, 1, 's', 'exponential-inout')

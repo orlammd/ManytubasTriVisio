@@ -90,6 +90,11 @@ class PytaVSL(Module):
             else:
                 slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sf', [param])
 
+######################### TODO utiliser la méthode ci-dessous + animate de pytaVSL + subscribe pour avoir un suivi des animate sans les faire dans mentat
+            # if slide_name == 'back' and param == 'position_x':
+            #     self.submodules[slide_name].parameters[param].args[1] = 12
+            #     self.logger.info(self.submodules[slide_name].parameters[param].args)
+
     def load_slide(self, f):
         """
         Chargement + Suivi d'un nouveau calque
@@ -104,9 +109,6 @@ class PytaVSL(Module):
         if slide_name not in self.submodules:
             self.send('/pyta/load', f)
             self.add_slide_and_params(slide_name)
-
-
-
 
     def load_slides_from_dir(self, dir='Common'):
         """
@@ -154,11 +156,11 @@ class PytaVSL(Module):
         try:
             _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
             scene = toml.loads(_content)
-            for clone in scene['clones']:
-
-                self.send('/pyta/clone', scene['clones'][clone]['target'][0], clone)
-                time.sleep(0.1)
-                self.add_slide_and_params(clone)
+            # for clone in scene['clones']:
+            #
+            #     self.send('/pyta/clone', scene['clones'][clone]['target'][0], clone)
+            #     time.sleep(0.1)
+            #     self.add_slide_and_params(clone)
 
             for slide in self.submodules:
                 log = False
@@ -200,6 +202,9 @@ class PytaVSL(Module):
     def sset_prop(self, name, property, args):
         #### ORL TODO -> remplacer par set
         self.send('/pyta/slide/' + name + '/set', property, *args)
+
+    def sanimate(self, name, property, start, end, duration, division, easing):
+        self.send('/pyta/slide' + name + '/animate', property, start, end, duration, easing)
 
     def sanimate_prop(self, name, property, args):
         ### ORL TODO -> remplacer par animate
@@ -347,6 +352,7 @@ class PytaVSL(Module):
 
             if slide_name in self.submodules:
                 # self.set(slide_name, args[0], *args[1:])
+                # self.submodules[slide_name].param[args[0]]
                 self.set(slide_name, *args)
                 self.logger.info('OSC get reply : ' + slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
 

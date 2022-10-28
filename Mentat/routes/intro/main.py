@@ -130,14 +130,14 @@ class Intro(Video, Light, RouteBase):
 
 
                 if p == 1:
-                    pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear')
-                    pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
-                    pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear')
+                    pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear-mirror', loop=True)
+                    pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random-mirror', True)
+                    pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear-mirror', True)
                     # pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
                 else:
-                    pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear')
-                    pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random')
-                    pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear')
+                    pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
+                    pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random-mirror', True)
+                    pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
 
         def desplats_scene(plat):
             if plat == 0:
@@ -148,23 +148,24 @@ class Intro(Video, Light, RouteBase):
                 desplats(plat),
                 pytaVSL.animate('p_pub*', 'noise', 1, 0, 1, 's', 'random'),
                 self.wait(1.1, 's'),
+                vibrate_pos(1, 2.5),
                 vibrate_pos(2, 2),
                 vibrate_pos(3, 1.3),
                 vibrate_pos(4, 3),
-                vibrate_pos(5, 0.5),
-                self.start_sequence('plane_vibrate_pos', [{
-                    0.5: lambda: vibrate_pos(5, 3),
-                    1: lambda: vibrate_pos(1, 1.5),
-                    1.3: lambda: vibrate_pos(3, 1.3),
-                    2: lambda: vibrate_pos(2, 1),
-                    2.5: lambda: vibrate_pos(1, 2),
-                    2.6: lambda: vibrate_pos(3, 1.3),
-                    3: lambda: [vibrate_pos(2, 1), vibrate_pos(4, 4)],
-                    3.5: lambda: vibrate_pos(5, 2),
-                    3.9: vibrate_pos(3, 2.4),
-                    4: lambda: vibrate_pos(2, 2),
-                    4.5: lambda: vibrate_pos(1, 0.5)
-                }], loop=True),
+                vibrate_pos(5, 3.4),
+                # self.start_sequence('plane_vibrate_pos', [{
+                #     0.5: lambda: vibrate_pos(5, 3),
+                #     1: lambda: vibrate_pos(1, 1.5),
+                #     1.3: lambda: vibrate_pos(3, 1.3),
+                #     2: lambda: vibrate_pos(2, 1),
+                #     2.5: lambda: vibrate_pos(1, 2),
+                #     2.6: lambda: vibrate_pos(3, 1.3),
+                #     3: lambda: [vibrate_pos(2, 1), vibrate_pos(4, 4)],
+                #     3.5: lambda: vibrate_pos(5, 2),
+                #     3.9: vibrate_pos(3, 2.4),
+                #     4: lambda: vibrate_pos(2, 2),
+                #     4.5: lambda: vibrate_pos(1, 0.5)
+                # }], loop=True),
                 self.wait(pytaVSL.get('p_pub' + str(plat), 'video_end') - 1.1, 's'),
                 self.logger.info('Fin scène des plats'),
                 desplats_scene(plat-1)
@@ -191,3 +192,7 @@ class Intro(Video, Light, RouteBase):
     @pedalboard_button(90)
     def testo(self):
         self.stop_scene('*')
+
+    @pedalboard_button(89)
+    def lopp_animation(self):
+        pytaVSL.animate('back', 'position_x', 0, 0.5, 1, 's', 'elastic-mirror-inout', True)
