@@ -36,7 +36,7 @@ class PytaVSL(Module):
         self.status_locked = True
         self.pending_overlay = None
 
-        self.add_event_callback('parameter_changed', self.parameter_changed)
+        # self.add_event_callback('parameter_changed', self.parameter_changed)
 
 
         # Objects JC Manytubas
@@ -63,37 +63,26 @@ class PytaVSL(Module):
         }
 
 
-    def parameter_changed(self, module, name, value):
-        if name in ['position', 'rotate']:
-            i = 0
-            for axe in ['_x', '_y', '_z']:
-                # if module.name == 'back':
-                #     self.logger.info('Passage par parameter_changed: ' + module.name + ' / ' + name + axe)
-                self.set(module.name, name + axe, value[i])
-                i = i+1
-        elif name == 'zoom':
-            self.set(module.name, 'scale', value, value)
+        """
+        PytaVSL reset
+        """
+        # remove all slides
+        self.send('/pyta/slide/*/remove')
+
+        # start pinging for new slides
+        self.start_scene('check_new_slides', self.check_new_slides)
+
+        # internal ready parameter (bool)
+        # set to False when a new slide is created
+        # set to True when no new parameter was added for a while
+        self.add_parameter('ready', None, '*', default=False)
+        self.feedback_counter = 0
+        self.start_scene('check_ready_state', self.check_ready_state)
 
 
-    def add_slide_and_params(self, slide_name):
-        slide = Slide(slide_name, parent=self)
 
-        self.add_submodule(slide)
-        self.logger.info('Adding slide ' + slide_name + ' as a submodule')
-        for param in self.slide_params:
-            if param in ['position', 'rotate']:
-                slide.add_parameter(param, None, 'sfff', [param])
-            elif param in ['warp_1', 'warp_2', 'warp_3', 'warp_4', 'scale']:
-                slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sff', [param])
-            elif param in ['zoom']:
-                slide.add_parameter(param, None, 'sf', [param])
-            else:
-                slide.add_parameter(param, '/pyta/slide/' + slide_name + '/set', 'sf', [param])
-
-######################### TODO utiliser la méthode ci-dessous + animate de pytaVSL + subscribe pour avoir un suivi des animate sans les faire dans mentat
-            # if slide_name == 'back' and param == 'position_x':
-            #     self.submodules[slide_name].parameters[param].args[1] = 12
-            #     self.logger.info(self.submodules[slide_name].parameters[param].args)
+    def create_clone(self, src, dest):
+        self.send('/pyta/clone', src, dest)
 
     def load_slide(self, f):
         """
@@ -108,7 +97,7 @@ class PytaVSL(Module):
 
         if slide_name not in self.submodules:
             self.send('/pyta/load', f)
-            self.add_slide_and_params(slide_name)
+
 
     def load_slides_from_dir(self, dir='Common'):
         """
@@ -130,6 +119,8 @@ class PytaVSL(Module):
                 if not f == 'overlay':
                     self.load_slide(dir + "/" + f)
 
+    def save_state(self, chapter):
+        self.save(chapter + '.overlay', omit_defaults = True)
 
     def position_overlay(self, overlay='Common'):
         """
@@ -137,61 +128,51 @@ class PytaVSL(Module):
         """
         self.logger.info('Positionning overlay')
 
-        try:
-            _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-            scene = toml.loads(_content)
-            for clone in scene['clones']:
-                self.add_slide_and_params(clone)
-
-        except Exception as e:
-            self.logger.error('could not load scene file in dir %s' % overlay)
-
+        self.load('Common.overlay')
+        # try:
+        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+        #     scene = toml.loads(_content)
+        #
+        # except Exception as e:
+        #     self.logger.error('could not load scene file in dir %s' % overlay)
 
 
-        # for slide_name in self.submodules:
-        #     for param in self.slide_params:
-        #         self.send('/pyta/slide/' + slide_name + '/get', param, 2001)
+        #
+        #
+        # try:
+        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+        #     scene = toml.loads(_content)
+        #
+        #     for slide in self.submodules:
+        #         log = False
+        #         if slide.lower() in scene['slides']:
+        #             if slide.lower() == 'Dummy':
+        #                 log = True
+        #                 self.logger.info('Slide observé:' + slide)
+        #             for param in self.slide_params:
+        #                 if log == True:
+        #                     self.logger.info("Reading scene file : " + slide + "/" + param)
+        #                 if param in scene['slides'][slide.lower()]:
+        #                     param_value = scene['slides'][slide.lower()][param]
+        #                     if len(param_value) == 1:
+        #                         self.set(slide, param, param_value[0]) #, force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('value: ' + str(param_value[0]))
+        #                     elif len(param_value) == 2:
+        #                         self.set(slide, param, param_value[0], param_value[1]) #, force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
+        #                     elif len(param_value) == 3:
+        #                         self.set(slide, param, param_value[0], param_value[1], param_value[2]) #, force_send=True)
+        #                         if log == True:
+        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
+        #
+        #
+        # except Exception as e:
+        #     self.logger.error('could not load scene file in dir %s' % overlay)
 
-
-        try:
-            _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-            scene = toml.loads(_content)
-            # for clone in scene['clones']:
-            #
-            #     self.send('/pyta/clone', scene['clones'][clone]['target'][0], clone)
-            #     time.sleep(0.1)
-            #     self.add_slide_and_params(clone)
-
-            for slide in self.submodules:
-                log = False
-                if slide.lower() in scene['slides']:
-                    if slide.lower() == 'Dummy':
-                        log = True
-                        self.logger.info('Slide observé:' + slide)
-                    for param in self.slide_params:
-                        if log == True:
-                            self.logger.info("Reading scene file : " + slide + "/" + param)
-                        if param in scene['slides'][slide.lower()]:
-                            param_value = scene['slides'][slide.lower()][param]
-                            if len(param_value) == 1:
-                                self.set(slide, param, param_value[0]) #, force_send=True)
-                                if log == True:
-                                    self.logger.info('value: ' + str(param_value[0]))
-                            elif len(param_value) == 2:
-                                self.set(slide, param, param_value[0], param_value[1]) #, force_send=True)
-                                if log == True:
-                                    self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
-                            elif len(param_value) == 3:
-                                self.set(slide, param, param_value[0], param_value[1], param_value[2]) #, force_send=True)
-                                if log == True:
-                                    self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
-
-
-        except Exception as e:
-            self.logger.error('could not load scene file in dir %s' % overlay)
-
-        self.send('/pyta/scene_import', overlay + '/overlay')
-        self.send('/pyta/scene_recall', 'overlay')
+        # self.send('/pyta/scene_import', overlay + '/overlay')
+        # self.send('/pyta/scene_recall', 'overlay')
 
 
         # else:
@@ -346,33 +327,130 @@ class PytaVSL(Module):
         if slide_name in self.submodules:
             return self.get(slide_name, property)
 
+    def check_new_slides(self, once=False):
+        """
+        Ping for new slides
+        """
+        if once:
+            self.send('/pyta/slide/*/get', 'visible', self.engine.port)
+        else:
+            while True:
+                self.check_new_slides(True)
+                self.wait(1, 's')
+
+
+    def check_ready_state(self):
+        """
+        Check how many feedback messages were received recently and change ready state accordingly
+        (no message = ready)
+        """
+        last_count = 0
+        while True:
+            self.wait(1, 's')
+            if self.feedback_counter == last_count:
+                # no feedback for 1 second -> ready
+                self.set('ready', True)
+                self.feedback_counter = last_count = 0
+            last_count = self.feedback_counter
+
+
     def route(self, address, args):
-        if address.startswith('/pyta/slide') and address.endswith('/reply'):
-            slide_name = address.partition('/pyta/slide/')[2].partition('/')[0]
 
-            if slide_name in self.submodules:
-                # self.set(slide_name, args[0], *args[1:])
-                # self.submodules[slide_name].param[args[0]]
-                self.set(slide_name, *args)
-                self.logger.info('OSC get reply : ' + slide_name + ' / ' + args[0] + ': ' + str(self.get(slide_name, args[0])))
+        if address == '/pyta/subscribe/update' and args[0] == 'status':
+            """
+            If pyta is loading new slides, set ready to False,
+            if pyta is ready, ping for new sldes
+            """
+            if args[1] == 'loading':
+                self.set('ready', False)
+                self.feedback_counter += 1
+            elif args[1] == 'ready':
+                self.check_new_slides(once=True)
 
-        # if address == '/pyta/subscribe/update' and args[0]== 'status':
-        #     # if self.status_locked:
-        #     #     self.status_locked = False
-        #     #     return
-        #     if args[1] == 'ready':
-        #         if not self.ready:
-        #             self.ready = True
-        #
-        #             if self.pending_overlay:
-        #                 self.logger.info('ready now: calling position_overlay()')
-        #                 # self.position_overlay(self.pending_overlay)
-        #             else:
-        #                 self.logger.info('Ready but no pending overylay')
-        #     elif args[1] == 'loading':
-        #         self.ready = False
-        #         self.logger.info('loading now: defering position_overlay()')
+        elif '/pyta/slide' in address and '/get/reply' in address:
+            """
+            Handle feedback from slides
+            """
+            slide_name = address.split('/')[-3]
+
+            if slide_name not in self.submodules:
+                """
+                Feedback from a new slide: create Slide object and query all parameters
+                """
+                self.set('ready', False)
+                self.feedback_counter += 1
+
+                slide = Slide(slide_name, parent=self)
+                self.add_submodule(slide)
+                self.send('/pyta/slide/%s/get' % slide_name, '*', self.engine.port)
+
+            else:
+                """
+                Feedback from existing slide: create parameter if it doesn't exist
+                """
+                slide = self.submodules[slide_name]
+                property_name, *values = args
+                if property_name not in slide.parameters:
+                    self.set('ready', False)
+                    self.feedback_counter += 1
+
+                    types = 's'
+                    for v in values:
+                        if type(v) == str:
+                            types += 's'
+                        else:
+                            types += 'f'
 
 
+                    slide.add_parameter(property_name, '/pyta/slide/%s/set' % slide_name, types=types, static_args=[property_name], default=values[0] if len(values) == 1 else values)
+                    if property_name == 'scale':
+                        slide.add_meta_parameter('zoom', ['scale'],
+                            getter = lambda scale: scale[0],
+                            setter = lambda zoom: slide.set('scale', zoom)
+                        )
 
+                    if property_name in ['position', 'rotate']:
+                        axis = {0: '_x', 1: '_y', 2: '_z'}
+                        for index, ax in axis.items():
+                            def closure(index, ax):
+
+                                def setter(val):
+                                    value = slide.get(property_name)
+                                    value[index] = val
+                                    slide.set(property_name, *value)
+
+                                slide.add_meta_parameter(property_name + ax, [property_name],
+                                    getter = lambda prop: prop[index],
+                                    setter = setter
+                                )
+
+                            closure(index, ax)
+
+        # Don't route message any further
         return False
+
+    state_excluded_parameters = [
+        'position_x',
+        'position_y',
+        'position_z',
+        'rotate_x',
+        'rotate_y',
+        'rotate_z',
+        'zoom',
+        'ready'
+    ]
+
+    def get_state(self, *args, **kwargs):
+        """
+        Excliude some parameters from state
+        """
+        state = super(PytaVSL, self).get_state(*args, **kwargs)
+        def filter_function(item):
+            exclude = False
+            for prop in self.state_excluded_parameters:
+                if prop in item:
+                    exclude = True
+                    break
+            return not exclude
+        state = list(filter(filter_function, state))
+        return state

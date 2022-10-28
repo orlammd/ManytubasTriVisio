@@ -72,12 +72,24 @@ class RouteBase(Route):
             else:
                 pytaVSL.load_slides_from_dir()
 
+        if address == '/save_state':
+            """
+            Save state omitting default values
+            args: chapter
+            """
+            pytaVSL.save_state(args[0])
+
         if address == '/position_overlay':
             pytaVSL.position_overlay()
 
         if address == '/trijc_io':
             self.logger.info('trijc_io osc trigged')
             pytaVSL.trijc_io(*args)
+
+        if '/pyta' in address:
+            pytaVSL.send(address, *args)
+
+
 
     def start_sequence(self, name, sequence, loop=True):
         """

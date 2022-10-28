@@ -21,8 +21,38 @@ class Intro(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
+        self.start_scene('activate_pyta', self.activate_pyta)
 
+
+    def activate_pyta(self):
         pytaVSL.load_slides_from_dir('Common')
+        while not pytaVSL.get('ready'):
+            self.wait(0.1, 's')
+
+        for clone_name in [
+            'signs_standright_jack',
+            'signs_standright_caesar',
+            'signs_standleft_caesar',
+            'signs_standright_manytubas',
+            'signs_standleft_manytubas',
+            'signs_standcenter_manytubas',
+            'signs_standright_tri',
+            'signs_standleft_tri',
+            'signs_standright_visio',
+            'signs_standleft_visio']:
+            pytaVSL.create_clone('signs_standleft_jack', clone_name)
+
+        for clone_name in [
+            'plane_horn_5',
+            'plane_horn_4',
+            'plane_horn_3',
+            'plane_horn_2']:
+            pytaVSL.create_clone('plane_horn', clone_name)
+
+        ######## ORL - MEXPLIQUE-MOI
+        ##### utiliser la même chose que clones pour groups
+        ##### shaker les slides à l'intérieur d'un groupe, et mover les groups pour déplacer tout le monde.
+
 
 
     @pedalboard_button(2)

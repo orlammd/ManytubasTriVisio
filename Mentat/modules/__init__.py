@@ -27,7 +27,7 @@ from .pytaVSL import PytaVSL
 """
 Engine
 """
-engine = Engine('Mentat', 2001, '/home/plagiat/PlagiatSetup/Mentat', tcp_port=55001, debug='--debug' in argv)
+engine = Engine('Mentat', 2001, '/home/jeaneudes/OrageOTournage/ManytubasTriVisio/Mentat', tcp_port=55001, debug='--debug' in argv)
 raysession = RaySession('RaySession', 'osc', 2000)
 
 

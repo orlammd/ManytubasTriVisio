@@ -22,7 +22,7 @@ class Chapitre1(Video, Light, RouteBase):
         # Chargement des vidéos
         self.start_scene('load_and_overlay', lambda: [
             self.aspi_pubs(),
-            pytaVSL.load_slides_from_dir('Chapitre1'),
+            # pytaVSL.load_slides_from_dir('Chapitre1'),
             self.wait(0.5, 's'),
             # pytaVSL.position_overlay('Chapitre1')
         ])
@@ -41,7 +41,6 @@ class Chapitre1(Video, Light, RouteBase):
         pytaVSL.stop_animate(p, 'position_y')
 
 
-        # if anim == 'mentat':
         self.start_scene('sequence/aspi_pub', lambda: [
             [
                 pytaVSL.animate(tv, 'warp_1', [0, 0], [0, -0.35], 1, 's', 'elastic-inout'), pytaVSL.animate(tv, 'warp_4', [0, 0], [0, 0.63], 1, 's', 'elastic-inout'),
@@ -54,18 +53,6 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.set(tv, 'visible', 0),
             pytaVSL.set(p, 'visible', 0)
         ])
-        # else:
-        #     self.start_scene('sequence/aspi_pub', lambda: [
-        #         [
-        #             pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_1', 0, 0, 0, -0.35, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + tv + '/animate', 'warp_4', 0, 0, 0, 0.63, 1, 'elastic'),
-        #             pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_1', 0, 0, -0.0755, -0.11, 1, 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'warp_4', 0, 0, -0.0755, 0.86, 1, 'elastic')
-        #             ],
-        #         self.wait(0.8, 's'),
-        #         pytaVSL.send('/pyta/slide/' + tv + '/animate', 'scale', pytaVSL.get(tv, 'scale')[0], pytaVSL.get(tv, 'scale')[1], 0.035, 0.035, 0.5, 'elastic' ), pytaVSL.send('/pyta/slide' + tv + '/animate', 'position', pytaVSL.get(tv, 'position_x'), pytaVSL.get(tv, 'position_y'), pytaVSL.get(tv, 'position_z'), -0.33, 0.035, pytaVSL.get(tv, 'position_z'), 0.5, 'elastic'),
-        #         pytaVSL.send('/pyta/slide/' + p + '/animate', 'scale', pytaVSL.get(p, 'scale')[0], pytaVSL.get(p, 'scale')[1], 0.035, 0.035, 0.5, 's', 'elastic'), pytaVSL.send('/pyta/slide/' + p + '/animate', 'position', pytaVSL.get(p, 'position_x'), pytaVSL.get(p, 'position_y'), pytaVSL.get(p, 'position_z'), -0.33, 0.035, pytaVSL.get(p, 'position_z'), 0.5, 'elastic'),
-        #         pytaVSL.set(tv, 'visible', 0),
-        #         pytaVSL.set(p, 'visible', 0)
-        #     ])
 
 
     def desaspis(self, plat):
