@@ -229,36 +229,7 @@ class Intro(Video, Light, RouteBase):
             aspi_pub(sorted[1]),
             self.wait(1.1, 's'),
             pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
+            self.wait(1.1, 's'),
+            engine.set_route('Chapitre 1')
             ]
         )
-
-    @pedalboard_button(4)
-    def chapitre1(self):
-        """
-        Vers chapitre 1
-        """
-        engine.set_route('Chapitre 1')
-
-    @pedalboard_button(97)
-    def preserve(self):
-        self.start_scene('gnagna', lambda: [
-            pytaVSL.animate('back', 'position_x', 0, 0.5, 5, 's', 'linear-mirror', loop=True),
-            self.wait(2, 's'),
-            pytaVSL.animate('back', 'position_y', 0, 0.5, 5, 's', 'random-mirror', loop=True)
-        ])
-
-    @pedalboard_button(98)
-    def test(self):
-        pytaVSL.create_group('lights', ['lights_stageleft', 'lights_stageright'])
-
-    @pedalboard_button(99)
-    def test2(self):
-        pytaVSL.trijc_io('out', 'tuba', 1, 'elastic')
-
-    @pedalboard_button(90)
-    def testo(self):
-        self.stop_scene('*')
-
-    @pedalboard_button(89)
-    def lopp_animation(self):
-        pytaVSL.animate('back', 'position_x', 0, 0.5, 1, 's', 'elastic-mirror-inout', True)
