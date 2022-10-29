@@ -272,6 +272,23 @@ class PytaVSL(Module):
         else:
             self.logger.info('Aborting TriJC IO animation')
 
+    def aspi_slide(self, slide_name, warp_1, warp_4, duration):
+        """
+        Aspire une slide ou plusieurs slides dans l'aspi de trijc
+        """
+        oscil_d = 2/3 * duration
+        away_d = 1/3 * duration
+        self.start_scene('sequence/aspi_pub' + slide_name, lambda: [
+            self.animate(slide_name, 'rgbwave', None, 0.9, duration, 's', 'exponential-inout'),
+            self.animate(slide_name, 'warp_1', None, warp_1, oscil_d, 's', 'elastic-inout'),
+            self.animate(slide_name, 'warp_4', None, warp_4, oscil_d, 's', 'elastic-inout'),
+            self.wait(0.7 * oscil_d, 's'),
+            self.animate(slide_name, 'scale', None, [0.035, 0.035], away_d * 0.9, 's', 'exponential-inout' ), self.animate(slide_name, 'position', None, [-0.33, 0.035, self.get(slide_name, 'position_z')], away_d * 0.95, 's', 'exponential-inout'),
+            self.animate(slide_name, 'alpha', None, 0.1, away_d * 0.8, 's', 'exponential-out'),
+            self.wait(away_d, 's'),
+            self.set(slide_name, 'visible', 0),
+        ])
+
 ########################## TRIJC
 
 ########################## METHODES GENERIQUES
@@ -299,6 +316,8 @@ class PytaVSL(Module):
             self.wait(d-0.8, 's'),
             ]
         )
+
+
 
 ########################## METHODES GENERIQUES
 
