@@ -171,14 +171,16 @@ class Intro(Video, Light, RouteBase):
         def desplats_chute(plat, duree_plat):
             for index in range(1,6):
                 if not index == plat:
-                    alea = _rand()
+                    alea = 0.1 #_rand()
                     if alea < 0.2:
                         wait_coef = _rand()*0.6
                         fall_coef = _rand()*(1 - wait_coef)
-                        self.start_scene('falldown_tv' + str(index), [
-                            self.wait(wait_coef * duration, 's'),
-                            pytaVSL.falldown('tv' + str(plat), alea*0.5, duration * fall_coef)
+                        self.start_scene('sequence/wait_and_falldown_tv' + str(index), [
+                            self.wait(wait_coef * duree_plat, 's'),
+                            self.logger.info("ici" + str(index)),
+                            pytaVSL.falldown('tv' + str(index), alea * 0.5, duree_plat * fall_coef)
                         ])
+                        return
 
 
         def desplats_scene(plat):
@@ -223,6 +225,14 @@ class Intro(Video, Light, RouteBase):
         Switch vers chapitre 1
         """
         engine.set_route('Chapitre 1')
+
+    @pedalboard_button(97)
+    def preserve(self):
+        self.start_scene('gnagna', lambda: [
+            pytaVSL.animate('back', 'position_x', 0, 0.5, 5, 's', 'linear-mirror', loop=True),
+            self.wait(2, 's'),
+            pytaVSL.animate('back', 'position_y', 0, 0.5, 5, 's', 'random-mirror', loop=True)
+        ])
 
     @pedalboard_button(98)
     def test(self):
