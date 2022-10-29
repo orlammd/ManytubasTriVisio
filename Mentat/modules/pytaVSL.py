@@ -272,7 +272,7 @@ class PytaVSL(Module):
         """
         self.stop_animate(slide_name, property)
         center_value = self.get(slide_name, property)
-        self.start_scene('sequence/shaking_' + slide_name, lambda: [
+        self.start_scene('sequence/shaking_' + slide_name + '_' + property, lambda: [
             self.animate(slide_name, property, None,  center_value - range / 2, duration / 2, 's', easing),
             self.wait(duration / 2, 's'),
             self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
@@ -280,18 +280,13 @@ class PytaVSL(Module):
 
     def falldown(self, slide_name, chute, d):
         cur_y_pos = self.get(slide_name, 'position_y')
-
-        self.logger.info('falldown : ' + slide_name + ' / chute : ' + str(chute) + ' / durée : ' + str(d))
         self.start_scene('sequence/falldown_' + slide_name, lambda:[
-            self.logger.info('debut scene'),
             self.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
             self.wait(0.3, 's'),
-            self.logger.info('interm'),
             self.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
             self.wait(0.5, 's'),
             self.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
             self.wait(d-0.8, 's'),
-            self.logger.info('fin scene')
             ]
         )
 

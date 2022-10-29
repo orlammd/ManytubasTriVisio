@@ -78,24 +78,27 @@ class Intro(Video, Light, RouteBase):
         ##### utiliser la même chose que clones pour groups
         ##### shaker les slides à l'intérieur d'un groupe, et mover les groups pour déplacer tout le monde.
 
-
     @pedalboard_button(2)
     def intro(self):
         """
         INTRO
         """
-        pytaVSL.position_overlay('Intro')
+        self.start_scene('intro', lambda: [
+            pytaVSL.position_overlay('Intro'),
+            self.wait(0.1, 's'),
+            self.shaking_tvs(),
+            self.ronde_des_pubs()
+        ])
 
+    def shaking_tvs(self):
         for index in range(1,6):
-            range_x = _rand()*1
+            range_x = _rand()*0.01
             range_y = _rand()*0.01
             duration = _rand()*10
             pytaVSL.shaking_slide('plane_horn_' + str(index), 'position_x', range_x, duration)
             pytaVSL.shaking_slide('p_pub' + str(index), 'position_x', range_x, duration)
             pytaVSL.shaking_slide('plane_horn_' + str(index), 'position_y', range_y, duration, 'random')
             pytaVSL.shaking_slide('p_pub' + str(index), 'position_y', range_y, duration, 'random')
-
-        self.ronde_des_pubs()
 
 
     def ronde_des_pubs(self):
@@ -171,16 +174,15 @@ class Intro(Video, Light, RouteBase):
         def desplats_chute(plat, duree_plat):
             for index in range(1,6):
                 if not index == plat:
-                    alea = 0.1 #_rand()
+                    alea = _rand()
                     if alea < 0.2:
-                        wait_coef = _rand()*0.6
+                        wait_coef = _rand()*0.2
                         fall_coef = _rand()*(1 - wait_coef)
-                        self.start_scene('sequence/wait_and_falldown_tv' + str(index), [
+                        self.start_scene('sequence/wait_and_falldown_tv' + str(index), lambda: [
                             self.wait(wait_coef * duree_plat, 's'),
-                            self.logger.info("ici" + str(index)),
                             pytaVSL.falldown('tv' + str(index), alea * 0.5, duree_plat * fall_coef)
                         ])
-                        return
+                        return -1
 
 
         def desplats_scene(plat):
