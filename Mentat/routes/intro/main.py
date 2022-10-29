@@ -71,85 +71,59 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
         # pytaVSL.create_group('w_signs', ['w_signs_*'])
 
+        for index in range(1,6):
+            pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), 'p_pub' + str(index)])
+
         ######## ORL - MEXPLIQUE-MOI
         ##### utiliser la même chose que clones pour groups
         ##### shaker les slides à l'intérieur d'un groupe, et mover les groups pour déplacer tout le monde.
 
 
-
     @pedalboard_button(2)
-    def position_overlay(self):
+    def intro(self):
         """
-        POSITION OVERLAY
+        INTRO
         """
-        pytaVSL.position_overlay('Common')
+        pytaVSL.position_overlay('Intro')
+        for index in range(1,6):
+            range_x = _rand()*1
+            range_y = _rand()*0.01
+            duration = _rand()*10
+            pytaVSL.shaking_slide('plane_horn_' + str(index), 'position_x', range_x, duration)
+            pytaVSL.shaking_slide('p_pub' + str(index), 'position_x', range_x, duration)
+            pytaVSL.shaking_slide('plane_horn_' + str(index), 'position_y', range_y, duration, 'random')
+            pytaVSL.shaking_slide('p_pub' + str(index), 'position_y', range_y, duration, 'random')
 
 
-
-    @pedalboard_button(3)
-    def ronde(self):
+    def ronde_des_pubs(self):
         """
         RONDE DES PUBS
         """
-
-
         def desplats(plat):
-
-            pytaVSL.set('p_pub*', 'video_loop', 1)
-            pytaVSL.set('p_pub*', 'fish', 0.8)
-
-            xyzpos = {
-                'main': [0, -0.07, -7.5],
-                '1' : [-0.35, 0.2, -7.1],
-                '2' : [-0.05, 0.2, -7.2],
-                '3' : [0.25, 0.2, -7.3],
-                '4' : [0.55, 0.2, -7.4],
+            coords = {
+                'main': [0, -0.07, -7.4],
+                '1' : [-0.35, 0.2, -7.0],
+                '2' : [-0.05, 0.2, -7.1],
+                '3' : [0.25, 0.2, -7.2],
+                '4' : [0.55, 0.2, -7.3],
                 'scale_main': [0.8, 0.8],
                 'scale_others': [0.3, 0.3],
-                'pmain': [0, -0.135, -7.49],
-                'p1' : [-0.35, 0.175, -7.09],
-                'p2' : [-0.05, 0.175, -7.19],
-                'p3' : [0.25, 0.175, -7.29],
-                'p4' : [0.55, 0.175, -7.39],
-                'pscale_main': [0.465, 0.465],
-                'pscale_others': [0.18, 0.18],
             }
 
-
-            # if plat == 1:
-            #     pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
-            #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
-            #
-            # else:
-            pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
-            pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
-
-
-            pytaVSL.animate('p_pub' + str(plat), 'position', None, xyzpos['pmain'], 1, 's', 'linear')
-            pytaVSL.animate('p_pub' + str(plat), 'scale', None, xyzpos['pscale_main'], 1, 's', 'linear')
+            pytaVSL.animate('tv' + str(plat), 'position', None, coords['main'], 1, 's', 'linear')
+            pytaVSL.animate('tv' + str(plat), 'scale', None, coords['scale_main'], 1, 's', 'linear')
 
             for i in range(1,5):
                 ind = i + plat
                 if ind > 5:
                     ind = ind - 5
-                # if ind == 1:
-                #     pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
-                # else:
-                pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
-                pytaVSL.animate('p_pub' + str(ind), 'position', None, xyzpos['p' + str(i)], 1, 's', 'linear')
-                pytaVSL.animate('p_pub' + str(ind), 'scale', None, xyzpos['pscale_others'], 1, 's', 'linear')
+                pytaVSL.animate('tv' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+                pytaVSL.animate('tv' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
 
             pytaVSL.set('p_pub' + str(plat), 'video_time', 0, force_send=True),
 
         def falldown(slide_name, chute, d):
             cur_y_pos = pytaVSL.get(slide_name, 'position_y')
-
-            self.logger.info('slide name: ' + slide_name)
-            self.logger.info('y: ' + str(cur_y_pos))
-            self.logger.info('chute: ' + str(chute))
-            self.logger.info('durée: ' + str(d))
 
             self.start_scene('sequence/falldown_' + slide_name, lambda:[
                 pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),

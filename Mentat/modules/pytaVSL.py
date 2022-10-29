@@ -143,9 +143,9 @@ class PytaVSL(Module):
         """
         Position des éléments de décor
         """
-        self.logger.info('Positionning overlay')
+        self.logger.info('Positionning overlay ' + overlay)
 
-        self.load('Common.overlay')
+        self.load(overlay + '.overlay')
 
         # try:
         #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
@@ -255,6 +255,18 @@ class PytaVSL(Module):
             )
         else:
             self.logger.info('Aborting TriJC IO animation')
+
+    def shaking_slide(self, slide_name, property, range, duration = 1, easing = 'linear'):
+        """
+        To make a slide shake (by now not possible to send wildcard)
+        """
+        self.stop_animate(slide_name, property)
+        center_value = self.get(slide_name, property)
+        self.start_scene('sequence/shaking_' + slide_name, lambda: [
+            self.animate(slide_name, property, None,  center_value - range / 2, duration / 2, 's', easing),
+            self.wait(duration / 2, 's'),
+            self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
+        ])
 
     def miraye_in(self, filename, duration=1, easing='linear'):
         """

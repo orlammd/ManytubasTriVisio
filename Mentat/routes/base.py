@@ -80,7 +80,10 @@ class RouteBase(Route):
             pytaVSL.save_state(args[0])
 
         if address == '/position_overlay':
-            pytaVSL.position_overlay()
+            overlay = 'Common'
+            if len(args) > 0:
+                overlay = args[0]
+            pytaVSL.position_overlay(overlay)
 
         if address == '/trijc_io':
             self.logger.info('trijc_io osc trigged')
