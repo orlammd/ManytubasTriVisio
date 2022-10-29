@@ -27,6 +27,7 @@ class Intro(Video, Light, RouteBase):
     def activate_pyta(self):
         ### Load slides
         pytaVSL.load_slides_from_dir('Common')
+        pytaVSL.load_slides_from_dir('Chapitre1')
         while not pytaVSL.get('ready'):
             self.wait(0.1, 's')
 
@@ -52,23 +53,23 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.create_clone('plane_horn', clone_name)
 
         ### Create groups
-        # for slides_group in [
-        #     'trijc',
-        #     't_trijc',
-        #     'ot_trijc',
-        #     'lights',
-        #     ]:
-        #     pytaVSL.create_group(slides_group, [slides_group + '*'])
-        # # pytaVSL.create_group('w_trijc', ['trijc', 't_trijc', 'ot_trijc'])
-        # for slides_group in [
-        #     'jack',
-        #     'caesar',
-        #     'manytubas',
-        #     'tri',
-        #     'visio',
-        #     ]:
-        #     pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
-        # pytaVSL.create_group('w_signs', ['w_signs_*'])
+        for slides_group in [
+            'trijc',
+            't_trijc',
+            'ot_trijc',
+            'lights',
+            ]:
+            pytaVSL.create_group(slides_group, [slides_group + '*'])
+        # pytaVSL.create_group('w_trijc', ['trijc', 't_trijc', 'ot_trijc'])
+        for slides_group in [
+            'jack',
+            'caesar',
+            'manytubas',
+            'tri',
+            'visio',
+            ]:
+            pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
+        pytaVSL.create_group('w_signs', ['w_signs_*'])
 
         ######## ORL - MEXPLIQUE-MOI
         ##### utiliser la même chose que clones pour groups
