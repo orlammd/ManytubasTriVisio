@@ -85,6 +85,7 @@ class Intro(Video, Light, RouteBase):
         INTRO
         """
         pytaVSL.position_overlay('Intro')
+
         for index in range(1,6):
             range_x = _rand()*1
             range_y = _rand()*0.01
@@ -93,6 +94,8 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.shaking_slide('p_pub' + str(index), 'position_x', range_x, duration)
             pytaVSL.shaking_slide('plane_horn_' + str(index), 'position_y', range_y, duration, 'random')
             pytaVSL.shaking_slide('p_pub' + str(index), 'position_y', range_y, duration, 'random')
+
+        self.ronde_des_pubs()
 
 
     def ronde_des_pubs(self):
@@ -117,68 +120,83 @@ class Intro(Video, Light, RouteBase):
                 ind = i + plat
                 if ind > 5:
                     ind = ind - 5
-                pytaVSL.animate('tv' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                pytaVSL.animate('tv' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+                pytaVSL.animate('tv' + str(ind), 'position', None, coords[str(i)], 1, 's', 'linear')
+                pytaVSL.animate('tv' + str(ind), 'scale', None, coords['scale_others'], 1, 's', 'linear')
 
             pytaVSL.set('p_pub' + str(plat), 'video_time', 0, force_send=True),
 
-        def falldown(slide_name, chute, d):
-            cur_y_pos = pytaVSL.get(slide_name, 'position_y')
+        # def falldown(slide_name, chute, d):
+        #     cur_y_pos = pytaVSL.get(slide_name, 'position_y')
+        #
+        #     self.start_scene('sequence/falldown_' + slide_name, lambda:[
+        #         pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
+        #         self.wait(0.3, 's'),
+        #         pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
+        #         self.wait(0.5, 's'),
+        #         pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
+        #         self.wait(d-0.8, 's'),
+        #         ]
+        #     )
+        #     return -1
 
-            self.start_scene('sequence/falldown_' + slide_name, lambda:[
-                pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
-                self.wait(0.3, 's'),
-                pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
-                self.wait(0.5, 's'),
-                pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
-                self.wait(d-0.8, 's'),
-                ]
-            )
-            return -1
+        # def vibrate_pos(p, d):
+        #         chute = -1
+        #         factor = pytaVSL.get('p_pub' + str(p), 'scale')[0] * 0.01
+        #         xdest = (_rand()+0.5)*factor-1.5*factor/2
+        #         while xdest < factor/4 and xdest > -factor/4:
+        #             xdest = xdest * 2
+        #         ydest = _rand()*0.001+0.0003
+        #
+        #         if ydest < 0.0004 and d > 1.2 and chute == -1:
+        #             chute = 0
+        #             # if p == 1:
+        #             #     chute = falldown('plane_horn', 2*10000*ydest*factor, d)
+        #             #     falldown('p_pub1', 2*10000*ydest*factor, d)
+        #             # else:
+        #             chute = falldown('plane_horn_' + str(p), 2*10000*ydest*factor, d)
+        #             falldown('p_pub' + str(p), 2*10000*ydest*factor, d)
+        #             return
+        #
+        #
+        #         # if p == 1:
+        #         #     pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear-mirror', loop=True)
+        #         #     pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random-mirror', True)
+        #         #     pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear-mirror', True)
+        #         #     # pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
+        #         # else:
+        #         pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
+        #         pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random-mirror', True)
+        #         pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
 
-        def vibrate_pos(p, d):
-                chute = -1
-                factor = pytaVSL.get('p_pub' + str(p), 'scale')[0] * 0.01
-                xdest = (_rand()+0.5)*factor-1.5*factor/2
-                while xdest < factor/4 and xdest > -factor/4:
-                    xdest = xdest * 2
-                ydest = _rand()*0.001+0.0003
+        def desplats_chute(plat, duree_plat):
+            for index in range(1,6):
+                if not index == plat:
+                    alea = _rand()
+                    if alea < 0.2:
+                        wait_coef = _rand()*0.6
+                        fall_coef = _rand()*(1 - wait_coef)
+                        self.start_scene('falldown_tv' + str(index), [
+                            self.wait(wait_coef * duration, 's'),
+                            pytaVSL.falldown('tv' + str(plat), alea*0.5, duration * fall_coef)
+                        ])
 
-                if ydest < 0.0004 and d > 1.2 and chute == -1:
-                    chute = 0
-                    # if p == 1:
-                    #     chute = falldown('plane_horn', 2*10000*ydest*factor, d)
-                    #     falldown('p_pub1', 2*10000*ydest*factor, d)
-                    # else:
-                    chute = falldown('plane_horn_' + str(p), 2*10000*ydest*factor, d)
-                    falldown('p_pub' + str(p), 2*10000*ydest*factor, d)
-                    return
-
-
-                # if p == 1:
-                #     pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear-mirror', loop=True)
-                #     pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random-mirror', True)
-                #     pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear-mirror', True)
-                #     # pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
-                # else:
-                pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
-                pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random-mirror', True)
-                pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
 
         def desplats_scene(plat):
             if plat == 0:
                 plat = 5
+            duree_plat = pytaVSL.get('p_pub' + str(plat), 'video_end')
             self.start_scene('sequence/plat' + str(plat), lambda:[
                 self.logger.info('Début scène des plats'),
                 pytaVSL.animate('p_pub*', 'noise', 0, 1, 1, 's', 'random'),
                 desplats(plat),
                 pytaVSL.animate('p_pub*', 'noise', 1, 0, 1, 's', 'random'),
                 self.wait(1.1, 's'),
-                vibrate_pos(1, 2.5),
-                vibrate_pos(2, 2),
-                vibrate_pos(3, 1.3),
-                vibrate_pos(4, 3),
-                vibrate_pos(5, 3.4),
+                # vibrate_pos(1, 2.5),
+                # vibrate_pos(2, 2),
+                # vibrate_pos(3, 1.3),
+                # vibrate_pos(4, 3),
+                # vibrate_pos(5, 3.4),
+
                 # self.start_sequence('plane_vibrate_pos', [{
                 #     0.5: lambda: vibrate_pos(5, 3),
                 #     1: lambda: vibrate_pos(1, 1.5),
@@ -192,12 +210,11 @@ class Intro(Video, Light, RouteBase):
                 #     4: lambda: vibrate_pos(2, 2),
                 #     4.5: lambda: vibrate_pos(1, 0.5)
                 # }], loop=True),
-                self.wait(pytaVSL.get('p_pub' + str(plat), 'video_end') - 1.1, 's'),
+                desplats_chute(plat, duree_plat - 1.1),
+                self.wait(duree_plat - 1.1, 's'),
                 self.logger.info('Fin scène des plats'),
                 desplats_scene(plat-1)
             ])
-
-
         desplats_scene(4)
 
     @pedalboard_button(4)

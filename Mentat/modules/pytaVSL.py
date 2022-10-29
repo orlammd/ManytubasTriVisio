@@ -198,6 +198,8 @@ class PytaVSL(Module):
         #     self.logger.info('not ready yet: position_overlay() call deffered')
 
 
+############################## A virer
+
     def sset_prop(self, name, property, args):
         #### ORL TODO -> remplacer par set
         self.send('/pyta/slide/' + name + '/set', property, *args)
@@ -220,6 +222,10 @@ class PytaVSL(Module):
         #     self.set(name, property, *args)
         # ])
 
+#############################"" Fin à virer
+
+
+########################## TRIJC
     def check_jack_caesar_consistency(self):
         pos = 0
         firstpass = True
@@ -256,6 +262,10 @@ class PytaVSL(Module):
         else:
             self.logger.info('Aborting TriJC IO animation')
 
+########################## TRIJC
+
+########################## METHODES GENERIQUES
+
     def shaking_slide(self, slide_name, property, range, duration = 1, easing = 'linear'):
         """
         To make a slide shake (by now not possible to send wildcard)
@@ -267,6 +277,23 @@ class PytaVSL(Module):
             self.wait(duration / 2, 's'),
             self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
         ])
+
+    def falldown(slide_name, chute, d):
+        cur_y_pos = pytaVSL.get(slide_name, 'position_y')
+
+        self.start_scene('sequence/falldown_' + slide_name, lambda:[
+            pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
+            self.wait(0.3, 's'),
+            pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
+            self.wait(0.5, 's'),
+            pytaVSL.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
+            self.wait(d-0.8, 's'),
+            ]
+        )
+
+########################## METHODES GENERIQUES
+
+########################## MIRAYE
 
     def miraye_in(self, filename, duration=1, easing='linear'):
         """
@@ -323,6 +350,10 @@ class PytaVSL(Module):
         """
         pass
 
+########################## Miraye
+
+########################## FILM
+
     def movie_in(self, duration, easing):
         """
         Having Moving coming to front
@@ -341,6 +372,10 @@ class PytaVSL(Module):
         """
         pass
 
+########################## FILM
+
+########################## JINGLES
+
     def jcJingle_in(self, origin, duration, easing):
         """
         Having Jack Caesar Jingle dropping in
@@ -353,10 +388,18 @@ class PytaVSL(Module):
         """
         pass
 
+########################## JINGLES
+
+
+##########################  A virer ?
     def get_slide_property(self, slide_name, property):
         if slide_name in self.submodules:
             return self.get(slide_name, property)
 
+########################## A virer ?
+
+
+########################## Get, set, overlay
     def check_new_slides(self, once=False):
         """
         Ping for new slides
@@ -382,7 +425,9 @@ class PytaVSL(Module):
                 self.set('ready', True)
                 self.feedback_counter = last_count = 0
             last_count = self.feedback_counter
+########################## Get, set, overlay
 
+########################## Routes
 
     def route(self, address, args):
 
@@ -447,7 +492,7 @@ class PytaVSL(Module):
                                 def setter(val):
                                     value = slide.get(property_name)
                                     value[index] = val
-                                    slide.set(property_name, *value)
+                                    slide.set(property_name, *value, preserve_animation = True)
 
                                 slide.add_meta_parameter(property_name + ax, [property_name],
                                     getter = lambda prop: prop[index],
