@@ -115,9 +115,9 @@
   ["p_pub2", "scale", 0.18, 0.18],
   ["p_pub2", "video_end", 60.97],
   ["p_pub2", "video_loop", 1.0],
-  ["plane_horn", "visible", 1.0],
-  ["plane_horn", "position", -0.35, 0.2, -7.0],
-  ["plane_horn", "scale", 0.3, 0.3],
+  ["plane_horn_1", "visible", 1.0],
+  ["plane_horn_1", "position", -0.35, 0.2, -7.0],
+  ["plane_horn_1", "scale", 0.3, 0.3],
   ["back", "visible", 1.0],
   ["back", "position", 0.0, 0.0, 100.0]
 ]

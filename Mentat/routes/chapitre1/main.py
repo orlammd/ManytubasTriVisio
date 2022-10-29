@@ -31,7 +31,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Aspiration d'une pub
         """
-        tv = 'plane_horn_' + str(number) if number > 1 else 'plane_horn'
+        tv = 'plane_horn_' + str(number)
         p = 'p_pub' + str(number)
 
         pytaVSL.stop_animate(tv, 'position_x')
@@ -74,13 +74,13 @@ class Chapitre1(Video, Light, RouteBase):
         }
 
 
-        if plat == 1:
-            pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
-            pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
-
-        else:
-            pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
-            pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+        # if plat == 1:
+        #     pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
+        #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+        #
+        # else:
+        pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
+        pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
 
 
         pytaVSL.animate('p_pub' + str(plat), 'position', None, xyzpos['pmain'], 1, 's', 'linear')
@@ -90,12 +90,12 @@ class Chapitre1(Video, Light, RouteBase):
             ind = i + plat
             if ind > 5:
                 ind = ind - 5
-            if ind == 1:
-                pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
-            else:
-                pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+            # if ind == 1:
+            #     pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+            #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+            # else:
+            pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+            pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
             pytaVSL.animate('p_pub' + str(ind), 'position', None, xyzpos['p' + str(i)], 1, 's', 'linear')
             pytaVSL.animate('p_pub' + str(ind), 'scale', None, xyzpos['pscale_others'], 1, 's', 'linear')
 

@@ -50,7 +50,7 @@ class Intro(Video, Light, RouteBase):
             'plane_horn_4',
             'plane_horn_3',
             'plane_horn_2']:
-            pytaVSL.create_clone('plane_horn', clone_name)
+            pytaVSL.create_clone('plane_horn_1', clone_name)
 
         ### Create groups
         for slides_group in [
@@ -116,13 +116,13 @@ class Intro(Video, Light, RouteBase):
             }
 
 
-            if plat == 1:
-                pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
-                pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
-
-            else:
-                pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
-                pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+            # if plat == 1:
+            #     pytaVSL.animate('plane_horn', 'position', None, xyzpos['main'], 1, 's', 'linear')
+            #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
+            #
+            # else:
+            pytaVSL.animate('plane_horn_' + str(plat), 'position', None, xyzpos['main'], 1, 's', 'linear')
+            pytaVSL.animate('plane_horn_' + str(plat), 'scale', None, xyzpos['scale_main'], 1, 's', 'linear')
 
 
             pytaVSL.animate('p_pub' + str(plat), 'position', None, xyzpos['pmain'], 1, 's', 'linear')
@@ -132,12 +132,12 @@ class Intro(Video, Light, RouteBase):
                 ind = i + plat
                 if ind > 5:
                     ind = ind - 5
-                if ind == 1:
-                    pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                    pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
-                else:
-                    pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
-                    pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+                # if ind == 1:
+                #     pytaVSL.animate('plane_horn', 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+                #     pytaVSL.animate('plane_horn', 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
+                # else:
+                pytaVSL.animate('plane_horn_' + str(ind), 'position', None, xyzpos[str(i)], 1, 's', 'linear')
+                pytaVSL.animate('plane_horn_' + str(ind), 'scale', None, xyzpos['scale_others'], 1, 's', 'linear')
                 pytaVSL.animate('p_pub' + str(ind), 'position', None, xyzpos['p' + str(i)], 1, 's', 'linear')
                 pytaVSL.animate('p_pub' + str(ind), 'scale', None, xyzpos['pscale_others'], 1, 's', 'linear')
 
@@ -172,24 +172,24 @@ class Intro(Video, Light, RouteBase):
 
                 if ydest < 0.0004 and d > 1.2 and chute == -1:
                     chute = 0
-                    if p == 1:
-                        chute = falldown('plane_horn', 2*10000*ydest*factor, d)
-                        falldown('p_pub1', 2*10000*ydest*factor, d)
-                    else:
-                        chute = falldown('plane_horn_' + str(p), 2*10000*ydest*factor, d)
-                        falldown('p_pub' + str(p), 2*10000*ydest*factor, d)
+                    # if p == 1:
+                    #     chute = falldown('plane_horn', 2*10000*ydest*factor, d)
+                    #     falldown('p_pub1', 2*10000*ydest*factor, d)
+                    # else:
+                    chute = falldown('plane_horn_' + str(p), 2*10000*ydest*factor, d)
+                    falldown('p_pub' + str(p), 2*10000*ydest*factor, d)
                     return
 
 
-                if p == 1:
-                    pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear-mirror', loop=True)
-                    pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random-mirror', True)
-                    pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear-mirror', True)
-                    # pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
-                else:
-                    pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
-                    pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random-mirror', True)
-                    pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
+                # if p == 1:
+                #     pytaVSL.animate('plane_horn', 'position_x', None, pytaVSL.get('plane_horn', 'position_x') + xdest, d, 's', 'linear-mirror', loop=True)
+                #     pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random-mirror', True)
+                #     pytaVSL.animate('p_pub1', 'position_x', None, pytaVSL.get('p_pub1', 'position_x') + xdest, d, 's', 'linear-mirror', True)
+                #     # pytaVSL.animate('plane_horn', 'position_y', None, pytaVSL.get('plane_horn', 'position_y') + ydest, d, 's', 'random')
+                # else:
+                pytaVSL.animate('plane_horn_' + str(p), 'position_x', None, pytaVSL.get('plane_horn_' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
+                pytaVSL.animate('plane_horn_' + str(p), 'position_y', None, pytaVSL.get('plane_horn_' + str(p), 'position_y') + ydest, d, 's', 'random-mirror', True)
+                pytaVSL.animate('p_pub' + str(p), 'position_x', None, pytaVSL.get('p_pub' + str(p), 'position_x') + xdest, d, 's', 'linear-mirror', True)
 
         def desplats_scene(plat):
             if plat == 0:

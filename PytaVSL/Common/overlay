@@ -714,7 +714,7 @@ warp_2 = [ 0.0, 0.0 ]
 warp_3 = [ 0.0, 0.0 ]
 warp_4 = [ 0.0, 0.0 ]
 
-[slides.plane_horn]
+[slides.plane_horn_1]
 align = [ "center", "center" ]
 color = [ 0.5, 0.5, 0.5 ]
 alpha = [ 1.0 ]
@@ -1628,13 +1628,13 @@ target = [ "signs_standleft_jack" ]
 target = [ "signs_standleft_jack" ]
 
 [clones.plane_horn_5]
-target = [ "plane_horn" ]
+target = [ "plane_horn_1" ]
 
 [clones.plane_horn_4]
-target = [ "plane_horn" ]
+target = [ "plane_horn_1" ]
 
 [clones.plane_horn_3]
-target = [ "plane_horn" ]
+target = [ "plane_horn_1" ]
 
 [clones.plane_horn_2]
-target = [ "plane_horn" ]
+target = [ "plane_horn_1" ]
