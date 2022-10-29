@@ -25,10 +25,12 @@ class Intro(Video, Light, RouteBase):
 
 
     def activate_pyta(self):
+        ### Load slides
         pytaVSL.load_slides_from_dir('Common')
         while not pytaVSL.get('ready'):
             self.wait(0.1, 's')
 
+        ### Create clones
         for clone_name in [
             'signs_standright_jack',
             'signs_standright_caesar',
@@ -48,6 +50,25 @@ class Intro(Video, Light, RouteBase):
             'plane_horn_3',
             'plane_horn_2']:
             pytaVSL.create_clone('plane_horn', clone_name)
+
+        ### Create groups
+        # for slides_group in [
+        #     'trijc',
+        #     't_trijc',
+        #     'ot_trijc',
+        #     'lights',
+        #     ]:
+        #     pytaVSL.create_group(slides_group, [slides_group + '*'])
+        # # pytaVSL.create_group('w_trijc', ['trijc', 't_trijc', 'ot_trijc'])
+        # for slides_group in [
+        #     'jack',
+        #     'caesar',
+        #     'manytubas',
+        #     'tri',
+        #     'visio',
+        #     ]:
+        #     pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
+        # pytaVSL.create_group('w_signs', ['w_signs_*'])
 
         ######## ORL - MEXPLIQUE-MOI
         ##### utiliser la même chose que clones pour groups
@@ -213,7 +234,7 @@ class Intro(Video, Light, RouteBase):
 
     @pedalboard_button(98)
     def test(self):
-        pytaVSL.trijc_io()
+        pytaVSL.create_group('lights', ['lights_stageleft', 'lights_stageright'])
 
     @pedalboard_button(99)
     def test2(self):

@@ -83,6 +83,23 @@ class PytaVSL(Module):
 
     def create_clone(self, src, dest):
         self.send('/pyta/clone', src, dest)
+        self.logger.info('Clone ' + dest + ' created from ' + src)
+
+    def create_group(self, group, slides):
+        # if len(slides) > 1:
+        s = '{'
+        i = 0
+        while i < len(slides):
+            if i > 0:
+                s = s + ','
+            s = s + slides[i]
+            i = i+1
+        s = s + '}'
+        self.send('/pyta/group', s, group)
+        self.logger.info('Group ' + group + ' created with: ' + s)
+        # else:
+        #     self.send('/pyta/group', slides, group)
+        #     self.logger.info('Group ' + group + ' created with: ' + slides)
 
     def load_slide(self, f):
         """
@@ -128,51 +145,52 @@ class PytaVSL(Module):
         """
         self.logger.info('Positionning overlay')
 
-        self.load('Common.overlay')
-        # try:
-        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-        #     scene = toml.loads(_content)
-        #
-        # except Exception as e:
-        #     self.logger.error('could not load scene file in dir %s' % overlay)
+        # self.load('Common.overlay')
+
+        try:
+            _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+            scene = toml.loads(_content)
+
+        except Exception as e:
+            self.logger.error('could not load scene file in dir %s' % overlay)
 
 
-        #
-        #
-        # try:
-        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-        #     scene = toml.loads(_content)
-        #
-        #     for slide in self.submodules:
-        #         log = False
-        #         if slide.lower() in scene['slides']:
-        #             if slide.lower() == 'Dummy':
-        #                 log = True
-        #                 self.logger.info('Slide observé:' + slide)
-        #             for param in self.slide_params:
-        #                 if log == True:
-        #                     self.logger.info("Reading scene file : " + slide + "/" + param)
-        #                 if param in scene['slides'][slide.lower()]:
-        #                     param_value = scene['slides'][slide.lower()][param]
-        #                     if len(param_value) == 1:
-        #                         self.set(slide, param, param_value[0]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('value: ' + str(param_value[0]))
-        #                     elif len(param_value) == 2:
-        #                         self.set(slide, param, param_value[0], param_value[1]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
-        #                     elif len(param_value) == 3:
-        #                         self.set(slide, param, param_value[0], param_value[1], param_value[2]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
-        #
-        #
-        # except Exception as e:
-        #     self.logger.error('could not load scene file in dir %s' % overlay)
 
-        # self.send('/pyta/scene_import', overlay + '/overlay')
-        # self.send('/pyta/scene_recall', 'overlay')
+
+        try:
+            _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
+            scene = toml.loads(_content)
+
+            for slide in self.submodules:
+                log = False
+                if slide.lower() in scene['slides']:
+                    if slide.lower() == 'Dummy':
+                        log = True
+                        self.logger.info('Slide observé:' + slide)
+                    for param in self.slide_params:
+                        if log == True:
+                            self.logger.info("Reading scene file : " + slide + "/" + param)
+                        if param in scene['slides'][slide.lower()]:
+                            param_value = scene['slides'][slide.lower()][param]
+                            if len(param_value) == 1:
+                                self.set(slide, param, param_value[0]) #, force_send=True)
+                                if log == True:
+                                    self.logger.info('value: ' + str(param_value[0]))
+                            elif len(param_value) == 2:
+                                self.set(slide, param, param_value[0], param_value[1]) #, force_send=True)
+                                if log == True:
+                                    self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
+                            elif len(param_value) == 3:
+                                self.set(slide, param, param_value[0], param_value[1], param_value[2]) #, force_send=True)
+                                if log == True:
+                                    self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
+
+
+        except Exception as e:
+            self.logger.error('could not load scene file in dir %s' % overlay)
+
+        self.send('/pyta/scene_import', overlay + '/overlay')
+        self.send('/pyta/scene_recall', 'overlay')
 
 
         # else:
@@ -442,7 +460,7 @@ class PytaVSL(Module):
 
     def get_state(self, *args, **kwargs):
         """
-        Excliude some parameters from state
+        Exclude some parameters from state
         """
         state = super(PytaVSL, self).get_state(*args, **kwargs)
         def filter_function(item):
