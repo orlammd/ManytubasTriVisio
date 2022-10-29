@@ -62,6 +62,16 @@ class PytaVSL(Module):
             "aspi": -0.455
         }
 
+        self.get_excluded_parameters = [
+            'position_x',
+            'position_y',
+            'position_z',
+            'rotate_x',
+            'rotate_y',
+            'rotate_z',
+            'zoom'
+        ]
+
 
         """
         PytaVSL reset
@@ -428,6 +438,8 @@ class PytaVSL(Module):
 
 ########################## Routes
 
+
+
     def route(self, address, args):
 
         if address == '/pyta/subscribe/update' and args[0] == 'status':
@@ -464,7 +476,7 @@ class PytaVSL(Module):
                 """
                 slide = self.submodules[slide_name]
                 property_name, *values = args
-                if property_name not in slide.parameters:
+                if property_name not in slide.parameters and property_name not in self.get_excluded_parameters:
                     self.set('ready', False)
                     self.feedback_counter += 1
 
