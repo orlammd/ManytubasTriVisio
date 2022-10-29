@@ -69,7 +69,7 @@ class Intro(Video, Light, RouteBase):
             'visio',
             ]:
             pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
-        pytaVSL.create_group('w_signs', ['w_signs_*'])
+        # pytaVSL.create_group('w_signs', ['w_signs_*'])
 
         ######## ORL - MEXPLIQUE-MOI
         ##### utiliser la même chose que clones pour groups
