@@ -175,12 +175,12 @@ class Intro(Video, Light, RouteBase):
             for index in range(1,6):
                 if not index == plat:
                     alea = _rand()
-                    if alea < 0.2:
+                    if alea < 0.85:
                         wait_coef = _rand()*0.2
-                        fall_coef = _rand()*(1 - wait_coef)
+                        fall_coef = _rand()*(1 - wait_coef - 0.5)
                         self.start_scene('sequence/wait_and_falldown_tv' + str(index), lambda: [
                             self.wait(wait_coef * duree_plat, 's'),
-                            pytaVSL.falldown('tv' + str(index), alea * 0.5, duree_plat * fall_coef)
+                            pytaVSL.falldown('tv' + str(index), alea * 0.25, duree_plat * fall_coef)
                         ])
                         return -1
 
