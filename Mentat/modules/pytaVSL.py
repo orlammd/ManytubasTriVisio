@@ -444,7 +444,7 @@ class PytaVSL(Module):
                                 def setter(val):
                                     value = slide.get(property_name)
                                     value[index] = val
-                                    slide.set(property_name, *value)
+                                    slide.set(property_name, *value, preserve_animation=True)
 
                                 slide.add_meta_parameter(property_name + ax, [property_name],
                                     getter = lambda prop: prop[index],
