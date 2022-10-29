@@ -166,8 +166,8 @@ class Intro(Video, Light, RouteBase):
         Aspiration des pubs
         """
         #### On stoppe la séquence de ronde, pour éviter que les valeurs ne changent au milieu de l'aspiration
-        self.stop_scene('sequence/plat')
-        self.stop_scene('sequence/wait_and_falldown_tv')
+        self.stop_scene('*')
+        # self.stop_scene('sequence/wait_and_falldown_tv')
         start = 1
         zoom = 0
         for i in range(1,6):
