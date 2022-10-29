@@ -434,10 +434,7 @@ class PytaVSL(Module):
 
                     slide.add_parameter(property_name, '/pyta/slide/%s/set' % slide_name, types=types, static_args=[property_name], default=values[0] if len(values) == 1 else values)
                     if property_name == 'scale':
-                        slide.add_meta_parameter('zoom', ['scale'],
-                            getter = lambda scale: scale[0],
-                            setter = lambda zoom: slide.set('scale', zoom)
-                        )
+                        slide.add_alias_parameter('zoom', 'scale')
 
                     if property_name in ['position', 'rotate']:
                         axis = {0: '_x', 1: '_y', 2: '_z'}
