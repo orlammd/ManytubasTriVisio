@@ -107,9 +107,6 @@ class PytaVSL(Module):
         s = s + '}'
         self.send('/pyta/group', s, group)
         self.logger.info('Group ' + group + ' created with: ' + s)
-        # else:
-        #     self.send('/pyta/group', slides, group)
-        #     self.logger.info('Group ' + group + ' created with: ' + slides)
 
     def load_slide(self, f):
         """
@@ -156,56 +153,6 @@ class PytaVSL(Module):
         self.logger.info('Positionning overlay ' + overlay)
 
         self.load(overlay + '.overlay')
-
-        # try:
-        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-        #     scene = toml.loads(_content)
-        #
-        # except Exception as e:
-        #     self.logger.error('could not load scene file in dir %s' % overlay)
-        #
-        #
-        #
-        #
-        # try:
-        #     _content = open(self.path_to_pyta + '/' + overlay + '/overlay', 'r').read()
-        #     scene = toml.loads(_content)
-        #
-        #     for slide in self.submodules:
-        #         log = False
-        #         if slide.lower() in scene['slides']:
-        #             if slide.lower() == 'Dummy':
-        #                 log = True
-        #                 self.logger.info('Slide observé:' + slide)
-        #             for param in self.slide_params:
-        #                 if log == True:
-        #                     self.logger.info("Reading scene file : " + slide + "/" + param)
-        #                 if param in scene['slides'][slide.lower()]:
-        #                     param_value = scene['slides'][slide.lower()][param]
-        #                     if len(param_value) == 1:
-        #                         self.set(slide, param, param_value[0]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('value: ' + str(param_value[0]))
-        #                     elif len(param_value) == 2:
-        #                         self.set(slide, param, param_value[0], param_value[1]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]))
-        #                     elif len(param_value) == 3:
-        #                         self.set(slide, param, param_value[0], param_value[1], param_value[2]) #, force_send=True)
-        #                         if log == True:
-        #                             self.logger.info('values: ' + str(param_value[0]) + ", " + str(param_value[1]) + ", " + str(param_value[2]))
-        #
-        #
-        # except Exception as e:
-        #     self.logger.error('could not load scene file in dir %s' % overlay)
-        #
-        # self.send('/pyta/scene_import', overlay + '/overlay')
-        # self.send('/pyta/scene_recall', 'overlay')
-
-
-        # else:
-        #     self.pending_overlay = overlay
-        #     self.logger.info('not ready yet: position_overlay() call deffered')
 
 
 ############################## A virer

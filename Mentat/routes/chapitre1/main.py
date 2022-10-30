@@ -23,15 +23,27 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('init', self.init_pyta)
 
     def init_pyta(self):
-        # Reset des TV
-        pytaVSL.send('/pyta/ungroup', 'tv*')
-        pytaVSL.send('/pyta/ungroup', 'conte*')
-        pytaVSL.send('/pyta/ungroup', 'film*')
+        # Degroupage des TV
+        #### A priori inutile ?
+
+        # Reset des slides
         for slide_name in pytaVSL.submodules:
             pytaVSL.reset(slide_name)
-        pytaVSL.position_overlay('Common')
-        pytaVSL.position_overlay('Chapitre1')
+        chapter = 'ch1'
 
+
+        self.start_scene('groups_and_overlay', lambda: [
+            # Chargement de l'overlay commun
+            pytaVSL.position_overlay('Common'),
+
+            ### Création des groupes du chapitre
+            pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
+            pytaVSL.check_new_slides(once=True),
+            self.wait(0.1, 's'),
+            # pytaVSL.create_group('film'...)
+            # pytaVSL.create_group('tv' + str(index)...)
+            pytaVSL.position_overlay('Chapitre1')
+        ])
     @pedalboard_button(2)
     def lancementmiraye1(self):
         """
