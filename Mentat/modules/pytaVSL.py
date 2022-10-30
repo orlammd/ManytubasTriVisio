@@ -1,5 +1,5 @@
 from mentat import Module
-from random import randint
+from random import randint, random as _rand
 from os import listdir as _ls
 import toml
 import time
@@ -219,6 +219,29 @@ class PytaVSL(Module):
         else:
             self.logger.info('Aborting TriJC IO animation')
 
+    def trijc_change_tool(self, end_tool):
+        """
+        Changing the tool used by TriJC
+        """
+        init_tool = ""
+        for slide_name in self.submodules:
+            if 't_trijc_' in slide_name:
+                if self.get(slide_name, 'visible'):
+                    init_tool = slide_name
+
+
+        # self.set('t_trijc_' + end_tool, 'visible', 0)
+        # self.set('t_trijc_' + end_tool, 'rotate_z', 90)
+
+        self.start_scene('changing_tool', lambda: [
+            self.animate(init_tool, 'rotate_z', None, 90, 0.1, 's'),
+            self.wait(0.1, 's'),
+            self.animate('t_trijc_' + end_tool, 'rotate_z', 90, 0, 0.2, 's', 'elastic-inout'),
+            self.set(init_tool, 'visible', 0),
+            self.set('t_trijc_' + end_tool, 'visible', 1),
+        ])
+
+
     def aspi_slide(self, slide_name, warp_1, warp_4, duration):
         """
         Aspire une slide ou plusieurs slides dans l'aspi de trijc
@@ -292,10 +315,6 @@ class PytaVSL(Module):
             "rot": -720
         }
 
-        # Normalement inutile ?
-        # self.set('m_iraye', 'position', [orig["x"], orig["y"], orig["z"]])
-        # self.set('m_iraye', 'zoom', [orig["zo"]])
-
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
         move_duration= 3/4 * duration
@@ -317,6 +336,35 @@ class PytaVSL(Module):
             self.animate('t_trijc_tuba', 'rotate_z', None, 0, 0.4, 's', 'random'),
         ])
 
+    def m_noisy_switch_video(self, orig, dest, duration):
+        """
+        Switching from one video to another in m_layout with a noisy state in between
+        """
+
+        w_coef = _rand() * 0.8
+
+        self.start_scene('sequence/' + orig + '_-_' + dest, lambda: [
+            self.set(dest, 'rgbwave', w_coef),
+            self.set(dest, 'noise', 1.0),
+            self.animate(orig, 'noise', None, 1.0, duration / 2, 's'),
+            self.animate(orig, 'rgbwave', None, w_coef, duration / 2, 's'),
+            self.wait(0.25, 's'),
+            self.set(dest, 'visible', 1),
+            self.set(dest, 'video_time', 0),
+            self.set(dest, 'video_speed', 1),
+            self.set(orig, 'visible', 0),
+            self.animate(dest, 'noise', 1.0, 0.0, duration / 2, 's'),
+            self.animate(dest, 'rgbwave', None, 0.0, duration / 2, 's'),
+            ]
+        )
+
+    def m_changing_position_and_scale(self, position, scale, duration):
+        """
+        Moving and/or scaling m_ videos
+        """
+        self.animate('m_iraye', 'position', None, position, duration, 's')
+        self.animate('m_iraye', 'scale', None, scale, duration, 's')
+        pass
 
     def miraye_out(self, duration, easing):
         """
