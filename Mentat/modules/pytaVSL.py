@@ -49,18 +49,21 @@ class PytaVSL(Module):
         self.TriJC_xoutoffset = -0.3
         self.t_TriJC_xoffset = -0.415
 
-        self.Tool_TriJC_xinpos = {
-            "tuba": -0.415,
-            "aspi": -0.415
-        }
-        self.Tool_TriJC_zoom = {
-            "tuba": 1,
-            "aspi": 1.185
-        }
-        self.Tool_TriJC_yinpos = {
-            "tuba": -0.455,
-            "aspi": -0.455
-        }
+
+###" A virer ?"
+        # self.Tool_TriJC_xinpos = {
+        #     "tuba": -0.415,
+        #     "aspi": -0.415
+        # }
+        # self.Tool_TriJC_zoom = {
+        #     "tuba": 1,
+        #     "aspi": 1.185
+        # }
+        # self.Tool_TriJC_yinpos = {
+        #     "tuba": -0.455,
+        #     "aspi": -0.455
+        # }
+###" A virer ?"
 
         self.get_excluded_parameters = [
             'position_x',
@@ -157,28 +160,28 @@ class PytaVSL(Module):
 
 ############################## A virer
 
-    def sset_prop(self, name, property, args):
-        #### ORL TODO -> remplacer par set
-        self.send('/pyta/slide/' + name + '/set', property, *args)
-
-    def sanimate(self, name, property, start, end, duration, division, easing):
-        self.send('/pyta/slide' + name + '/animate', property, start, end, duration, easing)
-
-    def sanimate_prop(self, name, property, args):
-        ### ORL TODO -> remplacer par animate
-        # if isinstance(args[len(args) - 1], str):
-        #     duration = args[len(args)- 2]
-        # elif isinstance(args[len(args) - 1], int) or isinstance(args[len(args) -1], float):
-        #     duration = args[len(args) - 1]
-
-        # self.logger.info('Durée' + str(duration))
-
-        self.send('/pyta/slide/' + name + '/animate', property, *args)
-        # self.scene_start('wait_until_animate_finished', lambda: [
-        #     self.wait(duration, 's'),
-        #     self.set(name, property, *args)
-        # ])
-
+    # def sset_prop(self, name, property, args):
+    #     #### ORL TODO -> remplacer par set
+    #     self.send('/pyta/slide/' + name + '/set', property, *args)
+    #
+    # def sanimate(self, name, property, start, end, duration, division, easing):
+    #     self.send('/pyta/slide' + name + '/animate', property, start, end, duration, easing)
+    #
+    # def sanimate_prop(self, name, property, args):
+    #     ### ORL TODO -> remplacer par animate
+    #     # if isinstance(args[len(args) - 1], str):
+    #     #     duration = args[len(args)- 2]
+    #     # elif isinstance(args[len(args) - 1], int) or isinstance(args[len(args) -1], float):
+    #     #     duration = args[len(args) - 1]
+    #
+    #     # self.logger.info('Durée' + str(duration))
+    #
+    #     self.send('/pyta/slide/' + name + '/animate', property, *args)
+    #     # self.scene_start('wait_until_animate_finished', lambda: [
+    #     #     self.wait(duration, 's'),
+    #     #     self.set(name, property, *args)
+    #     # ])
+    #
 #############################"" Fin à virer
 
 

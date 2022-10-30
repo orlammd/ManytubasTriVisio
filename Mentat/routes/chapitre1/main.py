@@ -140,7 +140,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Poursuite de l'intro
         """
-        self.start_scene('sequence/actes_jc', lambda:[
+        self.start_scene('sequence/m_ch1_7', lambda:[
             pytaVSL.m_noisy_switch_video('m_ch1-2_waiting', 'm_ch1-7', 7),
             pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -90, 0.5, 's'),
             self.wait(0.5, 's'),
@@ -153,10 +153,20 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
             self.wait(1, 's'),
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
-            pytaVSL.m_noisy_switch_video('m_ch1-7', 'm_ch1-8', 0.1)
+            pytaVSL.m_noisy_switch_video('m_ch1-7', 'm_ch1-7_waiting', 0.1)
         ])
 
     @pedalboard_button(3)
+    def m_ch1_8(self):
+        """
+        Suite intro
+        """
+        self.start_scene('sequence/m_ch1_9', lambda:[
+            pytaVSL.m_noisy_switch_video('m_ch1-7_waiting', 'm_ch1-8', 0.1),
+        ])
+
+
+    @pedalboard_button(4)
     def jack_casear_jingle(self):
         """
         Lancement du jingle Jack Caesar
@@ -175,12 +185,25 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
             self.wait(0.15, 's'),
             pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
-            self.m_ch1_9()
+            self.wait(0.15, 's'),
+            pytaVSL.stop_animate('plane_horn_1', 'position_x'),
+            pytaVSL.stop_animate('plane_horn_1', 'position_y'),
+            pytaVSL.stop_animate('p_ch1-3', 'position_x'),
+            pytaVSL.stop_animate('p_ch1-3', 'position_y'),
+            pytaVSL.trijc_change_tool('aspi'),
+            self.wait(0.2, 's'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -5, 0.5, 's', ),
+            self.wait(0.5, 's'),
+            self.f_ch1_9()
         ])
 
     @pedalboard_button(102)
-    def m_ch1_9(self):
+    def f_ch1_9(self):
         """
-        Suite intro
+        Bobine de Fin
         """
-        pass
+        self.start_scene('f_ch1_9', lambda: [
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
+            pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
+            pytaVSL.aspi_slide('m_ch1-8', [-0.02, -0.445], [-0.02, 0.53], 0.6),
+        ])
