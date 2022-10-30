@@ -128,10 +128,10 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('tv4', 'position_x', None, -1, 2, 's'),
             self.wait(2, 's'),
             pytaVSL.set('tv*', 'visible', 0),
-            pytaVSL.stop_animate('plane_horn*', position_x),
-            pytaVSL.stop_animate('plane_horn*', position_y),
-            pytaVSL.stop_animate('p_ch1-*', position_x),
-            pytaVSL.stop_animate('p_ch1-*', position_y),                                    
+            pytaVSL.stop_animate('plane_horn*', 'position_x'),
+            pytaVSL.stop_animate('plane_horn*', 'position_y'),
+            pytaVSL.stop_animate('p_ch1-*', 'position_x'),
+            pytaVSL.stop_animate('p_ch1-*', 'position_y'),                                    
             ])
 
 
