@@ -33,11 +33,13 @@ class Chapitre1(Video, Light, RouteBase):
         # Degroupage des TV
         #### A priori inutile ?
 
-        # Reset des slides
-        for slide_name in pytaVSL.submodules:
-            pytaVSL.reset(slide_name)
-        chapter = 'ch1'
+        self.logger.info('Init Chapitre 1')
 
+        # Reset des slides
+        # for slide_name in pytaVSL.submodules:
+        pytaVSL.reset()
+
+        chapter = 'ch1'
         self.start_scene('groups_and_overlay', lambda: [
             # Chargement de l'overlay commun
             pytaVSL.position_overlay('Common'),
