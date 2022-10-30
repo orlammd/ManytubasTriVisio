@@ -274,48 +274,47 @@ class PytaVSL(Module):
         """
         Having Miraye Leparket starting her storytelling
         """
-        ## TODO : vérifier si TriJC visible, sinon, le faire apparaître
         '''
             [orig, dest]: x, y, z, zoom, rotate_z
         '''
         orig = {
-            "x": -0.41,
-            "y": -0.01,
+            "x": -0.38,
+            "y": -0.025,
             "z": -10,
             "zo": 0.04,
-            "zof": 0.035,
-            "rot": -130
+            "rot": -140
         }
         dest = {
             "x": 0.092,
             "y": 0.016,
             "z": -10,
             "zo": 0.837,
-            "zof": 0.71,
             "rot": -720
         }
 
-        self.sset_prop('MirayeLayout', 'position', [orig["x"], orig["y"], orig["z"]])
-        self.sset_prop('MirayeLayout', 'zoom', [orig["zo"]])
+        # Normalement inutile ?
+        # self.set('m_iraye', 'position', [orig["x"], orig["y"], orig["z"]])
+        # self.set('m_iraye', 'zoom', [orig["zo"]])
 
-        self.sset_prop(filename, 'position', [orig["x"], orig["y"], orig["z"] + 0.1])
-        self.sset_prop(filename, 'zoom', [orig["zof"]])
-
-
+        climax_y = 0.3
+        etape_zoom = 0.4 * dest["zo"]
+        move_duration= 3/4 * duration
+        zoom_duration = (1 - move_duration) * duration
         self.start_scene('sequences/miraye_in', lambda:[
-            self.sset_prop(filename, 'video_speed', [1]),
-            self.sset_prop(filename, 'video_time', [0]),
-            self.sanimate_prop('t_trijc_tuba', 'rotate_z', [0, -7, 0.4, 'elastic']),
-            self.wait(0.4, 's'),
-            [self.sset_prop('MirayeLayout', 'visible', [1]), self.sset_prop(filename, 'visible', [1])],
-            [self.sanimate_prop('MirayeLayout', 'position_x', [orig["x"], dest["x"], duration*3/4., easing]),self.sanimate_prop(filename, 'position_x', [orig["x"], dest["x"] - 0.0005, duration*3/4., easing])],
-            [self.sanimate_prop('MirayeLayout', 'rotate_z', [orig["rot"], dest["rot"], duration*3/4., easing]), self.sanimate_prop(filename, 'rotate_z', [orig["rot"], dest["rot"], duration*3/4., easing])],
-            [self.sanimate_prop('MirayeLayout', 'zoom', [orig["zo"], dest["zo"]*0.8/2, duration*3/4., easing]), self.sanimate_prop(filename, 'zoom', [orig["zof"], dest["zof"]*0.8/2, duration*3/4., easing])],
-            [self.sanimate_prop('MirayeLayout', 'position_y', [orig["y"], 0.3, duration*1/2., easing]), self.sanimate_prop(filename, 'position_y', [orig["y"], 0.3, duration*1/2., easing])],
+            self.set(filename, 'video_time', 0),
+            self.set(filename, 'video_speed', 1),
+            self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
+            self.wait(0.2, 's'),
+            self.set('m_iraye', 'visible', 1),
+            self.animate('m_iraye', 'position_x', None, dest["x"], move_duration, 's', easing),
+            self.animate('m_iraye', 'rotate_z', None, dest["rot"], move_duration, 's', easing),
+            self.animate('m_iraye', 'scale', None, [etape_zoom, etape_zoom], move_duration, 's', easing),
+            self.animate('m_iraye', 'position_y', None, climax_y, move_duration * 1/2, 's', easing),
             self.wait(1/2.*duration, 's'),
-            [self.sanimate_prop('MirayeLayout', 'position_y', [0.3, dest["y"], duration*1/4., easing]), self.sanimate_prop(filename, 'position_y', [0.3, dest["y"], duration*1/4., easing])],
+            self.animate('m_iraye', 'position_y', None, dest["y"], zoom_duration, 's', easing),
             self.wait(1/4.*duration, 's'),
-            [self.sanimate_prop('MirayeLayout', 'zoom', [dest["zo"]*1/2., dest["zo"], duration/4, easing]), self.sanimate_prop(filename, 'zoom', [dest["zof"]*1/2., dest["zof"], duration/4, easing])], self.sanimate_prop('t_trijc_tuba', 'rotate_z', [-7, 0, 0.4, 'random']),
+            self.animate('m_iraye', 'scale', None, [dest["zo"], dest["zo"]], zoom_duration, 's', easing),
+            self.animate('t_trijc_tuba', 'rotate_z', None, 0, 0.4, 's', 'random'),
         ])
 
 

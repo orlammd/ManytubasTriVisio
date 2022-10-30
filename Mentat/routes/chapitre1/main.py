@@ -19,8 +19,15 @@ class Chapitre1(Video, Light, RouteBase):
         # Setups, banks...
         prodSampler.set_kit(self.name)
 
-        # Overlay
-        self.start_scene('init', self.init_pyta)
+
+        self.start_scene('init', lambda: [
+            # Overlay
+            self.init_pyta(),
+            self.wait(0.2, 's'),
+
+            # Chapitre 1
+            self.lancement_miraye_1()
+        ])
 
     def init_pyta(self):
         # Degroupage des TV
@@ -31,25 +38,26 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.reset(slide_name)
         chapter = 'ch1'
 
-
         self.start_scene('groups_and_overlay', lambda: [
             # Chargement de l'overlay commun
             pytaVSL.position_overlay('Common'),
 
             ### Création des groupes du chapitre
             pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
+            # pytaVSL.create_group('film'...),
+            # pytaVSL.create_group('tv' + str(index)...),
             pytaVSL.check_new_slides(once=True),
             self.wait(0.1, 's'),
-            # pytaVSL.create_group('film'...)
-            # pytaVSL.create_group('tv' + str(index)...)
-            pytaVSL.position_overlay('Chapitre1')
+            pytaVSL.position_overlay('Chapitre1'),
+
         ])
+
     @pedalboard_button(2)
-    def lancementmiraye1(self):
+    def lancement_miraye_1(self):
         """
         Lancement Miraye Part 1
         """
-        self.start_scene('sequence/lancementmirage1', lambda: [
+        self.start_scene('sequence/lancement_miraye_1', lambda: [
             ### Lancement du Film
             pytaVSL.trijc_io('in', 'tuba', 1, 'elastic'),
             self.wait(1.2, 's'),
