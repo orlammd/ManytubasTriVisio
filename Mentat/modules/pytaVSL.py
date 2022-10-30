@@ -355,7 +355,7 @@ class PytaVSL(Module):
             self.animate(orig, 'rgbwave', None, w_coef, duration / 2, 's'),
             self.wait(0.25, 's'),
             self.set(dest, 'visible', 1),
-            self.set(dest, 'video_time', 0),
+            self.set(dest, 'video_time', 0, force_send=True),
             self.set(dest, 'video_speed', 1),
             self.set(orig, 'visible', 0),
             self.animate(dest, 'noise', 1.0, 0.0, duration / 2, 's'),
