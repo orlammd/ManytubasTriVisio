@@ -153,4 +153,34 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
             self.wait(1, 's'),
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
+            pytaVSL.m_noisy_switch_video('m_ch1-7', 'm_ch1-8', 0.1)
         ])
+
+    @pedalboard_button(3)
+    def jack_casear_jingle(self):
+        """
+        Lancement du jingle Jack Caesar
+        """
+
+        pytaVSL.shaking_tvs(1, 'p_ch1-3')
+
+        self.start_scene('jack_caesar_jingle', lambda: [
+            pytaVSL.set('tv1', 'visible', 1),
+            pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+            self.wait(0.15, 's'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+            self.wait(pytaVSL.get('p_ch1-3', 'video_end') - 0.15, 's'),
+            pytaVSL.animate('tv1', 'position_x', None, 1, 0.3, 's', 'exponential-inout'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+            self.wait(0.15, 's'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+            self.m_ch1_9()
+        ])
+
+    @pedalboard_button(102)
+    def m_ch1_9(self):
+        """
+        Suite intro
+        """
+        pass
