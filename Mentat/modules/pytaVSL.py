@@ -229,10 +229,6 @@ class PytaVSL(Module):
                 if self.get(slide_name, 'visible'):
                     init_tool = slide_name
 
-
-        # self.set('t_trijc_' + end_tool, 'visible', 0)
-        # self.set('t_trijc_' + end_tool, 'rotate_z', 90)
-
         self.start_scene('changing_tool', lambda: [
             self.animate(init_tool, 'rotate_z', None, 90, 0.1, 's'),
             self.wait(0.1, 's'),
@@ -274,6 +270,15 @@ class PytaVSL(Module):
             self.wait(duration / 2, 's'),
             self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
         ])
+
+    def shaking_tvs(self, number, content):
+        range_x = (_rand() / 2 + 0.5) * 0.01
+        range_y = _rand() * 0.01
+        duration = (_rand() / 2 + 0.5) * 10
+        self.shaking_slide('plane_horn_' + str(number), 'position_x', range_x, duration)
+        self.shaking_slide(content, 'position_x', range_x, duration)
+        self.shaking_slide('plane_horn_' + str(number), 'position_y', range_y, duration, 'random')
+        self.shaking_slide(content, 'position_y', range_y, duration, 'random')
 
     def falldown(self, slide_name, chute, d):
         cur_y_pos = self.get(slide_name, 'position_y')
@@ -355,16 +360,10 @@ class PytaVSL(Module):
             self.set(orig, 'visible', 0),
             self.animate(dest, 'noise', 1.0, 0.0, duration / 2, 's'),
             self.animate(dest, 'rgbwave', None, 0.0, duration / 2, 's'),
+            self.set(orig, 'noise', 0),
+            self.set(orig, 'rgbwave', 0)
             ]
         )
-
-    def m_changing_position_and_scale(self, position, scale, duration):
-        """
-        Moving and/or scaling m_ videos
-        """
-        self.animate('m_iraye', 'position', None, position, duration, 's')
-        self.animate('m_iraye', 'scale', None, scale, duration, 's')
-        pass
 
     def miraye_out(self, duration, easing):
         """

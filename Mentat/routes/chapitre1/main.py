@@ -36,6 +36,10 @@ class Chapitre1(Video, Light, RouteBase):
         # Reset des slides
         pytaVSL.reset()
 
+        def create_tv_groups():
+            for index in range(1,5):
+                pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_ch1-' + str(index+2)])
+
         chapter = 'ch1'
         self.start_scene('groups_and_overlay', lambda: [
             # Chargement de l'overlay commun
@@ -44,7 +48,7 @@ class Chapitre1(Video, Light, RouteBase):
             ### Création des groupes du chapitre
             pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
             # pytaVSL.create_group('film'...),
-            # pytaVSL.create_group('tv' + str(index)...),
+            create_tv_groups(),
             pytaVSL.check_new_slides(once=True),
             self.wait(0.1, 's'),
             pytaVSL.position_overlay('Chapitre1'),
@@ -74,8 +78,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.trijc_change_tool('compas'),
             pytaVSL.m_noisy_switch_video('m_ch1-1', 'm_ch1-2', 0.5),
             self.wait(pytaVSL.get('m_ch1-2', 'video_end'), 's'),
-            pytaVSL.trijc_change_tool('aimant'),            
-            pytaVSL.m_noisy_switch_video('m_ch1-2', 'm_ch1-2_waiting', 0.4),
+            self.actes_jc(),
             ]
         )
 
@@ -85,64 +88,53 @@ class Chapitre1(Video, Light, RouteBase):
         Les actes de JC
         """
 
-        # def miraye1descend(self):
-        #     """
-        #     Miraye descend observer pendant que JC ...
-        #     """
-        #     #### ORL -> revoir quand set sera utilisé TODO
-        #     pytaVSL.sanimate_prop('mirayelayout', 'zoom', [0.837, 0.837*0.3125, 1])
-        #     pytaVSL.sanimate_prop('m_ch1-2_waiting', 'zoom', [0.71, 0.71*0.3125, 1])
-        #     for s in ['m_ch1-2_waiting', 'mirayelayout']:
-        #          pytaVSL.sanimate_prop(s, 'position_y', [0.016, -0.35 ,1] )
-
-
-        for i in range (3, 7):
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'position', [1, 0, -11])
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'zoom', [0.55])
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'visible', [1])
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'video_loop', [1])
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'video_time', [0])
-            pytaVSL.sset_prop('p_ch1-' + str(i), 'video_speed', [1])
-
+        for index in range(1,5):
+            pytaVSL.shaking_tvs(index, 'p_ch1-' + str(index + 2))
 
         self.start_scene('sequence/actes_jc', lambda:[
+            pytaVSL.m_noisy_switch_video('m_ch1-2', 'm_ch1-2_waiting', 5),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.26, 0.26], 2, 's', 'random'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 45, 1, 's', 'random'), # à remplacer par des mvts de ciseaux
+            self.wait(1, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 1, 's', 'random'), # à remplacer par des mvts de ciseaux
+            pytaVSL.wait(1, 's'),
+            pytaVSL.trijc_change_tool('aimant'),
+            pytaVSL.wait(0.2, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -40, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -90, 1.5, 's', 'elastic-inout'),
+            pytaVSL.animate('m_iraye', 'position_y', None, -0.35, 1.5, 's', 'elastic-inout'),
+            self.wait(1.5, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, 0, 1, 's'),
 
-
-            pytaVSL.sanimate_prop('p_ch1-3', 'position_x', [1, 0.09, 2]),
+            pytaVSL.set('tv1', 'visible', 1.0),
+            pytaVSL.set('p_ch1-3', 'video_time', 0),
+            pytaVSL.animate('tv1', 'position_x', None, 0.09, 2, 's'),
             self.wait(3, 's'),
-            pytaVSL.sanimate_prop('p_ch1-3', 'position_x', [0.09, -1, 2]),
-            pytaVSL.sset_prop('p_ch1-4', 'video_time', [0]),
-            pytaVSL.sanimate_prop('p_ch1-4', 'position_x', [0.6, 0.09, 2]),
+            pytaVSL.animate('tv1', 'position_x', None, -1, 2, 's'),
+            pytaVSL.set('tv2', 'visible', 1.0),
+            pytaVSL.set('p_ch1-4', 'video_time', 0),
+            pytaVSL.animate('tv2', 'position_x', None, 0.09, 2, 's'),
             self.wait(3, 's'),
-            pytaVSL.sanimate_prop('p_ch1-4', 'position_x', [0.09, -1, 2]),
-            pytaVSL.sset_prop('p_ch1-5', 'video_time', [0]),
-            pytaVSL.sanimate_prop('p_ch1-5', 'position_x', [1, 0.09, 2]),
+            pytaVSL.animate('tv2', 'position_x', None, -1, 2, 's'),
+            pytaVSL.set('tv3', 'visible', 1.0),
+            pytaVSL.set('p_ch1-5', 'video_time', 0),
+            pytaVSL.animate('tv3', 'position_x', None, 0.09, 2, 's'),
             self.wait(3, 's'),
-            pytaVSL.sanimate_prop('p_ch1-5', 'position_x', [0.09, -1, 2]),
-            pytaVSL.sset_prop('p_ch1-6', 'video_time', [0]),
-            pytaVSL.sanimate_prop('p_ch1-6', 'position_x', [1, 0.09, 2]),
+            pytaVSL.animate('tv3', 'position_x', None, -1, 2, 's'),
+            pytaVSL.set('tv4', 'visible', 1.0),
+            pytaVSL.set('p_ch1-6', 'video_time', 0),
+            pytaVSL.animate('tv4', 'position_x', None, 0.09, 2, 's'),
             self.wait(3, 's'),
-            pytaVSL.sanimate_prop('p_ch1-6', 'position_x', [0.09, -1, 2]),
-            self.wait(3, 's'),
-            pytaVSL.sset_prop('p_ch1*', 'visible', [0]),
-        ])
+            pytaVSL.animate('tv4', 'position_x', None, -1, 2, 's'),
+            self.wait(2, 's'),
+            pytaVSL.set('tv*', 'visible', 0),
+            pytaVSL.stop_animate('plane_horn*', position_x),
+            pytaVSL.stop_animate('plane_horn*', position_y),
+            pytaVSL.stop_animate('p_ch1-*', position_x),
+            pytaVSL.stop_animate('p_ch1-*', position_y),                                    
+            ])
 
 
-
-
-    # def boucle_miraye_1(self):
-    #     """
-    #     Boucle Miraye pendant que JC...
-    #     """
-    #     self.start_scene('sequence/miraye_can_wait', lambda: [
-    #         pytaVSL.animate('m_ch1-2', 'noise', None, 0.2, 0.2, 's'),
-    #         pytaVSL.animate('m_ch1-2', 'rgbwave', None, 0.5, 0.2, 's'),
-    #         self.wait(0.2, 's'),
-    #         pytaVSL.set('m_ch1-2_waiting', 'visible', 1),
-    #         pytaVSL.set('m_ch1-2', 'visible', 0),
-    #         pytaVSL.animate('m_ch1-2_waiting', 'noise', 0.2, 0, 0.5, 's'),
-    #         pytaVSL.animate('m_ch1-2_waiting', 'rgbwave', 0.5, 0, 0.5, 's'),
-    #     ])
 
     def debouclemiraye1(self):
         """
