@@ -131,9 +131,30 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.stop_animate('plane_horn*', 'position_x'),
             pytaVSL.stop_animate('plane_horn*', 'position_y'),
             pytaVSL.stop_animate('p_ch1-*', 'position_x'),
-            pytaVSL.stop_animate('p_ch1-*', 'position_y'),                                    
+            pytaVSL.stop_animate('p_ch1-*', 'position_y'),
+            self.m_ch1_7()
             ])
 
+    @pedalboard_button(101)
+    def m_ch1_7(self):
+        """
+        Poursuite de l'intro
+        """
+        self.start_scene('sequence/actes_jc', lambda:[
+            pytaVSL.m_noisy_switch_video('m_ch1-2_waiting', 'm_ch1-7', 7),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -90, 0.5, 's'),
+            self.wait(0.5, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -40, 1.5, 's', 'elastic-inout'),
+            pytaVSL.animate('m_iraye', 'position_y', None, 0.016, 1.5, 's', 'elastic-inout'),
+            self.wait(1.5, 's'),
+            pytaVSL.trijc_change_tool('compas'),
+            self.wait(0.2, 's'),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.837, 0.837], 1, 's', 'random'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
+            self.wait(1, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
+            self.wait(1, 's')
+        ])
 
 
     def debouclemiraye1(self):
