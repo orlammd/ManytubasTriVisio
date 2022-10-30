@@ -26,6 +26,7 @@ class Intro(Video, Light, RouteBase):
 
     def activate_pyta(self):
         ### Load slides
+        pytaVSL.send('/pyta/unload', '*')
         pytaVSL.load_slides_from_dir('Common')
         pytaVSL.load_slides_from_dir('Chapitre1')
         while not pytaVSL.get('ready'):
