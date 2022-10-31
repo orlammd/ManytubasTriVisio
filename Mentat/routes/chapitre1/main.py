@@ -47,7 +47,9 @@ class Chapitre1(Video, Light, RouteBase):
 
             ### Création des groupes du chapitre
             pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
-            # pytaVSL.create_group('film'...),
+            pytaVSL.create_group('f_arabesques', ['f_arabesque*']),
+            self.wait(0.1, 's'),
+            pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_ch1-*']),
             create_tv_groups(),
             pytaVSL.check_new_slides(once=True),
             self.wait(0.1, 's'),
@@ -206,4 +208,10 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
             pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
             pytaVSL.aspi_slide('m_ch1-8', [-0.02, -0.445], [-0.02, 0.53], 0.6),
+            self.wait(1.2, 's'),
+            pytaVSL.trijc_io('out', 'aspi', 0.7, 'elastic-inout'),
+            self.wait(0.8, 's'),
+            pytaVSL.trijc_io('in', 'tuba', 0.6, 'elastic-inout'),
+            self.wait(0.7, 's'),
+            pytaVSL.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.2, 's', 'elastic-inout'),
         ])

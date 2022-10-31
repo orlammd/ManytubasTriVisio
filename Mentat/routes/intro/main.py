@@ -46,12 +46,11 @@ class Intro(Video, Light, RouteBase):
             'signs_standleft_visio']:
             pytaVSL.create_clone('signs_standleft_jack', clone_name)
 
-        for clone_name in [
-            'plane_horn_5',
-            'plane_horn_4',
-            'plane_horn_3',
-            'plane_horn_2']:
-            pytaVSL.create_clone('plane_horn_1', clone_name)
+        for index in range (2,6):
+            pytaVSL.create_clone('f_arabesque_1', 'f_arabesque_' + str(index))
+
+        for index in range(2,6):
+            pytaVSL.create_clone('plane_horn_1', 'plane_horn' + str(index))
 
         ### Create groups
         for slides_group in [
