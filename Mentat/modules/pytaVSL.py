@@ -50,21 +50,6 @@ class PytaVSL(Module):
         self.t_TriJC_xoffset = -0.415
 
 
-###" A virer ?"
-        # self.Tool_TriJC_xinpos = {
-        #     "tuba": -0.415,
-        #     "aspi": -0.415
-        # }
-        # self.Tool_TriJC_zoom = {
-        #     "tuba": 1,
-        #     "aspi": 1.185
-        # }
-        # self.Tool_TriJC_yinpos = {
-        #     "tuba": -0.455,
-        #     "aspi": -0.455
-        # }
-###" A virer ?"
-
         self.get_excluded_parameters = [
             'position_x',
             'position_y',
@@ -158,33 +143,6 @@ class PytaVSL(Module):
         self.load(overlay + '.overlay')
 
 
-############################## A virer
-
-    # def sset_prop(self, name, property, args):
-    #     #### ORL TODO -> remplacer par set
-    #     self.send('/pyta/slide/' + name + '/set', property, *args)
-    #
-    # def sanimate(self, name, property, start, end, duration, division, easing):
-    #     self.send('/pyta/slide' + name + '/animate', property, start, end, duration, easing)
-    #
-    # def sanimate_prop(self, name, property, args):
-    #     ### ORL TODO -> remplacer par animate
-    #     # if isinstance(args[len(args) - 1], str):
-    #     #     duration = args[len(args)- 2]
-    #     # elif isinstance(args[len(args) - 1], int) or isinstance(args[len(args) -1], float):
-    #     #     duration = args[len(args) - 1]
-    #
-    #     # self.logger.info('Durée' + str(duration))
-    #
-    #     self.send('/pyta/slide/' + name + '/animate', property, *args)
-    #     # self.scene_start('wait_until_animate_finished', lambda: [
-    #     #     self.wait(duration, 's'),
-    #     #     self.set(name, property, *args)
-    #     # ])
-    #
-#############################"" Fin à virer
-
-
 ########################## TRIJC
     def check_jack_caesar_consistency(self):
         pos = 0
@@ -208,8 +166,8 @@ class PytaVSL(Module):
 
             y = self.get('trijc_head', 'position_y')
             t_y = self.get('t_trijc_' + tool, 'position_y')
-
             t_end = end + self.t_TriJC_xoffset
+
 
             self.start_scene('sequences/triJC_io', lambda: [
                 [self.set('trijc*', 'visible', 1), self.set('t_trijc_*', 'visible', 0), self.set('t_trijc_' + tool, 'visible', 1)],
@@ -378,11 +336,53 @@ class PytaVSL(Module):
 
 ########################## FILM
 
-    def movie_in(self, duration, easing):
+    def movie_in(self, movie, duration, easing='linear'):
         """
         Having Moving coming to front
         """
-        pass
+        orig = {
+            "x": -0.38,
+            "y": -0.05,
+            "z": 5,
+            "zo": 0.3,
+            "rot": -140
+        }
+        dest = {
+            "x": 0,
+            "y": 0,
+            "z": 5,
+            "y_arabesque" : 3.04,
+            "zo": 0.95,
+            "rot": -720
+        }
+
+        climax_y = 0.3
+        etape_zoom = 0.4 * dest["zo"]
+        move_duration= 1/2 * duration
+        zoom_duration = (1 - move_duration) * duration
+        self.start_scene('sequences/miraye_in', lambda:[
+            self.set(movie, 'video_time', 0),
+            self.set(movie, 'video_speed', 1),
+            self.set(movie, 'visible', 1),
+            self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
+            self.wait(0.2, 's'),
+            self.set('f_ilm', 'visible', 1),
+            self.animate('f_ilm', 'position_x', None, dest["x"], move_duration, 's', easing),
+            self.animate('f_ilm', 'rotate_z', None, dest["rot"], move_duration, 's', easing),
+            self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], move_duration, 's', easing),
+            self.animate('f_ilm', 'position_y', None, climax_y, move_duration * 1/2, 's', easing),
+            self.wait(1/2.*duration, 's'),
+            self.animate('f_ilm', 'position_y', None, dest["y"], zoom_duration, 's', easing),
+            self.wait(1/4.*duration, 's'),
+            self.trijc_change_tool('compas'),
+            self.set(movie, 'video_time', 0),
+            self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
+            self.animate('f_arabesque_1', 'position_y', None, dest["y_arabesque"], zoom_duration, 's'),
+            self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
+            self.trijc_io('out', 'compas', zoom_duration + 0.5)
+        ])
+
+
 
     def movie_out(self, duration, easing):
         """

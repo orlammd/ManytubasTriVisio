@@ -53,8 +53,8 @@
   ["p_ch1-6", "scale", 0.61, 0.61],
   ["p_ch1-6", "video_loop", 1.0],
   ["p_ch1-6", "fish", 0.8],
-  ["f_ilm", "position", 0, 0, 5],
-  ["f_ilm", "scale", 0.95, 0.95],
+  ["f_ilm", "position", -0.38, -0.05, 5],
+  ["f_ilm", "scale", 0.3, 0.3],
   ["f_arabesques", "visible", 1],
   ["f_arabesques", "position", 0, 0, -1],
   ["f_arabesques", "scale", 0.166, 0.166],
@@ -64,5 +64,5 @@
   ["f_arabesque_2", "position", 0, 0.005, 0.1],
   ["f_arabesque_2", "visible", 1],
   ["f_ch1-9", "position", 0, 0, 0],
-  ["f_ch1-9", "scale", 1, 0],  
+  ["f_ch1-9", "scale", 1, 0]
 ]
