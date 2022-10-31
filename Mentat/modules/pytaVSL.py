@@ -358,7 +358,7 @@ class PytaVSL(Module):
 
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
-        move_duration= 1/2 * duration
+        move_duration= 1/2.5 * duration
         zoom_duration = (1 - move_duration) * duration
         self.start_scene('sequences/miraye_in', lambda:[
             self.set(movie, 'video_time', 0),
