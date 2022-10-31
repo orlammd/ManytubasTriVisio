@@ -218,44 +218,30 @@ class PytaVSL(Module):
 
 ########################## TRIJC
 
-########################## METHODES GENERIQUES
-
-    def shaking_slide(self, slide_name, property, range, duration = 1, easing = 'linear'):
+########################## SIGNS
+    def signs_io(self, direction='in', together=False, duration=1, easing='linear'):
         """
-        To make a slide shake (by now not possible to send wildcard)
+        Remontée et descente des panneaux
         """
-        self.stop_animate(slide_name, property)
-        center_value = self.get(slide_name, property)
-        self.start_scene('sequence/shaking_' + slide_name + '_' + property, lambda: [
-            self.animate(slide_name, property, None,  center_value - range / 2, duration / 2, 's', easing),
-            self.wait(duration / 2, 's'),
-            self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
-        ])
+        if direction == 'in':
+            dest = 0.5
+        if direction == 'out':
+            dest = 0
 
-    def shaking_tvs(self, number, content):
-        range_x = (_rand() / 2 + 0.5) * 0.01
-        range_y = _rand() * 0.01
-        duration = (_rand() / 2 + 0.5) * 10
-        self.shaking_slide('plane_horn_' + str(number), 'position_x', range_x, duration)
-        self.shaking_slide(content, 'position_x', range_x, duration)
-        self.shaking_slide('plane_horn_' + str(number), 'position_y', range_y, duration, 'random')
-        self.shaking_slide(content, 'position_y', range_y, duration, 'random')
-
-    def falldown(self, slide_name, chute, d):
-        cur_y_pos = self.get(slide_name, 'position_y')
-        self.start_scene('sequence/falldown_' + slide_name, lambda:[
-            self.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
-            self.wait(0.3, 's'),
-            self.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
-            self.wait(0.5, 's'),
-            self.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
-            self.wait(d-0.8, 's'),
-            ]
-        )
+        if together:
+            self.animate('w_signs*', 'position_y', None, dest, duration, 's', easing)
+        else:
+            for slide_name in self.submodules:
+                if ('w_sign_' in slide_name):
+                    sigma = _rand()
+                    if sigma > 0.9:
+                        easing = 'random'
+                    elif sigma > 0.5:
+                        easing = 'elastic-inout'
+                    self.animate(slide_name, 'position_y', None, dest, (1 + sigma)*duration, 's', easing)
 
 
-
-########################## METHODES GENERIQUES
+########################## SIGNS
 
 ########################## MIRAYE
 
@@ -377,7 +363,9 @@ class PytaVSL(Module):
             self.trijc_change_tool('compas'),
             self.set(movie, 'video_time', 0),
             self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
-            self.animate('w_signs*', 'position_y', None, 0.5, zoom_duration, 's', 'elastic-inout'),
+            self.signs_io('out', together=False, duration=0.5),
+            # self.animate('w_signs*', 'position_y', None, 0.5, zoom_duration, 's', 'elastic-inout'), #### Faire un truc pour faire sortir les signes automatiquement
+            self.animate('lights*', 'alpha', None, 0.3, duration, 's', 'linear'),
             self.animate('f_arabesque_1', 'position_y', None, dest["y_arabesque"], zoom_duration, 's'),
             self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
             self.trijc_io('out', 'compas', zoom_duration + 0.5)
@@ -416,10 +404,50 @@ class PytaVSL(Module):
 ########################## JINGLES
 
 
+########################## METHODES GENERIQUES
+
+    def shaking_slide(self, slide_name, property, range, duration = 1, easing = 'linear'):
+        """
+        To make a slide shake (by now not possible to send wildcard)
+        """
+        self.stop_animate(slide_name, property)
+        center_value = self.get(slide_name, property)
+        self.start_scene('sequence/shaking_' + slide_name + '_' + property, lambda: [
+            self.animate(slide_name, property, None,  center_value - range / 2, duration / 2, 's', easing),
+            self.wait(duration / 2, 's'),
+            self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
+        ])
+
+    def shaking_tvs(self, number, content):
+        range_x = (_rand() / 2 + 0.5) * 0.01
+        range_y = _rand() * 0.01
+        duration = (_rand() / 2 + 0.5) * 10
+        self.shaking_slide('plane_horn_' + str(number), 'position_x', range_x, duration)
+        self.shaking_slide(content, 'position_x', range_x, duration)
+        self.shaking_slide('plane_horn_' + str(number), 'position_y', range_y, duration, 'random')
+        self.shaking_slide(content, 'position_y', range_y, duration, 'random')
+
+    def falldown(self, slide_name, chute, d):
+        cur_y_pos = self.get(slide_name, 'position_y')
+        self.start_scene('sequence/falldown_' + slide_name, lambda:[
+            self.animate(slide_name, 'position_y', None, cur_y_pos - chute, 0.3, 's', 'elastic'),
+            self.wait(0.3, 's'),
+            self.animate(slide_name, 'position_y', None, cur_y_pos - chute + 0.001, 0.5, 's', 'random'),
+            self.wait(0.5, 's'),
+            self.animate(slide_name, 'position_y', None, cur_y_pos, d-0.8, 's', 'linear'),
+            self.wait(d-0.8, 's'),
+            ]
+        )
+
+
+
+########################## METHODES GENERIQUES
+
+
 ##########################  A virer ?
-    def get_slide_property(self, slide_name, property):
-        if slide_name in self.submodules:
-            return self.get(slide_name, property)
+    # def get_slide_property(self, slide_name, property):
+    #     if slide_name in self.submodules:
+    #         return self.get(slide_name, property)
 
 ########################## A virer ?
 
