@@ -351,9 +351,11 @@ class PytaVSL(Module):
             self.set(movie, 'video_time', 0),
             self.set(movie, 'video_speed', 1),
             self.set(movie, 'visible', 1),
+
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
             self.set('f_ilm', 'visible', 1),
+
             self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
             self.animate('f_ilm', 'rotate_z', None, dest["rot"], duration, 's', easing),
             self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], duration, 's', easing),
@@ -361,6 +363,7 @@ class PytaVSL(Module):
             self.wait(1/2.*duration, 's'),
             self.animate('f_ilm', 'position_y', None, dest["y"], duration * 1/2, 's', easing),
             self.wait(duration, 's'),
+
             self.trijc_change_tool('compas'),
             self.set(movie, 'video_time', 0),
             self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
