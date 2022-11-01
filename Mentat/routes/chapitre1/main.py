@@ -213,5 +213,5 @@ class Chapitre1(Video, Light, RouteBase):
             self.wait(0.8, 's'),
             pytaVSL.trijc_io('in', 'tuba', 0.6, 'elastic-inout'),
             self.wait(0.7, 's'),
-            pytaVSL.movie_in('f_ch1-9', 1)
+            pytaVSL.movie_in('f_ch1-9', 1.5)
         ])

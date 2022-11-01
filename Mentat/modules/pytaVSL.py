@@ -223,20 +223,20 @@ class PytaVSL(Module):
         """
         Remontée et descente des panneaux
         """
-        if direction == 'in':
-            dest = 0.5
         if direction == 'out':
+            dest = 0.5
+        if direction == 'in':
             dest = 0
+
+        self.logger.info(direction)
 
         if together:
             self.animate('w_signs*', 'position_y', None, dest, duration, 's', easing)
         else:
             for slide_name in self.submodules:
-                if ('w_sign_' in slide_name):
+                if ('w_signs_' in slide_name):
                     sigma = _rand()
-                    if sigma > 0.9:
-                        easing = 'random'
-                    elif sigma > 0.5:
+                    if sigma > 0.5:
                         easing = 'elastic-inout'
                     self.animate(slide_name, 'position_y', None, dest, (1 + sigma)*duration, 's', easing)
 
@@ -357,17 +357,17 @@ class PytaVSL(Module):
             self.animate('f_ilm', 'rotate_z', None, dest["rot"], move_duration, 's', easing),
             self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], move_duration, 's', easing),
             self.animate('f_ilm', 'position_y', None, climax_y, move_duration * 1/2, 's', easing),
-            self.wait(1/2.*duration, 's'),
-            self.animate('f_ilm', 'position_y', None, dest["y"], zoom_duration, 's', easing),
+            self.wait(1/2.*move_duration, 's'),
+            self.animate('f_ilm', 'position_y', None, dest["y"], move_duration * 1/2, 's', easing),
             self.wait(1/4.*duration, 's'),
             self.trijc_change_tool('compas'),
             self.set(movie, 'video_time', 0),
             self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
-            self.signs_io('out', together=False, duration=0.5),
-            # self.animate('w_signs*', 'position_y', None, 0.5, zoom_duration, 's', 'elastic-inout'), #### Faire un truc pour faire sortir les signes automatiquement
-            self.animate('lights*', 'alpha', None, 0.3, duration, 's', 'linear'),
             self.animate('f_arabesque_1', 'position_y', None, dest["y_arabesque"], zoom_duration, 's'),
             self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
+            self.signs_io('out', together=False, duration=duration),
+            self.wait(duration / 2, 's'),
+            self.animate('lights*', 'alpha', None, 0.3, duration, 's', 'linear'),
             self.trijc_io('out', 'compas', zoom_duration + 0.5)
         ])
 
