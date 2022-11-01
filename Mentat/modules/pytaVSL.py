@@ -344,8 +344,9 @@ class PytaVSL(Module):
 
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
-        move_duration= 1/2.5 * duration
-        zoom_duration = (1 - move_duration) * duration
+        # move_duration= 1/2.5 * duration
+        complete_duration = 2.5 * duration
+        zoom_duration = (1 - duration) * complete_duration
         self.start_scene('sequences/miraye_in', lambda:[
             self.set(movie, 'video_time', 0),
             self.set(movie, 'video_speed', 1),
@@ -353,21 +354,21 @@ class PytaVSL(Module):
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
             self.set('f_ilm', 'visible', 1),
-            self.animate('f_ilm', 'position_x', None, dest["x"], move_duration, 's', easing),
-            self.animate('f_ilm', 'rotate_z', None, dest["rot"], move_duration, 's', easing),
-            self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], move_duration, 's', easing),
-            self.animate('f_ilm', 'position_y', None, climax_y, move_duration * 1/2, 's', easing),
-            self.wait(1/2.*move_duration, 's'),
-            self.animate('f_ilm', 'position_y', None, dest["y"], move_duration * 1/2, 's', easing),
-            self.wait(1/4.*duration, 's'),
+            self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
+            self.animate('f_ilm', 'rotate_z', None, dest["rot"], duration, 's', easing),
+            self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], duration, 's', easing),
+            self.animate('f_ilm', 'position_y', None, climax_y, duration * 1/2, 's', easing),
+            self.wait(1/2.*duration, 's'),
+            self.animate('f_ilm', 'position_y', None, dest["y"], duration * 1/2, 's', easing),
+            self.wait(duration, 's'),
             self.trijc_change_tool('compas'),
             self.set(movie, 'video_time', 0),
             self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
             self.animate('f_arabesque_1', 'position_y', None, dest["y_arabesque"], zoom_duration, 's'),
             self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
-            self.signs_io('out', together=False, duration=duration),
-            self.wait(duration / 2, 's'),
-            self.animate('lights*', 'alpha', None, 0.3, duration, 's', 'linear'),
+            self.signs_io('out', together=False, duration=complete_duration),
+            self.wait(complete_duration / 2, 's'),
+            self.animate('lights*', 'alpha', None, 0.3, complete_duration, 's', 'linear'),
             self.trijc_io('out', 'compas', zoom_duration + 0.5)
         ])
 

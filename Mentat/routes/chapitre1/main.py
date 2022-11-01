@@ -213,5 +213,12 @@ class Chapitre1(Video, Light, RouteBase):
             self.wait(0.8, 's'),
             pytaVSL.trijc_io('in', 'tuba', 0.6, 'elastic-inout'),
             self.wait(0.7, 's'),
-            pytaVSL.movie_in('f_ch1-9', 1.5)
+            pytaVSL.movie_in('f_ch1-9', 0.6),
+            self.wait(pytaVSL.get('f_ch1-9', 'video_end') - 0.6, 's')
         ])
+
+    def m_ch1_10(self):
+        """
+        Intervention Miraye
+        """
+        pass
