@@ -50,7 +50,7 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.create_clone('f_arabesque_1', 'f_arabesque_' + str(index))
 
         for index in range(2,6):
-            pytaVSL.create_clone('plane_horn_1', 'plane_horn' + str(index))
+            pytaVSL.create_clone('plane_horn_1', 'plane_horn_' + str(index))
 
         ### Create groups
         for slides_group in [
@@ -60,7 +60,6 @@ class Intro(Video, Light, RouteBase):
             'lights',
             ]:
             pytaVSL.create_group(slides_group, [slides_group + '*'])
-        # pytaVSL.create_group('w_trijc', ['trijc', 't_trijc', 'ot_trijc'])
         for slides_group in [
             'jack',
             'caesar',
@@ -69,14 +68,13 @@ class Intro(Video, Light, RouteBase):
             'visio',
             ]:
             pytaVSL.create_group('w_signs_' + slides_group, ['signs*' + slides_group])
-        # pytaVSL.create_group('w_signs', ['w_signs_*'])
 
         for index in range(1,6):
             pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), 'p_pub' + str(index)])
 
-        ######## ORL - MEXPLIQUE-MOI
-        ##### utiliser la même chose que clones pour groups
-        ##### shaker les slides à l'intérieur d'un groupe, et mover les groups pour déplacer tout le monde.
+        # Create text slides
+        pytaVSL.send('/pyta/create_text', 'titre', 'sans')
+        pytaVSL.send('/pyta/create_text', 'soustitre', 'mono')        
 
     @pedalboard_button(2)
     def intro(self):

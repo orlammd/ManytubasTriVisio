@@ -178,6 +178,7 @@ class Chapitre1(Video, Light, RouteBase):
 
         self.start_scene('jack_caesar_jingle', lambda: [
             pytaVSL.set('tv1', 'visible', 1),
+            pytaVSL.set('tv1', 'position_z', -12),
             pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
             pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
             self.wait(0.15, 's'),
@@ -224,8 +225,16 @@ class Chapitre1(Video, Light, RouteBase):
         Intervention Miraye
         """
         self.start_scene('m_ch1_10', lambda: [
+            pytaVSL.signs_io('in', duration=0.5, easing='random'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 'random'),
             pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
             self.wait(0.4, 's'),
-            pytaVSL.miraye_in('m_ch1-10', 1),
-            pytaVSL.set('f_ch1-9', 'video_speed', 0)
+            pytaVSL.miraye_in('m_ch1-10', 0.5),
+            pytaVSL.set('f_ch1-9', 'video_speed', 0),
+            self.wait(17, 's'), # Séparer en deux vidéos ?
+            pytaVSL.display_title('Chapitre 1 : Préambule')
         ])
+
+    @pedalboard_button(10000)
+    def titre(self):
+        pytaVSL.display_title('Chapitre 1 : Preambule', 3)

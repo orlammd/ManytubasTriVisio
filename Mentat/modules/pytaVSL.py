@@ -265,6 +265,10 @@ class PytaVSL(Module):
             "rot": -720
         }
 
+        self.set('m_iraye', 'position', orig['x'], orig['y'], orig['z'])
+        self.set('m_iraye', 'scale', orig['zo'], orig['zo'])
+        self.set('m_iraye', 'rotate_z', orig['rot'])
+
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
         move_duration= 3/4 * duration
@@ -315,6 +319,34 @@ class PytaVSL(Module):
         Having Miraye Leparket stopping her storytelling
         """
         pass
+
+    def display_title(self, title, duration):
+        """
+        Affiche le titre
+        """
+        segments = title.split(' ')
+        segments_duration = {}
+        total_length = len(title)
+        atom = duration / total_length
+
+        # On sépare les mots et on compare leur nombre de lettres
+        def temporize_title():
+            for segment in segments:
+                segments_duration[segment] = atom * len(segment) / total_length
+                self.set('titre', 'text', segment)
+                self.wait(segments_duration[segment], 's')
+                self.logger.info('titre segment: ' + segment)
+
+
+
+        self.start_scene('display_title', temporize_title())
+
+
+
+
+
+
+
 
 ########################## Miraye
 
