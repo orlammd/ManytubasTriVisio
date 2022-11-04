@@ -228,8 +228,6 @@ class PytaVSL(Module):
         if direction == 'in':
             dest = 0
 
-        self.logger.info(direction)
-
         if together:
             self.animate('w_signs*', 'position_y', None, dest, duration, 's', easing)
         else:
@@ -500,6 +498,7 @@ class PytaVSL(Module):
                 self.feedback_counter += 1
             elif args[1] == 'ready':
                 self.check_new_slides(once=True)
+
 
         elif '/pyta/slide' in address and '/get/reply' in address:
             """
