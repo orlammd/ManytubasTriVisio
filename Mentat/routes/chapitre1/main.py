@@ -214,11 +214,18 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.trijc_io('in', 'tuba', 0.6, 'elastic-inout'),
             self.wait(0.7, 's'),
             pytaVSL.movie_in('f_ch1-9', 0.6),
-            self.wait(pytaVSL.get('f_ch1-9', 'video_end') - 0.6, 's')
+            self.wait(pytaVSL.get('f_ch1-9', 'video_end') - 0.6, 's'),
+            self.m_ch1_10()
         ])
 
+    @pedalboard_button(103)
     def m_ch1_10(self):
         """
         Intervention Miraye
         """
-        pass
+        self.start_scene('m_ch1_10', lambda: [
+            pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
+            self.wait(0.4, 's'),
+            pytaVSL.miraye_in('m_ch1-10', 1),
+            pytaVSL.set('f_ch1-9', 'video_speed', 0)
+        ])

@@ -1,0 +1,3 @@
+send_osc 2001 /set_route 'Chapitre 1'
+send_osc 2001 /pyta/slide/m_iraye/set visible 0
+send_osc 2001 /pedalboard/button 102
