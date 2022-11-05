@@ -203,9 +203,7 @@ class PytaVSL(Module):
         """
         Aspire une slide ou plusieurs slides dans l'aspi de trijc
         """
-        old = {}
-        for property in ['warp_1', 'warp_4', 'scale', 'alpha']:
-            old[property] = self.get(slide_name, property)
+        old_z = self.get(slide_name, 'position_z')
 
         oscil_d = 2/3 * duration
         away_d = 1/3 * duration
@@ -217,12 +215,12 @@ class PytaVSL(Module):
             self.animate(slide_name, 'scale', None, [0.035, 0.035], away_d * 0.9, 's', 'exponential-inout' ), self.animate(slide_name, 'position', None, [-0.33, 0.035, self.get(slide_name, 'position_z')], away_d * 0.95, 's', 'exponential-inout'),
             self.animate(slide_name, 'alpha', None, 0.1, away_d * 0.8, 's', 'exponential-out'),
             self.wait(away_d, 's'),
+            self.set(slide_name, 'visible', 0),
 
             self.set(slide_name, 'visible', 0),
-            self.set(slide_name, 'warp_1', old['warp_1']),
-            self.set(slide_name, 'warp_4', old['warp_4']),
-            self.set(slide_name, 'scale', old['scale']),
-            self.set(slide_name, 'alpha', old['alpha'])
+            self.submodules[slide_name].reset(),
+            self.set(slide_name, 'position_z', old_z),
+
         ])
 
 ########################## TRIJC
@@ -274,14 +272,22 @@ class PytaVSL(Module):
             "rot": -720
         }
 
+
+##### On peut s'en passer ?
         self.set('m_iraye', 'position', orig['x'], orig['y'], orig['z'])
         self.set('m_iraye', 'scale', orig['zo'], orig['zo'])
         self.set('m_iraye', 'rotate_z', orig['rot'])
+##### On peut s'en passer ?
+
+
+##### A virer
         self.set('m_ch*', 'visible', 0)
         self.set('m_*', 'warp_1', 0, 0)
         self.set('m_*', 'warp_4', 0, 0)
         self.set('m_ch*', 'scale', 0.848, 0.848)
         self.set('m_layout', 'scale', 1, 1)
+##### A virer
+
 
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
