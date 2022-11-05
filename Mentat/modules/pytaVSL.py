@@ -320,9 +320,9 @@ class PytaVSL(Module):
         """
         pass
 
-    def display_title(self, title, duration):
+    def title_scene(self, title, duration):
         """
-        Affiche le titre
+        Affiche le titre (scène)
         """
         segments = title.split(' ')
         segments_duration = {}
@@ -330,16 +330,19 @@ class PytaVSL(Module):
         atom = duration / total_length
 
         # On sépare les mots et on compare leur nombre de lettres
-        def temporize_title():
-            for segment in segments:
-                segments_duration[segment] = atom * len(segment) / total_length
-                self.set('titre', 'text', segment)
-                self.wait(segments_duration[segment], 's')
-                self.logger.info('titre segment: ' + segment)
+        for segment in segments:
+            segments_duration[segment] = atom * len(segment) / total_length
+            self.set('titre', 'text', segment)
+            self.wait(segments_duration[segment], 's')
+            self.logger.info('titre segment:' + segment)
 
 
 
-        self.start_scene('display_title', temporize_title())
+    def display_title(self, title, duration):
+        """
+        Affiche le titre
+        """
+        self.start_scene('display_title', self.title_scene(title, duration))
 
 
 
@@ -487,12 +490,15 @@ class PytaVSL(Module):
 
 
 ########################## Get, set, overlay
-    def check_new_slides(self, once=False):
+    def check_new_slides(self, once=False, text=False):
         """
         Ping for new slides
         """
         if once:
-            self.send('/pyta/slide/*/get', 'visible', self.engine.port)
+            if not text:
+                self.send('/pyta/slide/*/get', 'visible', self.engine.port)
+            else:
+                self.send('/pyta/text/*/get', 'visible', self.engine.port)                
         else:
             while True:
                 self.check_new_slides(True)
@@ -568,6 +574,65 @@ class PytaVSL(Module):
 
 
                     slide.add_parameter(property_name, '/pyta/slide/%s/set' % slide_name, types=types, static_args=[property_name], default=values[0] if len(values) == 1 else values)
+                    if property_name == 'scale':
+                        slide.add_meta_parameter('zoom', ['scale'],
+                            getter = lambda scale: scale[0],
+                            setter = lambda zoom: slide.set('scale', zoom)
+                        )
+
+                    if property_name in ['position', 'rotate']:
+                        axis = {0: '_x', 1: '_y', 2: '_z'}
+                        for index, ax in axis.items():
+                            def closure(index, ax):
+
+                                def setter(val):
+                                    value = slide.get(property_name)
+                                    value[index] = val
+                                    slide.set(property_name, *value, preserve_animation = True)
+
+                                slide.add_meta_parameter(property_name + ax, [property_name],
+                                    getter = lambda prop: prop[index],
+                                    setter = setter
+                                )
+
+                            closure(index, ax)
+
+        elif '/pyta/text' in address and '/get/reply' in address:
+            """
+            Handle feedback from text slides
+            """
+            slide_name = address.split('/')[-3]
+
+            if slide_name not in self.submodules:
+                """
+                Feedback from a new text lide: create text Slide object and query all parameters
+                """
+                self.set('ready', False)
+                self.feedback_counter += 1
+
+                slide = Slide(slide_name, parent=self)
+                self.add_submodule(slide)
+                self.send('/pyta/text/%s/get' % slide_name, '*', self.engine.port)
+
+            else:
+                """
+                Feedback from existing text slide: create parameter if it doesn't exist
+                """
+                slide = self.submodules[slide_name]
+                property_name, *values = args
+                if property_name not in slide.parameters and property_name not in self.get_excluded_parameters:
+                    self.set('ready', False)
+                    self.feedback_counter += 1
+
+                    types = 's'
+                    for v in values:
+                        if type(v) == str:
+                            types += 's'
+                        else:
+                            types += 'f'
+
+
+                    slide.add_parameter(property_name, '/pyta/text/%s/set' % slide_name, types=types, static_args=[property_name], default=values[0] if len(values) == 1 else values)
                     if property_name == 'scale':
                         slide.add_meta_parameter('zoom', ['scale'],
                             getter = lambda scale: scale[0],

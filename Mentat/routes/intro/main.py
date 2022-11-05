@@ -74,7 +74,8 @@ class Intro(Video, Light, RouteBase):
 
         # Create text slides
         pytaVSL.send('/pyta/create_text', 'titre', 'sans')
-        pytaVSL.send('/pyta/create_text', 'soustitre', 'mono')        
+        pytaVSL.send('/pyta/create_text', 'soustitre', 'mono')
+        pytaVSL.check_new_slides()
 
     @pedalboard_button(2)
     def intro(self):
