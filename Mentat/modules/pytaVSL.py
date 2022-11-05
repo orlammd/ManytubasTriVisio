@@ -203,6 +203,10 @@ class PytaVSL(Module):
         """
         Aspire une slide ou plusieurs slides dans l'aspi de trijc
         """
+        old = {}
+        for property in ['warp_1', 'warp_4', 'scale', 'alpha']:
+            old[property] = self.get(slide_name, property)
+
         oscil_d = 2/3 * duration
         away_d = 1/3 * duration
         self.start_scene('sequence/aspi_pub' + slide_name, lambda: [
@@ -213,7 +217,12 @@ class PytaVSL(Module):
             self.animate(slide_name, 'scale', None, [0.035, 0.035], away_d * 0.9, 's', 'exponential-inout' ), self.animate(slide_name, 'position', None, [-0.33, 0.035, self.get(slide_name, 'position_z')], away_d * 0.95, 's', 'exponential-inout'),
             self.animate(slide_name, 'alpha', None, 0.1, away_d * 0.8, 's', 'exponential-out'),
             self.wait(away_d, 's'),
+
             self.set(slide_name, 'visible', 0),
+            self.set(slide_name, 'warp_1', old['warp_1']),
+            self.set(slide_name, 'warp_4', old['warp_4']),
+            self.set(slide_name, 'scale', old['scale']),
+            self.set(slide_name, 'alpha', old['alpha'])
         ])
 
 ########################## TRIJC
@@ -268,6 +277,11 @@ class PytaVSL(Module):
         self.set('m_iraye', 'position', orig['x'], orig['y'], orig['z'])
         self.set('m_iraye', 'scale', orig['zo'], orig['zo'])
         self.set('m_iraye', 'rotate_z', orig['rot'])
+        self.set('m_ch*', 'visible', 0)
+        self.set('m_*', 'warp_1', 0, 0)
+        self.set('m_*', 'warp_4', 0, 0)
+        self.set('m_ch*', 'scale', 0.848, 0.848)
+        self.set('m_layout', 'scale', 1, 1)
 
         climax_y = 0.3
         etape_zoom = 0.4 * dest["zo"]
@@ -276,6 +290,8 @@ class PytaVSL(Module):
         self.start_scene('sequences/miraye_in', lambda:[
             self.set(filename, 'video_time', 0),
             self.set(filename, 'video_speed', 1),
+            self.set(filename, 'visible', 1),
+            self.set('m_layout', 'visible', 1),
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
             self.set('m_iraye', 'visible', 1),
@@ -320,35 +336,30 @@ class PytaVSL(Module):
         """
         pass
 
-    def title_scene(self, title, duration):
-        """
-        Affiche le titre (scène)
-        """
-        segments = title.split(' ')
-        segments_duration = {}
-        total_length = len(title)
-        atom = duration / total_length
-
-        # On sépare les mots et on compare leur nombre de lettres
-        for segment in segments:
-            segments_duration[segment] = atom * len(segment) / total_length
-            self.set('titre', 'text', segment)
-            self.wait(segments_duration[segment], 's')
-            self.logger.info('titre segment:' + segment)
-
-
-
+    # def title_scene(self, title, duration):
+    #     """
+    #     Affiche le titre (scène)
+    #     """
+    #     segments = title.split(' ')
+    #     segments_duration = {}
+    #     total_length = len(title)
+    #     atom = duration / total_length
+    #
+    #     # On sépare les mots et on compare leur nombre de lettres
+    #     for segment in segments:
+    #         segments_duration[segment] = atom * len(segment) / total_length
+    #         self.set('titre', 'text', segment)
+    #         self.wait(segments_duration[segment], 's')
+    #         self.logger.info('titre segment:' + segment)
+    #
+    #
+    #
     def display_title(self, title, duration):
         """
         Affiche le titre
         """
-        self.start_scene('display_title', self.title_scene(title, duration))
-
-
-
-
-
-
+        self.logger.info('Display Title: ' + title + ' in ' + str(duration) + ' s...')
+        # self.start_scene('display_title', self.title_scene(title, duration))
 
 
 ########################## Miraye
@@ -480,15 +491,6 @@ class PytaVSL(Module):
 
 ########################## METHODES GENERIQUES
 
-
-##########################  A virer ?
-    # def get_slide_property(self, slide_name, property):
-    #     if slide_name in self.submodules:
-    #         return self.get(slide_name, property)
-
-########################## A virer ?
-
-
 ########################## Get, set, overlay
     def check_new_slides(self, once=False, text=False):
         """
@@ -498,7 +500,7 @@ class PytaVSL(Module):
             if not text:
                 self.send('/pyta/slide/*/get', 'visible', self.engine.port)
             else:
-                self.send('/pyta/text/*/get', 'visible', self.engine.port)                
+                self.send('/pyta/text/*/get', 'visible', self.engine.port)
         else:
             while True:
                 self.check_new_slides(True)
@@ -521,8 +523,6 @@ class PytaVSL(Module):
 ########################## Get, set, overlay
 
 ########################## Routes
-
-
 
     def route(self, address, args):
 
@@ -597,64 +597,6 @@ class PytaVSL(Module):
 
                             closure(index, ax)
 
-        elif '/pyta/text' in address and '/get/reply' in address:
-            """
-            Handle feedback from text slides
-            """
-            slide_name = address.split('/')[-3]
-
-            if slide_name not in self.submodules:
-                """
-                Feedback from a new text lide: create text Slide object and query all parameters
-                """
-                self.set('ready', False)
-                self.feedback_counter += 1
-
-                slide = Slide(slide_name, parent=self)
-                self.add_submodule(slide)
-                self.send('/pyta/text/%s/get' % slide_name, '*', self.engine.port)
-
-            else:
-                """
-                Feedback from existing text slide: create parameter if it doesn't exist
-                """
-                slide = self.submodules[slide_name]
-                property_name, *values = args
-                if property_name not in slide.parameters and property_name not in self.get_excluded_parameters:
-                    self.set('ready', False)
-                    self.feedback_counter += 1
-
-                    types = 's'
-                    for v in values:
-                        if type(v) == str:
-                            types += 's'
-                        else:
-                            types += 'f'
-
-
-                    slide.add_parameter(property_name, '/pyta/text/%s/set' % slide_name, types=types, static_args=[property_name], default=values[0] if len(values) == 1 else values)
-                    if property_name == 'scale':
-                        slide.add_meta_parameter('zoom', ['scale'],
-                            getter = lambda scale: scale[0],
-                            setter = lambda zoom: slide.set('scale', zoom)
-                        )
-
-                    if property_name in ['position', 'rotate']:
-                        axis = {0: '_x', 1: '_y', 2: '_z'}
-                        for index, ax in axis.items():
-                            def closure(index, ax):
-
-                                def setter(val):
-                                    value = slide.get(property_name)
-                                    value[index] = val
-                                    slide.set(property_name, *value, preserve_animation = True)
-
-                                slide.add_meta_parameter(property_name + ax, [property_name],
-                                    getter = lambda prop: prop[index],
-                                    setter = setter
-                                )
-
-                            closure(index, ax)
 
         # Don't route message any further
         return False

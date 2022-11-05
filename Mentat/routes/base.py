@@ -92,6 +92,9 @@ class RouteBase(Route):
         if '/pyta' in address:
             pytaVSL.send(address, *args)
 
+        if '/slide/set' in address:
+            pytaVSL.set(args[0], args[1], args[2])
+
 
 
     def start_sequence(self, name, sequence, loop=True):

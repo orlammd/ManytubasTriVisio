@@ -1,6 +1,7 @@
 from ..base import RouteBase, pedalboard_button
 from .video import Video
 from .light import Light
+from random import random as _rand
 
 from modules import *
 
@@ -226,13 +227,32 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('m_ch1_10', lambda: [
             pytaVSL.signs_io('in', duration=0.5, easing='random'),
-            pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 'random'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 's',  'random'),
             pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 0.2, 's'),
+            pytaVSL.shaking_slide('f_ch1-9', 'position_x', (_rand() / 2 + 0.5) * 0.01, 10),
+            pytaVSL.shaking_slide('f_ch1-9', 'position_y', _rand() * 0.01, 5, easing='random'),
             self.wait(0.4, 's'),
             pytaVSL.miraye_in('m_ch1-10', 0.5),
             pytaVSL.set('f_ch1-9', 'video_speed', 0),
-            self.wait(17, 's'), # Séparer en deux vidéos ?
-            pytaVSL.display_title('Chapitre 1 : Préambule')
+            self.wait(0.5, 's'),
+            pytaVSL.trijc_change_tool('compas'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.2, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
+            pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
+            pytaVSL.animate('f_ilm', 'position_y', None, 0.15, 1, 's'),
+            self.wait(0.5, 's'),
+            pytaVSL.trijc_change_tool('aimant'),
+
+
+
+            pytaVSL.trijc_change_tool('compas'),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.5, 0.5], 13, 's'),
+            # pytaVSL.animate('m_iraye', 'position_y', None, -0.1, 13, 's'),
+            pytaVSL.animate('m_iraye', 'position_x', None, 0.1, 13, 's'),
+            self.wait(15, 's'), # Séparer en deux vidéos ?
+
+            pytaVSL.display_title('Chapitre 1 : Préambule', 3)
         ])
 
     @pedalboard_button(10000)
