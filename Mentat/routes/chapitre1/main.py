@@ -233,22 +233,22 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.shaking_slide('f_ch1-9', 'position_x', (_rand() / 2 + 0.5) * 0.01, 10),
             pytaVSL.shaking_slide('f_ch1-9', 'position_y', _rand() * 0.01, 5, easing='random'),
             self.wait(0.4, 's'),
+            pytaVSL.trijc_change_tool('compas'),
             pytaVSL.miraye_in('m_ch1-10', 0.5),
             pytaVSL.set('f_ch1-9', 'video_speed', 0),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, 0.5, 's'),
             self.wait(0.5, 's'),
-            pytaVSL.trijc_change_tool('compas'),
+            pytaVSL.trijc_change_tool('aimant'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),            
             pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.2, 's', 'elastic-inout'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
             pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
             pytaVSL.animate('f_ilm', 'position_y', None, 0.15, 1, 's'),
             self.wait(0.5, 's'),
-            pytaVSL.trijc_change_tool('aimant'),
-
-
-
             pytaVSL.trijc_change_tool('compas'),
+            self.wait(0.5, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -40, 13, 's'),
             pytaVSL.animate('m_iraye', 'scale', None, [0.5, 0.5], 13, 's'),
-            # pytaVSL.animate('m_iraye', 'position_y', None, -0.1, 13, 's'),
             pytaVSL.animate('m_iraye', 'position_x', None, 0.1, 13, 's'),
             self.wait(15, 's'), # Séparer en deux vidéos ?
 
