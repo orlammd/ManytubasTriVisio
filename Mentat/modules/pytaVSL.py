@@ -186,9 +186,11 @@ class PytaVSL(Module):
         """
         init_tool = ""
         for slide_name in self.submodules:
-            if 't_trijc_' in slide_name:
+            if slide_name.startswith('t_trijc_'):
                 if self.get(slide_name, 'visible'):
                     init_tool = slide_name
+
+        self.logger.info(init_tool + ' -> ' + end_tool)
 
         self.start_scene('changing_tool', lambda: [
             self.animate(init_tool, 'rotate_z', None, 90, 0.1, 's'),
@@ -197,6 +199,12 @@ class PytaVSL(Module):
             self.set(init_tool, 'visible', 0),
             self.set('t_trijc_' + end_tool, 'visible', 1),
         ])
+
+    def trijc_turn_lights(self, on='on', duration=1):
+        dest = 0 if on == 'off' else 1
+        angle = 360 * duration if on == 'off' else -360 * duration
+        self.animate('sub_t_trijc_lustre_allume', 'alpha', None, dest, duration)
+        self.animate('sub_t_trijc_lustre_potard', 'rotate_z', None, angle, duration)
 
 
     def aspi_slide(self, slide_name, warp_1, warp_4, duration):

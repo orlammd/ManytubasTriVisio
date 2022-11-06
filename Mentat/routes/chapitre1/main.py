@@ -343,3 +343,11 @@ class Chapitre1(Video, Light, RouteBase):
     @pedalboard_button(10000)
     def m_titre(self):
         pytaVSL.display_title('Chapitre 1 : Preambule', 3)
+
+    @pedalboard_button(999)
+    def utilise_un_lustre(self):
+        pytaVSL.trijc_change_tool('lustre')
+
+    @pedalboard_button(1000)
+    def baisse_light(self):
+        pytaVSL.trijc_turn_lights('off', 1)

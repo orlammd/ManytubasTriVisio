@@ -53,6 +53,9 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.create_clone('plane_horn_1', 'plane_horn_' + str(index))
 
         ### Create groups
+
+        pytaVSL.create_group('t_trijc_lustre', ['sub_t_trijc_lustre_*'])
+
         for slides_group in [
             'trijc',
             't_trijc',
