@@ -272,6 +272,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_light', 'alpha', None, 0, 0.5, 's'),
             pytaVSL.animate('m_iraye', 'alpha', None, 0, 0.5, 's'),
             pytaVSL.animate('lights', 'alpha', None, 0, 0.5, 's'),
+            pytaVSL.trijc_io('out', 'light', 2)
         ])
 
     @pedalboard_button(5)
@@ -285,12 +286,58 @@ class Chapitre1(Video, Light, RouteBase):
 
     @pedalboard_button(105)
     def f_ch1_12(self):
+        """
+        Les BF se promènent
+        """
         self.start_scene('f_ch1_12', lambda: [
             pytaVSL.f_switch_video('f_ch1-11', 'f_ch1-12'),
-            self.wait(pytaVSL.get('f_ch1-12', 'video_end'), 's'),
         ])
 
 
+    @pedalboard_button(6)
+    def f_ch1_13(self):
+        """
+        Saladin approche / bruit au plateau
+        """
+        self.start_scene('f_ch1_13', lambda: [
+            pytaVSL.f_noisy_switch_video('f_ch1-12', 'f_ch1-13'),
+        ])
+
+    @pedalboard_button(7)
+    def f_ch1_14(self):
+        """
+        Allumage lumières
+        """
+        self.start_scene('f_ch1_14', lambda: [
+            pytaVSL.animate('lights', 'alpha', None, 1, 0.2, 's'),
+            pytaVSL.f_switch_video('f_ch1-13', 'f_ch1-14'),
+            self.wait(3, 's'),
+            pytaVSL.animate('lights', 'alpha', None, 0.2, 5, 's'),
+            self.wait(pytaVSL.get('f_ch1-14', 'video_end')),
+            self.f_ch1_15()
+        ])
+
+    @pedalboard_button(106)
+    def f_ch1_15(self):
+        """
+        Doah chez la voyante
+        """
+        self.start_scene('f_ch1_15', lambda: [
+            pytaVSL.f_switch_video('f_ch1-14', 'f_ch-15'),
+            self.wait(pytaVSL.get('f_ch1-15', 'video_end')),
+            self.f_ch1_16()
+        ])
+
+    @pedalboard_button(106)
+    def f_ch1_16(self):
+        """
+        Doah chez la voyante
+        """
+        self.start_scene('f_ch1_15', lambda: [
+            pytaVSL.f_switch_video('f_ch1-15', 'f_ch-16'),
+            self.wait(pytaVSL.get('f_ch1-16', 'video_end')),
+            self.engine.set_route('Chapitre 2')
+        ])
 
 # TODO A virer à la fin
     @pedalboard_button(10000)
