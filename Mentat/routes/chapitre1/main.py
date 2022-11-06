@@ -227,9 +227,9 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('m_ch1_10', lambda: [
             pytaVSL.signs_io('in', duration=0.5, easing='random'),
-            pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 's',  'random'),
+            pytaVSL.animate('lights', 'alpha', None, 1, 0.5, 's',  'random'),
             pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
-            pytaVSL.animate('lights*', 'alpha', None, 1, 0.2, 's'),
+            pytaVSL.animate('lights', 'alpha', None, 1, 0.2, 's'),
             pytaVSL.shaking_slide('f_ch1-9', 'position_x', (_rand() / 2 + 0.5) * 0.01, 10),
             pytaVSL.shaking_slide('f_ch1-9', 'position_y', _rand() * 0.01, 5, easing='random'),
             self.wait(0.4, 's'),
@@ -239,7 +239,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, 0.5, 's'),
             self.wait(0.5, 's'),
             pytaVSL.trijc_change_tool('aimant'),
-            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),            
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.2, 's', 'elastic-inout'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
             pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
@@ -251,10 +251,20 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('m_iraye', 'scale', None, [0.5, 0.5], 13, 's'),
             pytaVSL.animate('m_iraye', 'position_x', None, 0.1, 13, 's'),
             self.wait(15, 's'), # Séparer en deux vidéos ?
-
-            pytaVSL.display_title('Chapitre 1 : Préambule', 3)
+            pytaVSL.display_title('Chapitre 1 : Préambule', 3),
+            self.wait(10, 's'), # A affiner - moment où elle commence à raconter l'histoire
+            pytaVSL.m_noisy_switch_video('f-ch1-9', 'f-ch1-11', 1),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.95, 0.95], 8, 's'),
+            pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            pytaVSL.animate('m_iraye', 'position', None, [0, 0, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            pytaVSL.trijc_change_tool('light'),
+            self.wait(0.3, 's'),
+            pytaVSL.animate('t_trijc_light', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('m_iraye', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('lights')
         ])
 
     @pedalboard_button(10000)
-    def titre(self):
+    def m_titre(self):
         pytaVSL.display_title('Chapitre 1 : Preambule', 3)
