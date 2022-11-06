@@ -227,9 +227,8 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('m_ch1_10', lambda: [
             pytaVSL.signs_io('in', duration=0.5, easing='random'),
-            pytaVSL.animate('lights', 'alpha', None, 1, 0.5, 's',  'random'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 's',  'random'),
             pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
-            pytaVSL.animate('lights', 'alpha', None, 1, 0.2, 's'),
             pytaVSL.shaking_slide('f_ch1-9', 'position_x', (_rand() / 2 + 0.5) * 0.01, 10),
             pytaVSL.shaking_slide('f_ch1-9', 'position_y', _rand() * 0.01, 5, easing='random'),
             self.wait(0.4, 's'),
@@ -259,20 +258,25 @@ class Chapitre1(Video, Light, RouteBase):
     @pedalboard_button(104)
     def f_ch1_11(self):
         self.start_scene('f_ch1_11', lambda: [
-            pytaVSL.f_noisy_switch_video('f-ch1-9', 'f-ch1-11', 1),
+            pytaVSL.f_noisy_switch_video('f_ch1-9', 'f_ch1-11', 1),
             pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.95, 0.95], 8, 's'),
             pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
-            pytaVSL.animate('m_iraye', 'position', None, [0, 0, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
-            pytaVSL.animate('f_ch1_9', 'position_x', None, 0, 8, 's'),
-            pytaVSL.animate('f_ch1_9', 'position_y', None, 0, 8, 's', 'random'),
+            pytaVSL.animate('f_ilm', 'position', None, [0, 0, pytaVSL.get('f_ilm', 'position_z')], 8, 's'),
+            pytaVSL.animate('f_ch1-9', 'position_x', None, 0, 8, 's'),
+            pytaVSL.animate('f_ch1-9', 'position_y', None, 0, 8, 's', 'random'),
             ## TODO Tout ce qui suit à synchroniser avec le film
-            pytaVSL.trijc_change_tool('light'),
+            self.wait(8, 's'),
+            pytaVSL.trijc_change_tool('lustre'),
             self.wait(0.3, 's'),
-            pytaVSL.animate('t_trijc_light', 'alpha', None, 0, 0.5, 's'),
-            pytaVSL.animate('m_iraye', 'alpha', None, 0, 0.5, 's'),
-            pytaVSL.animate('lights', 'alpha', None, 0, 0.5, 's'),
-            pytaVSL.trijc_io('out', 'light', 2)
+            pytaVSL.trijc_turn_lights('off', 1),
+            pytaVSL.animate('m_layout', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('m_ch1-10', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('lights*', 'alpha', None, 0.3, 1, 's'),
+            self.wait(2, 's'),
+            pytaVSL.trijc_io('out', 'lustre', 2),
+            self.wait(1, 's'),
+            pytaVSL.signs_io('out', duration=1, easing='elastic-inout'),
         ])
 
     @pedalboard_button(5)
@@ -309,10 +313,10 @@ class Chapitre1(Video, Light, RouteBase):
         Allumage lumières
         """
         self.start_scene('f_ch1_14', lambda: [
-            pytaVSL.animate('lights', 'alpha', None, 1, 0.2, 's'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 0.2, 's'),
             pytaVSL.f_switch_video('f_ch1-13', 'f_ch1-14'),
             self.wait(3, 's'),
-            pytaVSL.animate('lights', 'alpha', None, 0.2, 5, 's'),
+            pytaVSL.animate('lights*', 'alpha', None, 0.2, 5, 's'),
             self.wait(pytaVSL.get('f_ch1-14', 'video_end')),
             self.f_ch1_15()
         ])

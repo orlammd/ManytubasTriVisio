@@ -429,7 +429,7 @@ class PytaVSL(Module):
             self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
             self.signs_io('out', together=False, duration=complete_duration),
             self.wait(complete_duration / 2, 's'),
-            self.animate('lights', 'alpha', None, 0.3, complete_duration, 's', 'linear'),
+            self.animate('lights*', 'alpha', None, 0.3, complete_duration, 's', 'linear'),
             self.trijc_io('out', 'compas', zoom_duration + 0.5)
         ])
 
