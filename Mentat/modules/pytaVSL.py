@@ -425,6 +425,43 @@ class PytaVSL(Module):
             self.trijc_io('out', 'compas', zoom_duration + 0.5)
         ])
 
+    def f_noisy_switch_video(self, orig, dest, duration):
+        """
+        Switching from one video to another in f_ilm with a noisy state in between
+        """
+
+        w_coef = _rand() * 0.8
+
+        self.start_scene('sequence/' + orig + '_-_' + dest, lambda: [
+            self.set(dest, 'rgbwave', w_coef),
+            self.set(dest, 'noise', 1.0),
+            self.animate(orig, 'noise', None, 1.0, duration / 2, 's'),
+            self.animate(orig, 'rgbwave', None, w_coef, duration / 2, 's'),
+            self.wait(0.25, 's'),
+            self.set(dest, 'visible', 1),
+            self.set(dest, 'video_time', 0, force_send=True),
+            self.set(dest, 'video_speed', 1),
+            self.set(orig, 'visible', 0),
+            self.animate(dest, 'noise', 1.0, 0.0, duration / 2, 's'),
+            self.animate(dest, 'rgbwave', None, 0.0, duration / 2, 's'),
+            self.set(orig, 'noise', 0),
+            self.set(orig, 'rgbwave', 0)
+            ]
+        )
+
+
+    def f_switch_video(self, orig, dest, duration):
+        """
+        Switching from one video to another in f_ilm
+        """
+
+        self.start_scene('sequence/' + orig + '_-_' + dest, lambda: [
+            self.set(dest, 'visible', 1),
+            self.set(dest, 'video_time', 0, force_send=True),
+            self.set(dest, 'video_speed', 1),
+            self.set(orig, 'visible', 0),
+            ]
+        )
 
 
     def movie_out(self, duration, easing):
@@ -457,6 +494,13 @@ class PytaVSL(Module):
 
 ########################## JINGLES
 
+########################## Vanupiés Hacking
+    def v_hackboat_io(self, direction='in', duration=1):
+        """
+        Hacking Vanupiés
+        """
+        pass
+########################## Vanupiés Hacking
 
 ########################## METHODES GENERIQUES
 
@@ -471,6 +515,7 @@ class PytaVSL(Module):
             self.wait(duration / 2, 's'),
             self.animate(slide_name, property, None, center_value + range / 2, duration, 's', easing + '-mirror', loop=True)
         ])
+
 
     def shaking_tvs(self, number, content):
         range_x = (_rand() / 2 + 0.5) * 0.01

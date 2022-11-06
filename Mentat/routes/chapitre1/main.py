@@ -250,21 +250,50 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -40, 13, 's'),
             pytaVSL.animate('m_iraye', 'scale', None, [0.5, 0.5], 13, 's'),
             pytaVSL.animate('m_iraye', 'position_x', None, 0.1, 13, 's'),
-            self.wait(15, 's'), # Séparer en deux vidéos ?
+            self.wait(15, 's'), # TODO Séparer en deux vidéos ?
             pytaVSL.display_title('Chapitre 1 : Préambule', 3),
-            self.wait(10, 's'), # A affiner - moment où elle commence à raconter l'histoire
-            pytaVSL.m_noisy_switch_video('f-ch1-9', 'f-ch1-11', 1),
+            self.wait(10, 's'), # TODO A affiner - moment où elle commence à raconter l'histoire
+            self.f_ch1_11()
+        ])
+
+    @pedalboard_button(104)
+    def f_ch1_11(self):
+        self.start_scene('f_ch1_11', lambda: [
+            pytaVSL.f_noisy_switch_video('f-ch1-9', 'f-ch1-11', 1),
             pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.95, 0.95], 8, 's'),
             pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
             pytaVSL.animate('m_iraye', 'position', None, [0, 0, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            pytaVSL.animate('f_ch1_9', 'position_x', None, 0, 8, 's'),
+            pytaVSL.animate('f_ch1_9', 'position_y', None, 0, 8, 's', 'random'),
+            ## TODO Tout ce qui suit à synchroniser avec le film
             pytaVSL.trijc_change_tool('light'),
             self.wait(0.3, 's'),
-            pytaVSL.animate('t_trijc_light', 'alpha', None, 0, 1, 's'),
-            pytaVSL.animate('m_iraye', 'alpha', None, 0, 1, 's'),
-            pytaVSL.animate('lights')
+            pytaVSL.animate('t_trijc_light', 'alpha', None, 0, 0.5, 's'),
+            pytaVSL.animate('m_iraye', 'alpha', None, 0, 0.5, 's'),
+            pytaVSL.animate('lights', 'alpha', None, 0, 0.5, 's'),
         ])
 
+    @pedalboard_button(5)
+    def hb_instruments_direction(self):
+        self.start_scene('hb_instruments_direction', lambda: [
+            pytaVSL.v_hackboat_io('in'),
+            #### Scènes des instruments de direction
+            self.wait(1, 's'),
+            self.f_ch1_12()
+        ])
+
+    @pedalboard_button(105)
+    def f_ch1_12(self):
+        self.start_scene('f_ch1_12', lambda: [
+            pytaVSL.f_switch_video('f_ch1-11', 'f_ch1-12'),
+            self.wait(pytaVSL.get('f_ch1-12', 'video_end'), 's'),
+            self.engine.set_route('Chapitre 2')
+        ])
+
+
+
+# TODO A virer à la fin
     @pedalboard_button(10000)
     def m_titre(self):
         pytaVSL.display_title('Chapitre 1 : Preambule', 3)
