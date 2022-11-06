@@ -36,6 +36,7 @@ class Chapitre2(Video, Light, RouteBase):
         pytaVSL.reset()
 
         # def create_tv_groups():
+        pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
         #     for index in range(1,5):
         #         pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_ch1-' + str(index+2)])
 
@@ -70,3 +71,10 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.miraye_in('m_ch2-1', 1)
             ]
         )
+
+    @pedalboard_button(1)
+    def jingle_jc_1(self):
+        """
+        Jingle intempestif #1
+        """
+        pytaVSL.jc_jingle_io('bottom', 0.3, 'elastic-inout')

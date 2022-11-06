@@ -19,5 +19,14 @@
   ["f_arabesque_2", "position", 0, 0.005, 0.1],
   ["f_arabesque_2", "visible", 1],
   ["f_ch2-2", "position", 0, 0, 0],
-  ["f_ch2-2", "scale", 1, 0]
+  ["f_ch2-2", "scale", 1, 0],
+  ["tv_jc", "position", 1, 0.1, -11.0],
+  ["tv_jc", "scale", 0.8, 0.8],
+  ["plane_horn_jc", "visible", 1.0],
+  ["plane_horn_jc", "position", 0.0, 0.0, 0.0],
+  ["p_jc", "visible", 1.0],
+  ["p_jc", "position", 0.0, -0.085, 0.01],
+  ["p_jc", "scale", 0.61, 0.61],
+  ["p_jc", "video_loop", 1.0],
+  ["p_jc", "fish", 0.8]
 ]
