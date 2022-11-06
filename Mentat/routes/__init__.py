@@ -1,5 +1,6 @@
 from .intro.main import Intro
 from .chapitre1.main import Chapitre1
+from .chapitre2.main import Chapitre2
 # from .snapshat.main import Snapshat
 # from .mcob.main import Mcob
 # from .agneaugastrik.main import AgneauGastrik
@@ -12,6 +13,7 @@ from .chapitre1.main import Chapitre1
 
 intro = Intro('Intro')
 chapitre1 = Chapitre1('Chapitre 1')
+chapitre2 = Chapitre2('Chapitre 2')
 # snapshat = Snapshat('Snapshat')
 # mcob = Mcob('Mcob')
 # agneaugastrik = AgneauGastrik('AgneauGastrik')

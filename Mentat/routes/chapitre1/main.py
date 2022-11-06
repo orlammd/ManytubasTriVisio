@@ -21,7 +21,7 @@ class Chapitre1(Video, Light, RouteBase):
         prodSampler.set_kit(self.name)
 
 
-        self.start_scene('init', lambda: [
+        self.start_scene('init_chapitre1', lambda: [
             # Overlay
             self.init_pyta(),
             self.wait(0.2, 's'),
@@ -335,11 +335,17 @@ class Chapitre1(Video, Light, RouteBase):
     @pedalboard_button(106)
     def f_ch1_16(self):
         """
-        Doah chez la voyante
+        Musée zarbi de l'étrange
         """
-        self.start_scene('f_ch1_15', lambda: [
+        self.start_scene('f_ch1_16', lambda: [
             pytaVSL.f_switch_video('f_ch1-15', 'f_ch-16'),
-            self.wait(pytaVSL.get('f_ch1-16', 'video_end')),
+            self.wait(pytaVSL.get('f_ch1-16', 'video_end') - 10), # TODO à affiner en fonction de la fin du film
+            pytaVSL.trijc_io('in', 'lustre', 7),
+            pytaVSL.trijc_turnlights('off', 3),
+            pytaVSL.animate('f_*', 'alpha', None, 0, 3),
+            self.wait(3.2, 's'),
+            pytaVSL.set('f_ilm', 'visible', 0),
+            pytaVSL.set('f_*', 'alpha', 1),
             self.engine.set_route('Chapitre 2')
         ])
 
