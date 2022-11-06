@@ -288,7 +288,6 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('f_ch1_12', lambda: [
             pytaVSL.f_switch_video('f_ch1-11', 'f_ch1-12'),
             self.wait(pytaVSL.get('f_ch1-12', 'video_end'), 's'),
-            self.engine.set_route('Chapitre 2')
         ])
 
 
