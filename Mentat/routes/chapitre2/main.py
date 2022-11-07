@@ -132,16 +132,7 @@ class Chapitre2(Video, Light, RouteBase):
         self.start_scene('sequence/f_ch2_4', lambda: [
             pytaVSL.movie_in('f_ch2-4', 0.6),
             self.wait(5, 's'), # TODO affiner timing
-            pytaVSL.trijc_change_tool('compas'),
-            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, 0.5, 's'),
-            pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.5, 's', 'elastic-inout'),
-            self.wait(0.5, 's'),
-            pytaVSL.trijc_change_tool('aimant'),
-            pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
-            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),
-            pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
-            pytaVSL.animate('f_ilm', 'position_y', None, 0.15, 1, 's'),
-            self.wait(0.5, 's'),
+
         ])
 
         ##### TODO voir si on met les scènes d'échec des Vanupiés

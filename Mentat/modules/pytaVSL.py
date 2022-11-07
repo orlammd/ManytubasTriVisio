@@ -494,11 +494,25 @@ class PytaVSL(Module):
         """
         pass
 
-    def movie_split(self, splitmode, number, duration, easing):
+    def movie_split(self, left_slide, left_position=[-0.35, 0.15], left_scale=[0.3, 0.3], right_slide, right_position=[0.1, -0.1], right_scale=[0.6, 0.6], trijc_in_duration=0.2, scale_duration=1, move_duration=1, easing='linear'):
         """
         Having several movies being split over the screen
         """
-        pass
+        self.start_scene('sequence/'
+            pytaVSL.trijc_io('in', 'compas', trijc_in_duration, 'elastic-inout'),
+            self.wait(trijc_in_duration, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, scale_duration / 2, 's', 'elastic-inout'),
+            pytaVSL.animate(left_slide, 'scale', None, [l_scale * 2 for l_scale in left_scale], scale_duration / 2, 's', 'elastic-inout'),
+            self.wait(scale_duration / 2, 's'),
+            pytaVSL.trijc_change_tool('aimant'),
+            pytaVSL.animate(left_slide, 'scale', None, left_scale, scale_duration / 2, 's', easing),
+            self.wait(scale_duration / 2, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, move_duration, 's'),
+            pytaVSL.animate(left_slide, 'position_x', None, left_position[0], 1, 's', easing),
+            pytaVSL.animate(left_slide, 'position_y', None, left_position[1], 1, 's', easing),
+            self.wait(0.5, 's'),
+            pytaVSL.trijc_change_tool('tuba')
+        ])
 
 ########################## FILM
 
