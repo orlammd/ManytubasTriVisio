@@ -130,7 +130,7 @@ class Chapitre1(Video, Light, RouteBase):
             self.wait(3, 's'),
             pytaVSL.animate('tv4', 'position_x', None, -1, 2, 's'),
             self.wait(2, 's'),
-            pytaVSL.set('tv*', 'visible', 0),
+            pytaVSL.set('tv[2-4]', 'visible', 0),
             pytaVSL.stop_animate('plane_horn*', 'position_x'),
             pytaVSL.stop_animate('plane_horn*', 'position_y'),
             pytaVSL.stop_animate('p_ch1-*', 'position_x'),
@@ -176,34 +176,34 @@ class Chapitre1(Video, Light, RouteBase):
         Lancement du jingle Jack Caesar
         """
 
-        # pytaVSL.shaking_tvs(1, 'p_ch1-3')
-        # pytaVSL.set('tv1', 'position_z', -12),
-        pytaVSL.set('tv1', 'visible', 1.0),
-        # pytaVSL.set('p_ch1-3', 'video_time', 0)
-        # pytaVSL.set('p_ch1-3', 'video_speed', 1)
-        #
-        # self.start_scene('sequence/p_ch1_3', lambda: [
-        #
-        #     pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
-        #     pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
-        #     self.wait(0.15, 's'),
-        #     pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
-        #     self.wait(pytaVSL.get('p_ch1-3', 'video_end') - 0.3, 's'),
-        #     pytaVSL.animate('tv1', 'position_x', None, 1, 0.3, 's', 'exponential-inout'),
-        #     pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
-        #     self.wait(0.15, 's'),
-        #     pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
-        #     self.wait(0.15, 's'),
-        #     pytaVSL.stop_animate('plane_horn_1', 'position_x'),
-        #     pytaVSL.stop_animate('plane_horn_1', 'position_y'),
-        #     pytaVSL.stop_animate('p_ch1-3', 'position_x'),
-        #     pytaVSL.stop_animate('p_ch1-3', 'position_y'),
-        #     pytaVSL.trijc_change_tool('aspi'),
-        #     self.wait(0.2, 's'),
-        #     pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -5, 0.5, 's', ),
-        #     self.wait(0.5, 's'),
-            # self.f_ch1_9()
-        # ])
+        pytaVSL.shaking_tvs(1, 'p_ch1-3')
+        pytaVSL.set('tv1', 'position_z', -12),
+        # pytaVSL.set('tv1', 'visible', 1.0),
+        pytaVSL.set('p_ch1-3', 'video_time', 0)
+        pytaVSL.set('p_ch1-3', 'video_speed', 1)
+
+        self.start_scene('sequence/p_ch1_3', lambda: [
+
+            pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+            self.wait(0.15, 's'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+            self.wait(pytaVSL.get('p_ch1-3', 'video_end') - 0.3, 's'),
+            pytaVSL.animate('tv1', 'position_x', None, 1, 0.3, 's', 'exponential-inout'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+            self.wait(0.15, 's'),
+            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+            self.wait(0.15, 's'),
+            pytaVSL.stop_animate('plane_horn_1', 'position_x'),
+            pytaVSL.stop_animate('plane_horn_1', 'position_y'),
+            pytaVSL.stop_animate('p_ch1-3', 'position_x'),
+            pytaVSL.stop_animate('p_ch1-3', 'position_y'),
+            pytaVSL.trijc_change_tool('aspi'),
+            self.wait(0.2, 's'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -5, 0.5, 's', ),
+            self.wait(0.5, 's'),
+            self.f_ch1_9()
+        ])
 
     @pedalboard_button(102)
     def f_ch1_9(self):
