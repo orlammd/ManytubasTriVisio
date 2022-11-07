@@ -155,6 +155,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.animate('m_iraye', 'scale', None, [0.837, 0.837], 1, 's', 'random'),
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
             self.wait(1, 's'),
+            self.wait(51, 's'),
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'random'), # à remplacer par des mvts de ciseaux
             pytaVSL.m_noisy_switch_video('m_ch1-7', 'm_ch1-7_waiting', 0.1)
         ])
@@ -164,7 +165,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Suite intro
         """
-        self.start_scene('sequence/m_ch1_9', lambda:[
+        self.start_scene('sequence/m_ch1_8', lambda:[
             pytaVSL.m_noisy_switch_video('m_ch1-7_waiting', 'm_ch1-8', 0.1),
         ])
 
