@@ -344,6 +344,22 @@ class PytaVSL(Module):
             ]
         )
 
+    def m_switch_video(self, orig, dest, duration):
+        """
+        Switching from one video to another in m_layout with a noisy state in between
+        """
+
+        w_coef = _rand() * 0.8
+
+        self.start_scene('sequence/' + orig + '_-_' + dest, lambda: [
+            self.set(dest, 'visible', 1),
+            self.set(dest, 'video_time', 0, force_send=True),
+            self.set(dest, 'video_speed', 1),
+            self.set(orig, 'visible', 0),
+            ]
+        )
+
+
     def miraye_out(self, duration, easing):
         """
         Having Miraye Leparket stopping her storytelling
@@ -430,7 +446,7 @@ class PytaVSL(Module):
             self.signs_io('out', together=False, duration=complete_duration),
             self.wait(complete_duration / 2, 's'),
             self.animate('lights*', 'alpha', None, 0.3, complete_duration, 's', 'linear'),
-            self.trijc_io('out', 'compas', zoom_duration + 0.5)
+            self.trijc_io('out', 'lustre', zoom_duration + 0.5)
         ])
 
     def f_noisy_switch_video(self, orig, dest, duration):

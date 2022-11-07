@@ -62,7 +62,7 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Miraye Intro Chapitre 2
         """
-        self.start_scene('sequence/lancement_miraye_1', lambda: [
+        self.start_scene('sequence/miraye_intro_chapitre_2', lambda: [
             ### Lancement du Film
             pytaVSL.trijc_io('in', 'lustre', 1, 'elastic'),
             self.wait(2, 's'),
@@ -77,4 +77,71 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Jingle intempestif #1
         """
-        pytaVSL.jc_jingle_io('bottom', 0.3, 'elastic-inout')
+        self.start_scene('sequence/jingle_intempestif_1', lambda: [
+            pytaVSL.jc_jingle_io('bottom', 0.3, 'elastic-inout'),
+            self.wait(pytaVSL.get('p_jc', 'video_end') + 0.3 * 2, 's'),
+            self.m_ch2_2()
+        ])
+
+    @pedalboard_button(101)
+    def m_ch2_2(self):
+        """
+        Miraye Intro Chapitre 2 (2)
+        """
+        self.start_scene('sequence/miraye_intro_chapitre_2_2' lambda:[
+            pytaVSL.m_switch_video('m_ch2-1', 'm_ch2-2')
+        ])
+
+    @pedalboard_button(2)
+    def jingle_jc_2(self):
+        """
+        Jingle intempestif #2
+        """
+        self.start_scene('sequence/jingle_intempestif_2', lambda: [
+            pytaVSL.jc_jingle_io('top', 0.15, 'elastic-inout'),
+            self.wait(pytaVSL.get('p_jc', 'video_end') + 0.15 * 2, 's'),
+            self.m_ch2_3()
+        ])
+
+    @pedalboard_button(102)
+    def m_ch2_3(self):
+        """
+        Miraye Intro Chapitre 2 (3)
+        """
+        self.start_scene('sequence/miraye_intro_chapitre_2_3' lambda:[
+            pytaVSL.m_switch_video('m_ch2-2', 'm_ch2-3'),
+            self.wait(4, 's'), # TODO affiner le timing
+            pytaVSL.display_title("Chapitre 2 : L'idée lumineuse de Jack Caesar pour établir la paix publicitaire", 5),
+            self.wait(5, 's'),
+            pytaVSL.trijc_change_tool('aspi'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
+            pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
+            pytaVSL.aspi_slide('m_ch2-3', [-0.02, -0.445], [-0.02, 0.53], 0.6),
+            self.wait(1.2, 's'),
+            pytaVSL.trijc_io('out', 'aspi', 0.4, 'elastic-inout'),
+            self.wait(0.4, 's'),
+            pytaVSL.trijc_io('in', 'tuba', 0.3, 'elastic-inout'),
+            self.wait(0.3, 's'),
+
+            # TODO manque un jingle ??
+            self.f_ch2_4()
+        ])
+
+    @pedalboard_button(103)
+    def f_ch2_5(self):
+        self.start_scene('sequence/f_ch2_4', lambda: [
+            pytaVSL.movie_in('f_ch2-4', 0.6),
+            self.wait(5, 's'), # TODO affiner timing
+            pytaVSL.trijc_change_tool('compas'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, 0.5, 's'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.5, 's', 'elastic-inout'),
+            self.wait(0.5, 's'),
+            pytaVSL.trijc_change_tool('aimant'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),
+            pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
+            pytaVSL.animate('f_ilm', 'position_y', None, 0.15, 1, 's'),
+            self.wait(0.5, 's'),
+        ])
+
+        ##### TODO voir si on met les scènes d'échec des Vanupiés

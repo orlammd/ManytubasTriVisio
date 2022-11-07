@@ -177,7 +177,7 @@ class Chapitre1(Video, Light, RouteBase):
 
         pytaVSL.shaking_tvs(1, 'p_ch1-3')
 
-        self.start_scene('jack_caesar_jingle', lambda: [
+        self.start_scene('sequence/jack_caesar_jingle', lambda: [
             pytaVSL.set('tv1', 'visible', 1),
             pytaVSL.set('tv1', 'position_z', -12),
             pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
@@ -206,7 +206,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Bobine de Fin
         """
-        self.start_scene('f_ch1_9', lambda: [
+        self.start_scene('sequence/f_ch1_9', lambda: [
             pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
             pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
             pytaVSL.aspi_slide('m_ch1-8', [-0.02, -0.445], [-0.02, 0.53], 0.6),
@@ -225,7 +225,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Intervention Miraye
         """
-        self.start_scene('m_ch1_10', lambda: [
+        self.start_scene('sequence/m_ch1_10', lambda: [
             pytaVSL.signs_io('in', duration=0.5, easing='random'),
             pytaVSL.animate('lights*', 'alpha', None, 1, 0.5, 's',  'random'),
             pytaVSL.trijc_io('in', 'tuba', 0.5, 'random'),
@@ -240,6 +240,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.trijc_change_tool('aimant'),
             pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, 0.5, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.6, 0.6], 0.2, 's', 'elastic-inout'),
+            self.wait(0.2, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.3, 0.3], 1, 's'),
             pytaVSL.animate('f_ilm', 'position_x', None, -0.35, 1, 's'),
             pytaVSL.animate('f_ilm', 'position_y', None, 0.15, 1, 's'),
@@ -257,14 +258,14 @@ class Chapitre1(Video, Light, RouteBase):
 
     @pedalboard_button(104)
     def f_ch1_11(self):
-        self.start_scene('f_ch1_11', lambda: [
+        self.start_scene('sequence/f_ch1_11', lambda: [
             pytaVSL.f_noisy_switch_video('f_ch1-9', 'f_ch1-11', 1),
             pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.95, 0.95], 8, 's'),
             pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
             pytaVSL.animate('f_ilm', 'position', None, [0, 0, pytaVSL.get('f_ilm', 'position_z')], 8, 's'),
-            pytaVSL.animate('f_ch1-9', 'position_x', None, 0, 8, 's'),
-            pytaVSL.animate('f_ch1-9', 'position_y', None, 0, 8, 's', 'random'),
+            pytaVSL.stop_animate('f_ch1-9', 'position_x'), #, None, 0, 8, 's'),
+            pytaVSL.stop_animate('f_ch1-9', 'position_y'), #, None, 0, 8, 's', 'random'),
             ## TODO Tout ce qui suit à synchroniser avec le film
             self.wait(8, 's'),
             pytaVSL.trijc_change_tool('lustre'),
@@ -281,7 +282,7 @@ class Chapitre1(Video, Light, RouteBase):
 
     @pedalboard_button(5)
     def hb_instruments_direction(self):
-        self.start_scene('hb_instruments_direction', lambda: [
+        self.start_scene('sequence/hb_instruments_direction', lambda: [
             pytaVSL.v_hackboat_io('in'),
             #### Scènes des instruments de direction
             self.wait(1, 's'),
@@ -293,7 +294,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Les BF se promènent
         """
-        self.start_scene('f_ch1_12', lambda: [
+        self.start_scene('sequence/f_ch1_12', lambda: [
             pytaVSL.f_switch_video('f_ch1-11', 'f_ch1-12'),
         ])
 
@@ -312,7 +313,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Allumage lumières
         """
-        self.start_scene('f_ch1_14', lambda: [
+        self.start_scene('sequence/f_ch1_14', lambda: [
             pytaVSL.animate('lights*', 'alpha', None, 1, 0.2, 's'),
             pytaVSL.f_switch_video('f_ch1-13', 'f_ch1-14'),
             self.wait(3, 's'),
@@ -326,7 +327,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Doah chez la voyante
         """
-        self.start_scene('f_ch1_15', lambda: [
+        self.start_scene('sequence/f_ch1_15', lambda: [
             pytaVSL.f_switch_video('f_ch1-14', 'f_ch-15'),
             self.wait(pytaVSL.get('f_ch1-15', 'video_end')),
             self.f_ch1_16()
@@ -337,7 +338,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
         Musée zarbi de l'étrange
         """
-        self.start_scene('f_ch1_16', lambda: [
+        self.start_scene('sequence/f_ch1_16', lambda: [
             pytaVSL.f_switch_video('f_ch1-15', 'f_ch-16'),
             self.wait(pytaVSL.get('f_ch1-16', 'video_end') - 10), # TODO à affiner en fonction de la fin du film
             pytaVSL.trijc_io('in', 'lustre', 7),
