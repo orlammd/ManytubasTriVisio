@@ -396,7 +396,7 @@ class PytaVSL(Module):
 
 ########################## FILM
 
-    def movie_in(self, movie, duration, easing='linear'):
+    def movie_in(self, movie, duration, easing='linear', zoom=0.95, x=0, y=0, z=5, y_arabesque=3.04):
         """
         Having Moving coming to front
         """
@@ -408,11 +408,11 @@ class PytaVSL(Module):
             "rot": -140
         }
         dest = {
-            "x": 0,
-            "y": 0,
-            "z": 5,
-            "y_arabesque" : 3.04,
-            "zo": 0.95,
+            "x": x,
+            "y": y,
+            "z": z,
+            "y_arabesque" : y_arabesque,
+            "zo": zoom,
             "rot": -720
         }
 
@@ -494,24 +494,25 @@ class PytaVSL(Module):
         """
         pass
 
-    def movie_split(self, left_slide, left_position=[-0.35, 0.15], left_scale=[0.3, 0.3], right_slide, right_position=[0.1, -0.1], right_scale=[0.6, 0.6], trijc_in_duration=0.2, scale_duration=1, move_duration=1, easing='linear'):
+    def movie_split(self, left_slide, left_position=[-0.35, 0.15], left_scale=[0.3, 0.3], right_movie, right_position=[0.1, -0.1], right_scale=[0.6, 0.6], trijc_in_duration=0.2, scale_duration=1, move_duration=1, easing='linear'):
         """
         Having several movies being split over the screen
         """
         self.start_scene('sequence/'
-            pytaVSL.trijc_io('in', 'compas', trijc_in_duration, 'elastic-inout'),
+            self.trijc_io('in', 'compas', trijc_in_duration, 'elastic-inout'),
             self.wait(trijc_in_duration, 's'),
-            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 10, scale_duration / 2, 's', 'elastic-inout'),
-            pytaVSL.animate(left_slide, 'scale', None, [l_scale * 2 for l_scale in left_scale], scale_duration / 2, 's', 'elastic-inout'),
+            self.animate('t_trijc_compas', 'rotate_z', None, 10, scale_duration / 2, 's', 'elastic-inout'),
+            self.animate(left_slide, 'scale', None, [l_scale * 2 for l_scale in left_scale], scale_duration / 2, 's', 'elastic-inout'),
             self.wait(scale_duration / 2, 's'),
-            pytaVSL.trijc_change_tool('aimant'),
-            pytaVSL.animate(left_slide, 'scale', None, left_scale, scale_duration / 2, 's', easing),
+            self.trijc_change_tool('aimant'),
+            self.animate(left_slide, 'scale', None, left_scale, scale_duration / 2, 's', easing),
             self.wait(scale_duration / 2, 's'),
-            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -45, move_duration, 's'),
-            pytaVSL.animate(left_slide, 'position_x', None, left_position[0], 1, 's', easing),
-            pytaVSL.animate(left_slide, 'position_y', None, left_position[1], 1, 's', easing),
+            self.animate('t_trijc_aimant', 'rotate_z', None, -45, move_duration, 's'),
+            self.animate(left_slide, 'position_x', None, left_position[0], move_duration, 's', easing),
+            self.animate(left_slide, 'position_y', None, left_position[1], move_duration, 's', easing),
             self.wait(0.5, 's'),
-            pytaVSL.trijc_change_tool('tuba')
+            self.trijc_change_tool('tuba'),
+            self.movie_in(right_movie, move_duration_duration, easing='linear', zoom=0.95, x=0, y=0, z=5, y_arabesque=3.04)
         ])
 
 ########################## FILM
