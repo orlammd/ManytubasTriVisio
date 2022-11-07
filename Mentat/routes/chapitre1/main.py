@@ -58,7 +58,7 @@ class Chapitre1(Video, Light, RouteBase):
 
         ])
 
-    @pedalboard_button(1)
+    @pedalboard_button(99)
     def lancement_miraye_1(self):
         """
         Lancement Miraye Part 1
@@ -71,7 +71,7 @@ class Chapitre1(Video, Light, RouteBase):
             ]
         )
 
-    @pedalboard_button(2)
+    @pedalboard_button(1)
     def m_ch1_2(self):
         """
         Intro
@@ -160,7 +160,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.m_noisy_switch_video('m_ch1-7', 'm_ch1-7_waiting', 0.1)
         ])
 
-    @pedalboard_button(3)
+    @pedalboard_button(2)
     def m_ch1_8(self):
         """
         Suite intro
@@ -170,37 +170,40 @@ class Chapitre1(Video, Light, RouteBase):
         ])
 
 
-    @pedalboard_button(4)
-    def jack_casear_jingle(self):
+    @pedalboard_button(3)
+    def p_ch1_3(self):
         """
         Lancement du jingle Jack Caesar
         """
 
-        pytaVSL.shaking_tvs(1, 'p_ch1-3')
-
-        self.start_scene('sequence/jack_caesar_jingle', lambda: [
-            pytaVSL.set('tv1', 'visible', 1),
-            pytaVSL.set('tv1', 'position_z', -12),
-            pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
-            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
-            self.wait(0.15, 's'),
-            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
-            self.wait(pytaVSL.get('p_ch1-3', 'video_end') - 0.15, 's'),
-            pytaVSL.animate('tv1', 'position_x', None, 1, 0.3, 's', 'exponential-inout'),
-            pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
-            self.wait(0.15, 's'),
-            pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
-            self.wait(0.15, 's'),
-            pytaVSL.stop_animate('plane_horn_1', 'position_x'),
-            pytaVSL.stop_animate('plane_horn_1', 'position_y'),
-            pytaVSL.stop_animate('p_ch1-3', 'position_x'),
-            pytaVSL.stop_animate('p_ch1-3', 'position_y'),
-            pytaVSL.trijc_change_tool('aspi'),
-            self.wait(0.2, 's'),
-            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -5, 0.5, 's', ),
-            self.wait(0.5, 's'),
-            self.f_ch1_9()
-        ])
+        # pytaVSL.shaking_tvs(1, 'p_ch1-3')
+        # pytaVSL.set('tv1', 'position_z', -12),
+        pytaVSL.set('tv1', 'visible', 1.0),
+        # pytaVSL.set('p_ch1-3', 'video_time', 0)
+        # pytaVSL.set('p_ch1-3', 'video_speed', 1)
+        #
+        # self.start_scene('sequence/p_ch1_3', lambda: [
+        #
+        #     pytaVSL.animate('tv1', 'position_x', None, 0.09, 0.3, 's', 'elastic-inout'),
+        #     pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+        #     self.wait(0.15, 's'),
+        #     pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+        #     self.wait(pytaVSL.get('p_ch1-3', 'video_end') - 0.3, 's'),
+        #     pytaVSL.animate('tv1', 'position_x', None, 1, 0.3, 's', 'exponential-inout'),
+        #     pytaVSL.animate('tv1', 'position_y', None, 0.01, 0.15, 's', 'random'),
+        #     self.wait(0.15, 's'),
+        #     pytaVSL.animate('tv1', 'position_y', None, 0.0, 0.15, 's', 'random'),
+        #     self.wait(0.15, 's'),
+        #     pytaVSL.stop_animate('plane_horn_1', 'position_x'),
+        #     pytaVSL.stop_animate('plane_horn_1', 'position_y'),
+        #     pytaVSL.stop_animate('p_ch1-3', 'position_x'),
+        #     pytaVSL.stop_animate('p_ch1-3', 'position_y'),
+        #     pytaVSL.trijc_change_tool('aspi'),
+        #     self.wait(0.2, 's'),
+        #     pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -5, 0.5, 's', ),
+        #     self.wait(0.5, 's'),
+            # self.f_ch1_9()
+        # ])
 
     @pedalboard_button(102)
     def f_ch1_9(self):
@@ -281,7 +284,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.signs_io('out', duration=1, easing='elastic-inout'),
         ])
 
-    @pedalboard_button(5)
+    @pedalboard_button(4)
     def hb_instruments_direction(self):
         self.start_scene('sequence/hb_instruments_direction', lambda: [
             pytaVSL.v_hackboat_io('in'),
@@ -300,7 +303,7 @@ class Chapitre1(Video, Light, RouteBase):
         ])
 
 
-    @pedalboard_button(6)
+    @pedalboard_button(5)
     def f_ch1_13(self):
         """
         Saladin approche / bruit au plateau
@@ -309,7 +312,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.f_noisy_switch_video('f_ch1-12', 'f_ch1-13'),
         ])
 
-    @pedalboard_button(7)
+    @pedalboard_button(6)
     def f_ch1_14(self):
         """
         Allumage lumières
@@ -334,7 +337,7 @@ class Chapitre1(Video, Light, RouteBase):
             self.f_ch1_16()
         ])
 
-    @pedalboard_button(106)
+    @pedalboard_button(107)
     def f_ch1_16(self):
         """
         Musée zarbi de l'étrange
