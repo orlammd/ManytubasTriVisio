@@ -65,9 +65,9 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('sequence/lancement_miraye_1', lambda: [
             ### Lancement du Film
-            pytaVSL.trijc_io('in', 'tuba', 1, 'elastic'),
+            pytaVSL.trijc_io('in', 'tuba', 1, 'elastic-inout'),
             self.wait(1.2, 's'),
-            pytaVSL.miraye_in('m_ch1-2', 1)
+            pytaVSL.miraye_in('m_ch1-1', 1)
             ]
         )
 

@@ -13,7 +13,7 @@ class Chapitre2(Video, Light, RouteBase):
 
         super().activate()
 
-        transport.set_tempo(150)
+        transport.set_tempo(60)
         transport.set_cycle('4/4', pattern="Xxxx")
 
         # Setups, banks...
@@ -28,7 +28,7 @@ class Chapitre2(Video, Light, RouteBase):
             self.m_ch2_1()
         ])
 
-    def init_pyta(self):
+    def init_chapitre2(self):
         # Degroupage des TV
         #### A priori inutile ?
 
@@ -47,7 +47,8 @@ class Chapitre2(Video, Light, RouteBase):
 
             ### Création des groupes du chapitre
             pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
-            pytaVSL.create_group('f_arabesques', ['f_arabesque*']),
+            pytaVSL.create_group('f_arabesques', ['f_arabesque_1', 'f_arabesque_2']),
+            pytaVSL.create_group('f_arabesques_2', ['f_arabesque_3', 'f_arabesque_4']),
             self.wait(0.1, 's'),
             pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_' + chapter + '*']),
             # create_tv_groups(),
@@ -88,7 +89,7 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Miraye Intro Chapitre 2 (2)
         """
-        self.start_scene('sequence/miraye_intro_chapitre_2_2' lambda:[
+        self.start_scene('sequence/miraye_intro_chapitre_2_2', lambda: [
             pytaVSL.m_switch_video('m_ch2-1', 'm_ch2-2')
         ])
 
@@ -108,13 +109,13 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Miraye Intro Chapitre 2 (3)
         """
-        self.start_scene('sequence/miraye_intro_chapitre_2_3' lambda:[
+        self.start_scene('sequence/miraye_intro_chapitre_2_3', lambda: [
             pytaVSL.m_switch_video('m_ch2-2', 'm_ch2-3'),
             self.wait(4, 's'), # TODO affiner le timing
             pytaVSL.display_title("Chapitre 2 : L'idée lumineuse de Jack Caesar pour établir la paix publicitaire", 5),
             self.wait(5, 's'),
             pytaVSL.trijc_change_tool('aspi'),
-            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic-inout'),
             pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
             pytaVSL.aspi_slide('m_ch2-3', [-0.02, -0.445], [-0.02, 0.53], 0.6),
             self.wait(1.2, 's'),

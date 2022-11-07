@@ -344,7 +344,7 @@ class PytaVSL(Module):
             ]
         )
 
-    def m_switch_video(self, orig, dest, duration):
+    def m_switch_video(self, orig, dest):
         """
         Switching from one video to another in m_layout with a noisy state in between
         """
@@ -474,7 +474,7 @@ class PytaVSL(Module):
         )
 
 
-    def f_switch_video(self, orig, dest, duration):
+    def f_switch_video(self, orig, dest):
         """
         Switching from one video to another in f_ilm
         """
@@ -494,26 +494,63 @@ class PytaVSL(Module):
         """
         pass
 
-    def movie_split(self, left_slide, left_position=[-0.35, 0.15], left_scale=[0.3, 0.3], right_movie, right_position=[0.1, -0.1], right_scale=[0.6, 0.6], trijc_in_duration=0.2, scale_duration=1, move_duration=1, easing='linear'):
-        """
-        Having several movies being split over the screen
-        """
-        self.start_scene('sequence/'
-            self.trijc_io('in', 'compas', trijc_in_duration, 'elastic-inout'),
-            self.wait(trijc_in_duration, 's'),
-            self.animate('t_trijc_compas', 'rotate_z', None, 10, scale_duration / 2, 's', 'elastic-inout'),
-            self.animate(left_slide, 'scale', None, [l_scale * 2 for l_scale in left_scale], scale_duration / 2, 's', 'elastic-inout'),
-            self.wait(scale_duration / 2, 's'),
-            self.trijc_change_tool('aimant'),
-            self.animate(left_slide, 'scale', None, left_scale, scale_duration / 2, 's', easing),
-            self.wait(scale_duration / 2, 's'),
-            self.animate('t_trijc_aimant', 'rotate_z', None, -45, move_duration, 's'),
-            self.animate(left_slide, 'position_x', None, left_position[0], move_duration, 's', easing),
-            self.animate(left_slide, 'position_y', None, left_position[1], move_duration, 's', easing),
-            self.wait(0.5, 's'),
-            self.trijc_change_tool('tuba'),
-            self.movie_in(right_movie, move_duration_duration, easing='linear', zoom=0.95, x=0, y=0, z=5, y_arabesque=3.04)
-        ])
+    # def movie_split(self, left_slide, left_position=[-0.35, 0.15], left_scale=[0.3, 0.3], right_movie, right_position=[0.1, -0.1], right_scale=[0.6, 0.6], trijc_in_duration=0.2, scale_duration=1, move_duration=1, easing='linear'):
+    #     """
+    #     Having several movies being split over the screen
+    #     """
+    #
+    #     self.create_group('f_ilm_2', ['f_arabesques_2', right_movie])
+    #
+    #     climax_y = 0.3
+    #     etape_zoom = [0.4 * r_scale for r_scale in right_scale]
+    #     # move_duration= 1/2.5 * duration
+    #     complete_duration = 2.5 * duration
+    #     zoom_duration = (1 - duration) * complete_duration
+    #     self.set(right_movie, 'video_time', 0),
+    #     self.set(right_movie, 'video_speed', 1),
+    #     self.set(right_movie, 'visible', 1),
+    #
+    #     dest =
+    #
+    #     self.start_scene('sequence/movie_split', lambda: ([
+    #         self.trijc_io('in', 'compas', trijc_in_duration, 'elastic-inout'),
+    #         self.wait(trijc_in_duration, 's'),
+    #         self.animate('t_trijc_compas', 'rotate_z', None, 10, scale_duration / 2, 's', 'elastic-inout'),
+    #         self.animate(left_slide, 'scale', None, [l_scale * 2 for l_scale in left_scale], scale_duration / 2, 's', 'elastic-inout'),
+    #         self.wait(scale_duration / 2, 's'),
+    #         self.trijc_change_tool('aimant'),
+    #         self.animate(left_slide, 'scale', None, left_scale, scale_duration / 2, 's', easing),
+    #         self.wait(scale_duration / 2, 's'),
+    #         self.animate('t_trijc_aimant', 'rotate_z', None, -45, move_duration, 's'),
+    #         self.animate(left_slide, 'position_x', None, left_position[0], move_duration, 's', easing),
+    #         self.animate(left_slide, 'position_y', None, left_position[1], move_duration, 's', easing),
+    #         self.wait(0.5, 's'),
+    #         self.trijc_change_tool('tuba'),
+    #
+    #
+    #
+    #         self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
+    #         self.wait(0.2, 's'),
+    #         self.set('f_ilm_2', 'visible', 1),
+    #
+    #         self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
+    #         self.animate('f_ilm', 'rotate_z', None, dest["rot"], duration, 's', easing),
+    #         self.animate('f_ilm', 'scale', None, [dest["zo"], dest["zo"]], duration, 's', easing),
+    #         self.animate('f_ilm', 'position_y', None, climax_y, duration * 1/2, 's', easing),
+    #         self.wait(1/2.*duration, 's'),
+    #         self.animate('f_ilm', 'position_y', None, dest["y"], duration * 1/2, 's', easing),
+    #         self.wait(duration, 's'),
+    #
+    #         self.trijc_change_tool('compas'),
+    #         self.set(movie, 'video_time', 0),
+    #         self.animate(movie, 'scale', None, [1.0, 1.0], zoom_duration, 's'),
+    #         self.animate('f_arabesque_1', 'position_y', None, dest["y_arabesque"], zoom_duration, 's'),
+    #         self.animate('f_arabesque_2', 'position_y', None, -dest["y_arabesque"], zoom_duration, 's'),
+    #         self.signs_io('out', together=False, duration=complete_duration),
+    #         self.wait(complete_duration / 2, 's'),
+    #         self.animate('lights*', 'alpha', None, 0.3, complete_duration, 's', 'linear'),
+    #         self.trijc_io('out', 'lustre', zoom_duration + 0.5)
+    #     ])
 
 ########################## FILM
 
