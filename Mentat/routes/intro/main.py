@@ -195,7 +195,7 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.aspi_slide('plane_horn_' + str(index), plane_warp_1, plane_warp_4, duration,)
             pytaVSL.aspi_slide('p_pub' + str(index), pub_warp_1, pub_warp_4, duration)
 
-        self.start_scene('sequence/aspi_pubs', lambda: [
+        self.start_scene('sequence/aspi_pubs', [
             ### Aspiration des pubs
             pytaVSL.set('t_trijc_aspi', 'rotate_z', -5),
             pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),
@@ -234,6 +234,6 @@ class Intro(Video, Light, RouteBase):
             self.wait(1.1, 's'),
             pytaVSL.trijc_io('out', 'aspi', 1, 'elastic'),
             self.wait(1.1, 's'),
-            self.engine.set_route('Chapitre 1')
+            engine.set_route('Chapitre 1')
             ]
         )

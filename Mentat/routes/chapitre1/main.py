@@ -351,7 +351,7 @@ class Chapitre1(Video, Light, RouteBase):
             self.wait(3.2, 's'),
             pytaVSL.set('f_ilm', 'visible', 0),
             pytaVSL.set('f_*', 'alpha', 1),
-            self.engine.set_route('Chapitre 2')
+            engine.set_route('Chapitre 2')
         ])
 
 # TODO A virer à la fin
