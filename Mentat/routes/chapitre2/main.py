@@ -119,6 +119,9 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.display_title("Chapitre 2 : L'idée lumineuse de Jack Caesar pour établir la paix publicitaire", 5),
             self.wait(5, 's'),
             pytaVSL.trijc_change_tool('aspi'),
+            self.wait(0.5, 's'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, -10, 0.1, 's'),
+            self.wait(0.1, 's'),
             pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic-inout'),
             pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
             pytaVSL.aspi_slide('m_ch2-3', [-0.02, -0.445], [-0.02, 0.53], 0.6),
@@ -134,16 +137,54 @@ class Chapitre2(Video, Light, RouteBase):
 
     @pedalboard_button(103)
     def f_ch2_4(self):
+        """
+        JC & Enedys dans le bureau
+        """
         self.start_scene('sequence/f_ch2_4', lambda: [
             pytaVSL.movie_in('f_ch2-4', 0.6),
-            self.wait(5, 's'), # TODO affiner timing
-
+            self.wait(26.5, 's'), # TODO affiner timing
+            pytaVSL.trijc_io('in', tool='compas', duration=1),
+            self.wait(1.5, 's'),
+            self.p_ch2_5()
         ])
 
     @pedalboard_button(104)
     def p_ch2_5(self):
+        """
+        Spot paillasson publicitaire
+        """
+        pytaVSL.shaking_tvs(1, 'p_ch2-5')
+        pytaVSL.set('tv1', 'position_x', 1)
+        pytaVSL.set('tv1', 'position_y', 0)
+        pytaVSL.set('tv1', 'scale', 0.6, 0.6)
+        pytaVSL.set('tv1', 'visible', 1)
+
         self.start_scene('sequence/p_ch2_5', lambda: [
-            self.wait(5, 's'), # TODO affiner timing
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.1, 's', 'elastic-in-out'),
+            self.wait(0.1, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.4, 0.4], 0.5, 's'),
+            pytaVSL.animate('f_ilm', 'position_x', None, -0.25, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'position_y', None, 0.25, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_x', None, 0.2, 0.5, 's', 'elastic-inout'),
+            self.wait(0.5, 's'),
+            pytaVSL.animate('tv1', 'scale', None, [0.8, 0.8], pytaVSL.get('p_ch2-5', 'video_end') - 0.5 - 1, 's'),
+            pytaVSL.animate('tv1', 'position_x', None, 0.1, pytaVSL.get('p_ch2-5', 'video_end') - 0.5 - 1, 's'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 20, pytaVSL.get('p_ch2-5', 'video_end') - 0.5 - 1, 's'),
+            self.wait(pytaVSL.get('p_ch2-5', 'video_end') - 1, 's'), # TODO affiner timing
+            # self.wait((pytaVSL.get('p_ch2-5', 'video_end') - 1) / 2 - 0.5, 's' ),
+            pytaVSL.animate('tv1', 'scale', None, [0.6, 0.6], 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_x', None, 0.2, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.5, 's', 'elastic-inout'),
+            self.wait(0.5, 's' ),
+            pytaVSL.trijc_change_tool('aimant'),
+            self.wait(0.1, 's'),
+            pytaVSL.animate('t_trijc_aimant', 'rotate_z', None, -360, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'scale', None, [0.95, 0.95], 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'position_x', None, 0, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('f_ilm', 'position_y', None, 0, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_x', None, 1, 0.5, 's', 'elastic-inout'),
+            pytaVSL.trijc_io('out', 'aimant', 0.1, easing='elastic-inout')
             ###### TODO : déclencher fish au dernier moment ?
 
         ])
