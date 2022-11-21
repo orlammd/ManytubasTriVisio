@@ -422,7 +422,7 @@ class PytaVSL(Module):
         complete_duration = 2.5 * duration
         zoom_duration = (1 - duration) * complete_duration
         self.start_scene('sequences/movie_in', lambda:[
-            self.set(movie, 'video_time', 0),
+            self.set(movie, 'video_time', 0, force_send=True),
             self.set(movie, 'video_speed', 1),
             self.set(movie, 'visible', 1),
 

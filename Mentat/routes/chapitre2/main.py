@@ -80,7 +80,9 @@ class Chapitre2(Video, Light, RouteBase):
         """
         self.start_scene('sequence/jingle_intempestif_1', lambda: [
             pytaVSL.jc_jingle_io('bottom', 0.3, 'elastic-inout'),
-            self.wait(pytaVSL.get('p_jc', 'video_end') + 0.3 * 2, 's'),
+            self.wait(0.3, 's'),
+            pytaVSL.set('m_ch2-1', 'video_speed', 0),
+            self.wait(pytaVSL.get('p_jc', 'video_end') - 0.2, 's'),
             self.m_ch2_2()
         ])
 
@@ -101,7 +103,8 @@ class Chapitre2(Video, Light, RouteBase):
         """
         self.start_scene('sequence/jingle_intempestif_2', lambda: [
             pytaVSL.jc_jingle_io('top', 0.15, 'elastic-inout'),
-            self.wait(pytaVSL.get('p_jc', 'video_end') + 0.15 * 2, 's'),
+            pytaVSL.set('m_ch2-2', 'video_speed', 0),
+            self.wait(pytaVSL.get('p_jc', 'video_end'), 's'),
             self.m_ch2_3()
         ])
 
