@@ -145,7 +145,19 @@ class Chapitre2(Video, Light, RouteBase):
             self.wait(26.5, 's'), # TODO affiner timing
             pytaVSL.trijc_io('in', tool='compas', duration=1),
             self.wait(1.5, 's'),
-            self.p_ch2_5()
+            self.p_ch2_5(),
+            self.wait(pytaVSL.get('f_ch2-4', 'video_end')- 26.5 -5 - 1.5 - 2, 's'),
+            pytaVSL.trijc_io('in', 'lustre', duration=0.7),
+            self.wait(0.7, 's'),
+            pytaVSL.trijc_turn_lights('off', 1),
+            pytaVSL.animate('f_ch2-4', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('f_arabesques', 'alpha', None, 0, 1, 's'),
+            self.wait(1.1, 's'),
+            pytaVSL.set('f*', 'visible', 0),
+            pytaVSL.set('f*', 'alpha', 1),
+            pytaVSL.trijc_change_tool('tuba'),
+            self.wait(0.2, 's'),
+            self.m_ch2_6()
         ])
 
     @pedalboard_button(104)
@@ -162,6 +174,9 @@ class Chapitre2(Video, Light, RouteBase):
         self.start_scene('sequence/p_ch2_5', lambda: [
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, -45, 0.1, 's', 'elastic-in-out'),
             self.wait(0.1, 's'),
+
+            ###### TODO : déclencher fish au dernier moment ?
+
             pytaVSL.animate('t_trijc_compas', 'rotate_z', None, 0, 0.5, 's', 'elastic-inout'),
             pytaVSL.animate('f_ilm', 'scale', None, [0.4, 0.4], 0.5, 's'),
             pytaVSL.animate('f_ilm', 'position_x', None, -0.25, 0.5, 's', 'elastic-inout'),
@@ -184,11 +199,17 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.animate('f_ilm', 'position_x', None, 0, 0.5, 's', 'elastic-inout'),
             pytaVSL.animate('f_ilm', 'position_y', None, 0, 0.5, 's', 'elastic-inout'),
             pytaVSL.animate('tv1', 'position_x', None, 1, 0.5, 's', 'elastic-inout'),
+            self.wait(0.5, 's'),
+            pytaVSL.stop_animate('plane_horn_1', 'position'),
+            pytaVSL.stop_animate('p_ch2-5', 'position'),
+            pytaVSL.set('p_ch2-5', 'fish', 0),
             pytaVSL.trijc_io('out', 'aimant', 0.1, easing='elastic-inout')
-            ###### TODO : déclencher fish au dernier moment ?
-
         ])
 
 
-
-        ##### TODO voir si on met les scènes d'échec des Vanupiés
+    @pedalboard_button(105)
+    def m_ch2_6(self):
+        """
+        Reprise narration Miraye
+        """
+        pytaVSL.miraye_in('m_ch2-6', 0.5)

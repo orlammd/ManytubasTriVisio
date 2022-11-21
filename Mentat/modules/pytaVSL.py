@@ -168,6 +168,7 @@ class PytaVSL(Module):
             t_y = self.get('t_trijc_' + tool, 'position_y')
             t_end = end + self.t_TriJC_xoffset
 
+            self.set('t_trijc_' + tool, 'rotate_z', 0)
 
             self.start_scene('sequences/triJC_io', lambda: [
                 [self.set('trijc*', 'visible', 1), self.set('t_trijc_*', 'visible', 0), self.set('t_trijc_' + tool, 'visible', 1)],
