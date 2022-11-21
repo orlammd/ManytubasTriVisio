@@ -21,7 +21,7 @@ class Chapitre2(Video, Light, RouteBase):
 
         self.start_scene('init_chapitre2', lambda: [
             # Overlay
-            self.init_pyta(),
+            self.init_chapitre2(),
             self.wait(0.2, 's'),
 
             # Chapitre 2
@@ -37,8 +37,8 @@ class Chapitre2(Video, Light, RouteBase):
 
         # def create_tv_groups():
         pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
-        #     for index in range(1,5):
-        #         pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_ch1-' + str(index+2)])
+        # for index in range(1,5):
+        pytaVSL.create_group('tv1', ['plane_horn_1','p_ch2-5']) # Pub Paillassons
 
         chapter = 'ch2'
         self.start_scene('groups_and_overlay', lambda: [
@@ -92,6 +92,7 @@ class Chapitre2(Video, Light, RouteBase):
         self.start_scene('sequence/miraye_intro_chapitre_2_2', lambda: [
             pytaVSL.m_switch_video('m_ch2-1', 'm_ch2-2')
         ])
+        ###### TODO : m_ch2-2 à séparer en deux parties.
 
     @pedalboard_button(2)
     def jingle_jc_2(self):
@@ -129,11 +130,21 @@ class Chapitre2(Video, Light, RouteBase):
         ])
 
     @pedalboard_button(103)
-    def f_ch2_5(self):
+    def f_ch2_4(self):
         self.start_scene('sequence/f_ch2_4', lambda: [
             pytaVSL.movie_in('f_ch2-4', 0.6),
             self.wait(5, 's'), # TODO affiner timing
 
         ])
+
+    @pedalboard_button(104)
+    def p_ch2_5(self):
+        self.start_scene('sequence/p_ch2_5', lambda: [
+            self.wait(5, 's'), # TODO affiner timing
+            ###### TODO : déclencher fish au dernier moment ?
+
+        ])
+
+
 
         ##### TODO voir si on met les scènes d'échec des Vanupiés

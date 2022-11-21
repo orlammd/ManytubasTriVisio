@@ -29,6 +29,10 @@ class Intro(Video, Light, RouteBase):
         pytaVSL.send('/pyta/unload', '*')
         pytaVSL.load_slides_from_dir('Common')
         pytaVSL.load_slides_from_dir('Chapitre1')
+        pytaVSL.load_slides_from_dir('Chapitre2')
+        pytaVSL.load_slides_from_dir('Chapitre3')
+        pytaVSL.load_slides_from_dir('Chapitre4')
+        pytaVSL.load_slides_from_dir('Chapitre5')
         while not pytaVSL.get('ready'):
             self.wait(0.1, 's')
 

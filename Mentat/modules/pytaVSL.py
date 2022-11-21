@@ -303,7 +303,7 @@ class PytaVSL(Module):
         zoom_duration = (1 - move_duration) * duration
         self.start_scene('sequences/miraye_in', lambda:[
             self.set(filename, 'video_time', 0),
-            self.set(filename, 'video_speed', 1),
+            self.set(filename, 'video_speed', 1, force_send=True),
             self.set(filename, 'visible', 1),
             self.set('m_layout', 'visible', 1),
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),

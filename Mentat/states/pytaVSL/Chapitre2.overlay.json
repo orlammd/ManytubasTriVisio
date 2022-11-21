@@ -28,5 +28,14 @@
   ["p_jc", "position", 0.0, -0.085, 0.01],
   ["p_jc", "scale", 0.61, 0.61],
   ["p_jc", "video_loop", 1.0],
-  ["p_jc", "fish", 0.8]
+  ["p_jc", "fish", 0.8],
+  ["tv1", "position", 1, 0.1, -11.0],
+  ["tv1", "scale", 0.8, 0.8],
+  ["plane_horn_1", "visible", 1.0],
+  ["plane_horn_1", "position", 0.0, 0.0, 0.0],
+  ["p_ch2-5", "visible", 1.0],
+  ["p_ch2-5", "position", 0.0, -0.085, 0.01],
+  ["p_ch2-5", "scale", 0.61, 0.61],
+  ["p_ch2-5", "video_loop", 1.0],
+  ["p_ch2-5", "fish", 0.8]  
 ]
