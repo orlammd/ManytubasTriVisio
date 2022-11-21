@@ -559,7 +559,7 @@ class PytaVSL(Module):
 
     def jc_jingle_io(self, origin, duration, easing):
         """
-        Having Jack Caesar Jingle dropping in
+        Having Jack Caesar Jingle dropping in / out
         """
         self.shaking_tvs(1, 'p_jc')
 
@@ -591,6 +591,32 @@ class PytaVSL(Module):
             self.stop_animate('p_jc', 'position_x'),
             self.stop_animate('p_jc', 'position_y'),
         ])
+
+    def jc_jingle_in(self, origin, duration, easing):
+        """
+        Having Jack Caesar Jingle dropping in
+        """
+        self.shaking_tvs(1, 'p_jc')
+
+        if origin == 'left':
+            self.set('tv1', 'position', -1, 0, -12)
+        elif origin == 'right':
+            self.set('tv1', 'position', 1, 0, -12)
+        elif origin == 'top':
+            self.set('tv1', 'position', 0, 1, -12)
+        elif origin == 'bottom':
+            self.set('tv1', 'position', 0, -1, -12)
+        else:
+            self.logger.info('origine inconnue')
+
+        self.start_scene('jack_caesar_jingle', lambda: [
+            self.set('tv_jc', 'visible', 1),
+            self.animate('tv_jc', 'position_x', None, 0.09, duration, 's', easing),
+            self.animate('tv_jc', 'position_y', None, 0.01, duration / 2, 's', 'random'),
+            self.wait(duration / 2, 's'),
+            self.animate('tv_jc', 'position_y', None, 0.0, duration  / 2, 's', 'random'),
+        ])
+
 
 ########################## JINGLES
 

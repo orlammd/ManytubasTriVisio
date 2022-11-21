@@ -213,3 +213,13 @@ class Chapitre2(Video, Light, RouteBase):
         Reprise narration Miraye
         """
         pytaVSL.miraye_in('m_ch2-6', 0.5)
+        self.start_scene('sequence/m_ch2_6', lambda: [
+            #### Attention au clash avec le lancement au pied du jingle
+            self.wait(7, 's'),
+            pytaVSL.animate('*jc', 'rgbwave', 0, 1, 0.2, 's'),
+            pytaVSL.animate('tv_jc', 'position_y', None, -1, 1, 's', 'random')
+        ])
+
+    @pedalboard_button(3)
+    def jingle_intempestif_3(self):
+            pytaVSL.jc_jingle_in('bottom', 0.1)
