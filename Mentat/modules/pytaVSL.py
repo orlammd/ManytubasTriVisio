@@ -429,6 +429,7 @@ class PytaVSL(Module):
 
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
+            self.animate('trijc_head_souffle', 'visible', 1, 0, 0.2, 's'), ##### TODO - à checker            
             self.set('f_ilm', 'visible', 1),
 
             self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
