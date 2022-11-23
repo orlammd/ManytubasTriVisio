@@ -3,7 +3,6 @@
 from sys import path, exit, argv
 from os.path import dirname
 import logging
-path.insert(0, dirname(__file__) + '/../src/mentat')
 
 # add all modules
 from inspect import getmembers, signature, getdoc

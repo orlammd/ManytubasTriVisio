@@ -24,7 +24,7 @@ class Chapitre1(Video, Light, RouteBase):
         self.start_scene('init_chapitre1', lambda: [
             # Overlay
             self.init_pyta(),
-            self.wait(0.2, 's'),
+            # self.wait(0.2, 's'),
 
             # Chapitre 1
             self.lancement_miraye_1()
@@ -35,28 +35,28 @@ class Chapitre1(Video, Light, RouteBase):
         #### A priori inutile ?
 
         # Reset des slides
-        pytaVSL.reset()
 
         def create_tv_groups():
             for index in range(1,5):
                 pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_ch1-' + str(index+2)])
 
         chapter = 'ch1'
-        self.start_scene('groups_and_overlay', lambda: [
+        # self.start_scene('groups_and_overlay', lambda: [
             # Chargement de l'overlay commun
-            pytaVSL.position_overlay('Common'),
+        pytaVSL.reset()
+        pytaVSL.position_overlay('Common')
 
-            ### Création des groupes du chapitre
-            pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
-            pytaVSL.create_group('f_arabesques', ['f_arabesque*']),
-            self.wait(0.1, 's'),
-            pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_ch1-*']),
-            create_tv_groups(),
-            pytaVSL.check_new_slides(once=True),
-            self.wait(0.1, 's'),
-            pytaVSL.position_overlay('Chapitre1'),
+        ### Création des groupes du chapitre
+        pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*'])
+        pytaVSL.create_group('f_arabesques', ['f_arabesque*'])
+        pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_ch1-*'])
+        create_tv_groups()
 
-        ])
+        pytaVSL.sync()
+
+        pytaVSL.position_overlay('Chapitre1')
+
+        # ])
 
     @pedalboard_button(99)
     def lancement_miraye_1(self):
@@ -262,6 +262,9 @@ class Chapitre1(Video, Light, RouteBase):
 
     @pedalboard_button(104)
     def f_ch1_11(self):
+        """
+        1ère nuit / 1ère Rencontre avec Sanchouz
+        """
         self.start_scene('sequence/f_ch1_11', lambda: [
             pytaVSL.f_noisy_switch_video('f_ch1-9', 'f_ch1-11', 1),
             pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),

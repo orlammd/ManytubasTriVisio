@@ -33,8 +33,7 @@ class Intro(Video, Light, RouteBase):
         pytaVSL.load_slides_from_dir('Chapitre3')
         pytaVSL.load_slides_from_dir('Chapitre4')
         pytaVSL.load_slides_from_dir('Chapitre5')
-        while not pytaVSL.get('ready'):
-            self.wait(0.1, 's')
+        pytaVSL.sync()
 
         ### Create clones
         for clone_name in [
@@ -80,11 +79,11 @@ class Intro(Video, Light, RouteBase):
         for index in range(1,6):
             pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), 'p_pub' + str(index)])
 
+        pytaVSL.sync()
+
         # Create text slides
-        pytaVSL.send('/pyta/create_text', 'titre', 'sans')
-        pytaVSL.send('/pyta/create_text', 'soustitre', 'mono')
-        self.wait(0.1, 's')
-        pytaVSL.check_new_slides()
+        # pytaVSL.send('/pyta/create_text', 'titre', 'sans')
+        # pytaVSL.send('/pyta/create_text', 'soustitre', 'mono')
 
     @pedalboard_button(2)
     def intro(self):
@@ -199,7 +198,7 @@ class Intro(Video, Light, RouteBase):
             pytaVSL.aspi_slide('plane_horn_' + str(index), plane_warp_1, plane_warp_4, duration,)
             pytaVSL.aspi_slide('p_pub' + str(index), pub_warp_1, pub_warp_4, duration)
 
-        self.start_scene('sequence/aspi_pubs', [
+        self.start_scene('sequence/aspi_pubs', lambda: [
             ### Aspiration des pubs
             pytaVSL.set('t_trijc_aspi', 'rotate_z', -5),
             pytaVSL.trijc_io('in', 'aspi', 2, 'linear'),

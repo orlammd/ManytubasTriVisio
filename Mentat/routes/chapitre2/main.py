@@ -217,9 +217,21 @@ class Chapitre2(Video, Light, RouteBase):
             #### Attention au clash avec le lancement au pied du jingle
             self.wait(7, 's'),
             pytaVSL.animate('*jc', 'rgbwave', 0, 1, 0.2, 's'),
-            pytaVSL.animate('tv_jc', 'position_y', None, -1, 1, 's', 'random')
+            pytaVSL.animate('tv_jc', 'position_y', None, -1, 1, 's', 'random'),
+            self.wait(pytaVSL.get('m_ch2-6', 'video_end') - 7 - 5, 's'),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
+            pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            self.f_ch2_7()
         ])
 
     @pedalboard_button(3)
     def jingle_intempestif_3(self):
             pytaVSL.jc_jingle_in('bottom', 0.1)
+
+
+    @pedalboard_button(106)
+    def f_ch2_7(self):
+        """
+        Enedys se rend au spectacle des Vanupiés
+        """
+        pytaVSL.movie_in('f_ch2-7', 0.7)

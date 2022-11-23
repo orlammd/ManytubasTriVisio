@@ -13,6 +13,11 @@ class Slide(Module):
 
             super().__init__(*args, **kwargs)
 
+            self.ready = False
+
+        def query_slide_state(self):
+            self.send('/pyta/slide/%s/get' % self.name, '*', self.engine.port)
+
 
 class PytaVSL(Module):
     """
@@ -32,9 +37,6 @@ class PytaVSL(Module):
 
         self.send('/pyta/subscribe', 'status', 2001)
         self.send('/pyta/subscribe', 'status', 23456)
-        self.ready = False
-        self.status_locked = True
-        self.pending_overlay = None
 
         # self.add_event_callback('parameter_changed', self.parameter_changed)
 
@@ -60,28 +62,22 @@ class PytaVSL(Module):
             'zoom'
         ]
 
-
-        """
-        PytaVSL reset
-        """
+        # reset pyta
         # remove all slides
         self.send('/pyta/slide/*/remove')
 
-        # start pinging for new slides
-        self.start_scene('check_new_slides', self.check_new_slides)
+        # get text slides
+        self.send('/pyta/text/*/get', 'visible', self.engine.port)
 
-        # internal ready parameter (bool)
-        # set to False when a new slide is created
-        # set to True when no new parameter was added for a while
-        self.add_parameter('ready', None, '*', default=False)
-        self.feedback_counter = 0
-        self.start_scene('check_ready_state', self.check_ready_state)
-
-
+        self.status = 'ready'
 
     def create_clone(self, src, dest):
-        self.send('/pyta/clone', src, dest)
-        self.logger.info('Clone ' + dest + ' created from ' + src)
+        if dest not in self.submodules:
+            slide = Slide(dest, parent=self)
+            self.add_submodule(slide)
+            self.send('/pyta/clone', src, dest)
+            self.logger.info('Clone ' + dest + ' created from ' + src)
+
 
     def create_group(self, group, slides):
         # if len(slides) > 1:
@@ -93,8 +89,12 @@ class PytaVSL(Module):
             s = s + slides[i]
             i = i+1
         s = s + '}'
-        self.send('/pyta/group', s, group)
-        self.logger.info('Group ' + group + ' created with: ' + s)
+        if group not in self.submodules:
+            slide = Slide(group, parent=self)
+            self.add_submodule(slide)
+            self.send('/pyta/group', s, group)
+            self.logger.info('Group ' + group + ' created with: ' + s)
+
 
     def load_slide(self, f):
         """
@@ -108,6 +108,8 @@ class PytaVSL(Module):
             slide_name = f.partition('/')[2].partition('.')[0]
 
         if slide_name not in self.submodules:
+            slide = Slide(slide_name, parent=self)
+            self.add_submodule(slide)
             self.send('/pyta/load', f)
 
 
@@ -429,7 +431,6 @@ class PytaVSL(Module):
 
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
-            self.animate('trijc_head_souffle', 'visible', 1, 0, 0.2, 's'), ##### TODO - à checker            
             self.set('f_ilm', 'visible', 1),
 
             self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
@@ -669,53 +670,22 @@ class PytaVSL(Module):
 
 
 
-########################## METHODES GENERIQUES
-
-########################## Get, set, overlay
-    def check_new_slides(self, once=False, text=False):
-        """
-        Ping for new slides
-        """
-        if once:
-            if not text:
-                self.send('/pyta/slide/*/get', 'visible', self.engine.port)
-            else:
-                self.send('/pyta/text/*/get', 'visible', self.engine.port)
-        else:
-            while True:
-                self.check_new_slides(True)
-                self.wait(1, 's')
-
-
-    def check_ready_state(self):
-        """
-        Check how many feedback messages were received recently and change ready state accordingly
-        (no message = ready)
-        """
-        last_count = 0
-        while True:
-            self.wait(1, 's')
-            if self.feedback_counter == last_count:
-                # no feedback for 1 second -> ready
-                self.set('ready', True)
-                self.feedback_counter = last_count = 0
-            last_count = self.feedback_counter
-########################## Get, set, overlay
-
 ########################## Routes
 
     def route(self, address, args):
 
         if address == '/pyta/subscribe/update' and args[0] == 'status':
             """
-            If pyta is loading new slides, set ready to False,
-            if pyta is ready, ping for new sldes
+            if pyta is ready, query parameters for slides that are not ready
             """
-            if args[1] == 'loading':
-                self.set('ready', False)
-                self.feedback_counter += 1
-            elif args[1] == 'ready':
-                self.check_new_slides(once=True)
+            self.status = args[1]
+
+        elif '/pyta/slide' in address and '/get/reply/end' in address:
+            """
+            if pyta a pyta slide has finished sending its parameters, it is ready
+            """
+            slide_name = address.split('/')[-4]
+            self.submodules[slide_name].ready = True
 
 
         elif '/pyta/slide' in address and '/get/reply' in address:
@@ -728,12 +698,8 @@ class PytaVSL(Module):
                 """
                 Feedback from a new slide: create Slide object and query all parameters
                 """
-                self.set('ready', False)
-                self.feedback_counter += 1
-
                 slide = Slide(slide_name, parent=self)
                 self.add_submodule(slide)
-                self.send('/pyta/slide/%s/get' % slide_name, '*', self.engine.port)
 
             else:
                 """
@@ -742,8 +708,6 @@ class PytaVSL(Module):
                 slide = self.submodules[slide_name]
                 property_name, *values = args
                 if property_name not in slide.parameters and property_name not in self.get_excluded_parameters:
-                    self.set('ready', False)
-                    self.feedback_counter += 1
 
                     types = 's'
                     for v in values:
@@ -806,3 +770,31 @@ class PytaVSL(Module):
             return not exclude
         state = list(filter(filter_function, state))
         return state
+
+
+
+    def is_ready(self):
+        """
+        Check if all Slide submodules are ready (meaning all their parameters are created)
+        """
+        for name in self.submodules:
+            if not self.submodules[name].ready:
+                return False
+        return True
+
+    def sync(self, timeout=5):
+        """
+        Wait until pyta and mentat are synced
+        """
+        # timeout = 5
+        step = 0.02
+        while not self.is_ready():
+            if self.status == 'ready':
+                for name in self.submodules:
+                    if not self.submodules[name].ready and not self.submodules[name].parameters:
+                        self.submodules[name].query_slide_state()
+
+                timeout -= step
+            self.wait(step, 's')
+            if timeout < 0:
+                self.logger.critical('could not sync with pyta (timed out)')
