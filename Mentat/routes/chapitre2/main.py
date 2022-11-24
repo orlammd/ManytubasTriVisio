@@ -293,7 +293,7 @@ class Chapitre2(Video, Light, RouteBase):
         self.proposition_entracte()
 
     def proposition_entracte(self):
-        pytaVSL.set('f_ch2-7-up', 'video_time', 210) # A enlever
+        pytaVSL.set('f_ch2-7-up', 'video_time', 209) # A enlever
         pytaVSL.set('f_ch2-7-down', 'video_time', 213) # A enlever
 
         self.start_scene('sequence/proposition_entracte', lambda: [
@@ -310,8 +310,14 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.set('f_ch2-7-up', 'video_speed', 1),            #####" A enelever
             pytaVSL.set('f_ilm_down', 'visible', 1),
 
+
+            #### TODO : préciser ce qui suit avec les films bien découpés.
             pytaVSL.animate('f_ilm_up', 'position_y', None, 0.25, 1, 's', 'elastic-inout'),
-            self.wait(2,'s'),
+            self.wait(3, 's'),
+            #### OPTIONNEL : les panneaux se croisent
+            pytaVSL.animate('f_ilm_up', 'position_y', None, -0.71, 0.4, 's', 'elastic-inout'),
+            self.wait(0.1,'s'),
+            #### Fin OPTIONNEL
             pytaVSL.set('f_ch2-7-down', 'visible', 1),
             pytaVSL.set('f_ch2-7-down', 'video_speed', 1),                        ##### A enelever
             pytaVSL.animate('f_ilm_down', 'position_y', None, -0.25, 1, 's', 'elastic-inout'),
