@@ -217,9 +217,12 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.stop_animate('plane_horn_jc', 'position_y'),
             pytaVSL.stop_animate('p_jc', 'position_x'),
             pytaVSL.stop_animate('p_jc', 'position_y'),
-            self.wait(pytaVSL.get('m_ch2-6', 'video_end') - 7 - 1.2 - 5, 's'),
-            pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
-            pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            self.wait(pytaVSL.get('m_ch2-6', 'video_end') - 7 - 1.2 - 10, 's'),
+            pytaVSL.animate('m_iraye', 'scale', None, [0.25, 0.25], 8, 's'),
+            # pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
+            pytaVSL.animate('m_iraye', 'position_x', None, -0.2, 7, 's', 'exponential-inout'),
+            pytaVSL.animate('m_iraye', 'position_y', None, 0.18, 7, 's'),
+            self.wait(5, 's'),
             self.f_ch2_7()
         ])
 
@@ -233,4 +236,11 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Enedys se rend au spectacle des Vanupiés
         """
-        pytaVSL.movie_in('f_ch2-7', 0.7)
+        self.start_scene('sequence/f_ch2_7', lambda: [
+            pytaVSL.movie_in('f_ch2-7', 0.7),
+            self.wait(2, 's'),
+            pytaVSL.animate('t_trijc_tuba', 'rotate_z', None, 7, 0.2, 's', 'elastic-inout'),
+            pytaVSL.animate('m_iraye', 'position_x', None, 1, 1, 's', 'elastic-inout'),
+            self.wait(0.3, 's'),
+            pytaVSL.animate('t_trijc_tuba', 'rotate_z', None, 0, 0.5, 's', 'elastic-inout'),
+        ])

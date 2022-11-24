@@ -103,6 +103,8 @@ class PytaVSL(Module):
         if group not in self.submodules:
             slide = Slide(group, parent=self)
             self.add_submodule(slide)
+        else:
+            self.submodules[group].reset()
         self.send('/pyta/group', s, group)
         self.logger.info('Group ' + group + ' created with: ' + s)
 
@@ -444,7 +446,9 @@ class PytaVSL(Module):
 
             self.animate('t_trijc_tuba', 'rotate_z', None, -7, 0.4, 's', 'elastic-inout'),
             self.wait(0.2, 's'),
+            self.set(movie, 'scale', 1.0, 0),
             self.set('f_ilm', 'visible', 1),
+
 
             self.animate('f_ilm', 'position_x', None, dest["x"], duration, 's', easing),
             self.animate('f_ilm', 'rotate_z', None, dest["rot"], duration, 's', easing),
