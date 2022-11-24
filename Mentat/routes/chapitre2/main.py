@@ -367,12 +367,23 @@ class Chapitre2(Video, Light, RouteBase):
 
     @pedalboard_button(109)
     def f_ch2_9(self):
-            # pytaVSL.set('f_ilm', 'position_x', 0)
-            # pytaVSL.set('f_ilm', 'position_y', 0)
-            # pytaVSL.set('f_ch2-7', 'visible', 0)
-            pytaVSL.set('f_ch2-9', 'rgbwave', 0.5)
-            pytaVSL.set('f_ch2-9', 'visible', 1)
-            pytaVSL.set('f_ilm', 'visible', 1)
-            pytaVSL.animate('f_ch2-9', 'rgbwave', 0.5, 0, 0.5, 's')
-            pytaVSL.set('f_ilm_down', 'visible', 0),
-            # pytaVSL.movie_in('f_ch2-9', 0.6)
+        """
+        Numéro de Dagz
+        """
+        pytaVSL.set('f_ch2-9', 'rgbwave', 0.5)
+        pytaVSL.set('f_ch2-9', 'visible', 1)
+        pytaVSL.set('f_ilm', 'visible', 1)
+        pytaVSL.animate('f_ch2-9', 'rgbwave', 0.5, 0, 0.5, 's')
+        pytaVSL.set('f_ilm_down', 'visible', 0),
+
+    @pedalboard_button(5)
+    def f_ch2_10(self):
+        """
+        Explosion + fin Dédé
+        """
+        pytaVSL.f_noisy_switch_video('f_ch2-9', 'f_ch2-10', 0.5)
+
+
+    @pedalboard_button(6)
+    def jingle_jc_enedys(self):
+        pytaVSL.jc_jingle_io('top', 0.3, 'elastic-inout')
