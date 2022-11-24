@@ -578,16 +578,16 @@ class PytaVSL(Module):
         """
         Having Jack Caesar Jingle dropping in / out
         """
-        self.shaking_tvs(1, 'p_jc')
+        self.shaking_tv_jc()
 
         if origin == 'left':
-            self.set('tv1', 'position', -1, 0, -12)
+            self.set('tv_jc', 'position', -1, 0, -12)
         elif origin == 'right':
-            self.set('tv1', 'position', 1, 0, -12)
+            self.set('tv_jc', 'position', 1, 0, -12)
         elif origin == 'top':
-            self.set('tv1', 'position', 0, 1, -12)
+            self.set('tv_jc', 'position', 0, 1, -12)
         elif origin == 'bottom':
-            self.set('tv1', 'position', 0, -1, -12)
+            self.set('tv_jc', 'position', 0, -1, -12)
         else:
             self.logger.info('origine inconnue')
 
@@ -613,16 +613,16 @@ class PytaVSL(Module):
         """
         Having Jack Caesar Jingle dropping in
         """
-        self.shaking_tvs(1, 'p_jc')
+        self.shaking_tv_jc()
 
         if origin == 'left':
-            self.set('tv1', 'position', -1, 0, -12)
+            self.set('tv_jc', 'position', -1, 0, -12)
         elif origin == 'right':
-            self.set('tv1', 'position', 1, 0, -12)
+            self.set('tv_jc', 'position', 1, 0, -12)
         elif origin == 'top':
-            self.set('tv1', 'position', 0, 1, -12)
+            self.set('tv_jc', 'position', 0, 1, -12)
         elif origin == 'bottom':
-            self.set('tv1', 'position', 0, -1, -12)
+            self.set('tv_jc', 'position', 0, -1, -12)
         else:
             self.logger.info('origine inconnue')
 
@@ -668,6 +668,15 @@ class PytaVSL(Module):
         self.shaking_slide(content, 'position_x', range_x, duration)
         self.shaking_slide('plane_horn_' + str(number), 'position_y', range_y, duration, 'random')
         self.shaking_slide(content, 'position_y', range_y, duration, 'random')
+
+    def shaking_tv_jc(self, number, content):
+        range_x = (_rand() / 2 + 0.5) * 0.01
+        range_y = _rand() * 0.01
+        duration = (_rand() / 2 + 0.5) * 10
+        self.shaking_slide('plane_horn_jc', 'position_x', range_x, duration)
+        self.shaking_slide('p_jc', 'position_x', range_x, duration)
+        self.shaking_slide('plane_horn_jc', 'position_y', range_y, duration, 'random')
+        self.shaking_slide('p_jc', 'position_y', range_y, duration, 'random')
 
     def falldown(self, slide_name, chute, d):
         cur_y_pos = self.get(slide_name, 'position_y')

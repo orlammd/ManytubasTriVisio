@@ -205,10 +205,19 @@ class Chapitre2(Video, Light, RouteBase):
         pytaVSL.miraye_in('m_ch2-6', 0.5)
         self.start_scene('sequence/m_ch2_6', lambda: [
             #### Attention au clash avec le lancement au pied du jingle
-            self.wait(7, 's'),
-            pytaVSL.animate('*jc', 'rgbwave', 0, 1, 0.2, 's'),
+            self.wait(6.8, 's'),
+            pytaVSL.animate('p_jc', 'rgbwave', 0, 1, 0.2, 's'),
+            pytaVSL.animate('tv_jc', 'rgbwave', 0, 1, 0.2, 's'),
+            self.wait(0.2, 's'),
             pytaVSL.animate('tv_jc', 'position_y', None, -1, 1, 's', 'random'),
-            self.wait(pytaVSL.get('m_ch2-6', 'video_end') - 7 - 5, 's'),
+            self.wait(1.2, 's'),
+            pytaVSL.set('*jc', 'rgbwave', 0),
+            pytaVSL.set('tv_jc', 'visible', 0),
+            pytaVSL.stop_animate('plane_horn_jc', 'position_x'),
+            pytaVSL.stop_animate('plane_horn_jc', 'position_y'),
+            pytaVSL.stop_animate('p_jc', 'position_x'),
+            pytaVSL.stop_animate('p_jc', 'position_y'),
+            self.wait(pytaVSL.get('m_ch2-6', 'video_end') - 7 - 1.2 - 5, 's'),
             pytaVSL.animate('m_iraye', 'scale', None, [0.3, 0.3], 8, 's'),
             pytaVSL.animate('m_iraye', 'position', None, [0.35, 0.15, pytaVSL.get('m_iraye', 'position_z')], 8, 's'),
             self.f_ch2_7()
@@ -216,7 +225,7 @@ class Chapitre2(Video, Light, RouteBase):
 
     @pedalboard_button(3)
     def jingle_intempestif_3(self):
-            pytaVSL.jc_jingle_in('bottom', 0.1)
+        pytaVSL.jc_jingle_in('bottom', 0.1)
 
 
     @pedalboard_button(106)
