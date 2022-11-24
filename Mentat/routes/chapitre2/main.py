@@ -144,6 +144,7 @@ class Chapitre2(Video, Light, RouteBase):
             self.wait(1.5, 's'),
             self.p_ch2_5(),
             self.wait(pytaVSL.get('f_ch2-4', 'video_end')- 26.5 -5 - 1.5 - 2, 's'),
+            pytaVSL.set('sub_t_trijc_lustre_allume', 'alpha', 1),
             pytaVSL.trijc_io('in', 'lustre', duration=0.7),
             self.wait(0.7, 's'),
             pytaVSL.trijc_turn_lights('off', 1),
@@ -294,10 +295,11 @@ class Chapitre2(Video, Light, RouteBase):
 
     def proposition_entracte(self):
         pytaVSL.set('f_ch2-7-up', 'video_time', 209) # A enlever
-        pytaVSL.set('f_ch2-7-down', 'video_time', 213) # A enlever
+        pytaVSL.set('f_ch2-7-down', 'video_time', 212) # A enlever
 
         self.start_scene('sequence/proposition_entracte', lambda: [
             pytaVSL.set('f_ch2-7', 'video_speed', 0),
+            pytaVSL.set('sub_t_trijc_lustre_allume', 'alpha', 1),
             pytaVSL.trijc_io('in', 'lustre', 0.6, 'elastic-inout'),
             self.wait(0.65, 's'),
             pytaVSL.trijc_turn_lights('off', 1),
@@ -313,12 +315,64 @@ class Chapitre2(Video, Light, RouteBase):
 
             #### TODO : préciser ce qui suit avec les films bien découpés.
             pytaVSL.animate('f_ilm_up', 'position_y', None, 0.25, 1, 's', 'elastic-inout'),
+            pytaVSL.animate('lights*', 'alpha', None, 1, 3, 's'),
             self.wait(3, 's'),
+
+            pytaVSL.set('f_ilm', 'visible', 0),
+            pytaVSL.set('f_ch2-7', 'visible', 0),
+            pytaVSL.set('f_arabesque_1', 'alpha', 1),
+            pytaVSL.set('f_arabesque_2', 'alpha', 1),
+            pytaVSL.set('f_ch2-7', 'alpha', 1),
+
+
             #### OPTIONNEL : les panneaux se croisent
-            pytaVSL.animate('f_ilm_up', 'position_y', None, -0.71, 0.4, 's', 'elastic-inout'),
             self.wait(0.1,'s'),
             #### Fin OPTIONNEL
             pytaVSL.set('f_ch2-7-down', 'visible', 1),
             pytaVSL.set('f_ch2-7-down', 'video_speed', 1),                        ##### A enelever
             pytaVSL.animate('f_ilm_down', 'position_y', None, -0.25, 1, 's', 'elastic-inout'),
+            self.wait(7, 's'), #### TODO à caler en conction des vrais films
+            pytaVSL.animate('f_ilm_up', 'position_y', None, -0.71, 0.4, 's', 'elastic-inout'),
+            self.wait(0.4, 's'),
+            pytaVSL.set('f_ilm_up', 'visible', 0),
+            pytaVSL.animate('f_ilm_down', 'scale', None, [0.95, 0.95], 1, 's', 'elastic-out'),
+            pytaVSL.animate('f_ilm_down', 'position_y', None, 0, 1, 's', 'elastic-out'),
+            pytaVSL.animate('f_ilm_down', 'position_x', None, 0, 1, 's', 'elastic-out')
         ])
+
+    @pedalboard_button(4)
+    def m_ch2_8(self):
+        """
+        Miraye - On enchaîne là
+        """
+        self.start_scene('m_ch2_8', lambda: [
+            pytaVSL.trijc_change_tool('tuba'),
+            self.wait(0.1, 's'),
+            pytaVSL.miraye_in('m_ch2-8'),
+            self.wait(1, 's'),
+            pytaVSL.animate('f_ilm_down', 'rgbwave', None, 0.6, 0.8, 's', 'exponential-out'),
+            self.wait(0.2, 's'),
+            # pytaVSL.animate('f_ilm_down', 'position_x', None, 0, 0.5, 's', 'elastic-inout'),
+            self.wait(pytaVSL.get('m_ch2-8', 'video_end') - 0.2 - 0.5 - 0.8, 's'),
+            pytaVSL.trijc_change_tool('aspi'),
+            self.wait(0.1, 's'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
+            pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
+            pytaVSL.aspi_slide('m_ch2-8', [-0.02, -0.445], [-0.02, 0.53], 0.6),
+            self.wait(0.6, 's'),
+            pytaVSL.trijc_io('out', 'aspi', 0.5),
+            pytaVSL.animate('lights*', 'alpha', None, 0.3, 1, 's'),
+            self.f_ch2_9()
+        ])
+
+    @pedalboard_button(109)
+    def f_ch2_9(self):
+            # pytaVSL.set('f_ilm', 'position_x', 0)
+            # pytaVSL.set('f_ilm', 'position_y', 0)
+            # pytaVSL.set('f_ch2-7', 'visible', 0)
+            pytaVSL.set('f_ch2-9', 'rgbwave', 0.5)
+            pytaVSL.set('f_ch2-9', 'visible', 1)
+            pytaVSL.set('f_ilm', 'visible', 1)
+            pytaVSL.animate('f_ch2-9', 'rgbwave', 0.5, 0, 0.5, 's')
+            pytaVSL.set('f_ilm_down', 'visible', 0),
+            # pytaVSL.movie_in('f_ch2-9', 0.6)
