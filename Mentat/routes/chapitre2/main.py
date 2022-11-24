@@ -29,34 +29,24 @@ class Chapitre2(Video, Light, RouteBase):
         ])
 
     def init_chapitre2(self):
-        # Degroupage des TV
-        #### A priori inutile ?
 
-        # Reset des slides
-        pytaVSL.reset()
 
-        # def create_tv_groups():
-        pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
-        # for index in range(1,5):
-        pytaVSL.create_group('tv1', ['plane_horn_1','p_ch2-5']) # Pub Paillassons
 
         chapter = 'ch2'
-        self.start_scene('groups_and_overlay', lambda: [
-            # Chargement de l'overlay commun
-            pytaVSL.position_overlay('Common'),
 
-            ### Création des groupes du chapitre
-            pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*']),
-            pytaVSL.create_group('f_arabesques', ['f_arabesque_1', 'f_arabesque_2']),
-            pytaVSL.create_group('f_arabesques_2', ['f_arabesque_3', 'f_arabesque_4']),
-            self.wait(0.1, 's'),
-            pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_' + chapter + '*']),
-            # create_tv_groups(),
-            pytaVSL.check_new_slides(once=True),
-            self.wait(0.1, 's'),
-            pytaVSL.position_overlay('Chapitre2'),
+        ### Création des groupes du chapitre
+        # pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
+        pytaVSL.create_group('tv1', ['plane_horn_1','p_' + chapter + '-5']) # Pub Paillassons
 
-        ])
+        pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*'])
+        pytaVSL.create_group('f_arabesques', ['f_arabesque_1', 'f_arabesque_2'])
+        pytaVSL.create_group('f_arabesques_2', ['f_arabesque_3', 'f_arabesque_4'])
+        pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_' + chapter + '*'])
+
+        pytaVSL.sync()
+
+        pytaVSL.position_overlay('Chapitre2'),
+
 
     @pedalboard_button(100)
     def m_ch2_1(self):

@@ -30,27 +30,18 @@ class Chapitre1(Video, Light, RouteBase):
             self.lancement_miraye_1()
         ])
 
+
     def init_pyta(self):
-        # Degroupage des TV
-        #### A priori inutile ?
-
-        # Reset des slides
-
-        def create_tv_groups():
-            for index in range(1,5):
-                pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_ch1-' + str(index+2)])
 
         chapter = 'ch1'
-        # self.start_scene('groups_and_overlay', lambda: [
-            # Chargement de l'overlay commun
-        pytaVSL.reset()
-        pytaVSL.position_overlay('Common')
 
         ### Création des groupes du chapitre
         pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*'])
         pytaVSL.create_group('f_arabesques', ['f_arabesque*'])
         pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_ch1-*'])
-        create_tv_groups()
+        for index in range(1,5):
+            self.logger.info('Création de groupe')
+            pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), ',p_' + chapter + '-' + str(index+2)])
 
         pytaVSL.sync()
 
@@ -92,6 +83,7 @@ class Chapitre1(Video, Light, RouteBase):
         """
 
         for index in range(1,5):
+            pytaVSL.set('tv' + str(index), 'visible', 1) # fait lagguer
             pytaVSL.shaking_tvs(index, 'p_ch1-' + str(index + 2))
 
         self.start_scene('sequence/actes_jc', lambda:[

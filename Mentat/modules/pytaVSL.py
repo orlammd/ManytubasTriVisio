@@ -99,12 +99,12 @@ class PytaVSL(Module):
             s = s + slides[i]
             i = i+1
         s = s + '}'
+        self.status == 'loading'
         if group not in self.submodules:
-            self.status == 'loading'
             slide = Slide(group, parent=self)
             self.add_submodule(slide)
-            self.send('/pyta/group', s, group)
-            self.logger.info('Group ' + group + ' created with: ' + s)
+        self.send('/pyta/group', s, group)
+        self.logger.info('Group ' + group + ' created with: ' + s)
 
 
     def load_slide(self, f):

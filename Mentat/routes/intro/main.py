@@ -78,6 +78,7 @@ class Intro(Video, Light, RouteBase):
 
         for index in range(1,6):
             pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), 'p_pub' + str(index)])
+        pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
 
         pytaVSL.sync(timeout=30)
 
