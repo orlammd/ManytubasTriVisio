@@ -225,7 +225,7 @@ class Chapitre2(Video, Light, RouteBase):
 
     @pedalboard_button(3)
     def jingle_intempestif_3(self):
-        pytaVSL.jc_jingle_in('bottom', 0.1)
+        pytaVSL.jc_jingle_in('bottom', 0.1, 'elastic-inout')
 
 
     @pedalboard_button(106)

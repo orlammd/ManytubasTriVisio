@@ -669,7 +669,7 @@ class PytaVSL(Module):
         self.shaking_slide('plane_horn_' + str(number), 'position_y', range_y, duration, 'random')
         self.shaking_slide(content, 'position_y', range_y, duration, 'random')
 
-    def shaking_tv_jc(self, number, content):
+    def shaking_tv_jc(self):
         range_x = (_rand() / 2 + 0.5) * 0.01
         range_y = _rand() * 0.01
         duration = (_rand() / 2 + 0.5) * 10
