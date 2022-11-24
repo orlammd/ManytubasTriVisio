@@ -14,9 +14,18 @@ class Slide(Module):
             super().__init__(*args, **kwargs)
 
             self.ready = False
+            self.query_done = False
 
         def query_slide_state(self):
-            self.send('/pyta/slide/%s/get' % self.name, '*', self.engine.port)
+            if self.query_done:
+                return
+            if 'visible' not in self.parameters:
+                # query initiale: 1 seul parametre pour ne pas envoyer trop de message
+                self.send('/pyta/slide/%s/get' % self.name, 'visible', self.engine.port)
+            else:
+                # si on a 1 parametre, c'est qu'on peut demander les autres, pour la dernière fois
+                self.send('/pyta/slide/%s/get' % self.name, '*', self.engine.port)
+                self.query_done = True
 
 
 class PytaVSL(Module):
@@ -67,12 +76,13 @@ class PytaVSL(Module):
         self.send('/pyta/slide/*/remove')
 
         # get text slides
-        self.send('/pyta/text/*/get', 'visible', self.engine.port)
+        # self.send('/pyta/text/*/get', 'visible', self.engine.port)
 
         self.status = 'ready'
 
     def create_clone(self, src, dest):
         if dest not in self.submodules:
+            self.status == 'loading'
             slide = Slide(dest, parent=self)
             self.add_submodule(slide)
             self.send('/pyta/clone', src, dest)
@@ -90,6 +100,7 @@ class PytaVSL(Module):
             i = i+1
         s = s + '}'
         if group not in self.submodules:
+            self.status == 'loading'
             slide = Slide(group, parent=self)
             self.add_submodule(slide)
             self.send('/pyta/group', s, group)
@@ -107,11 +118,13 @@ class PytaVSL(Module):
         else:
             slide_name = f.partition('/')[2].partition('.')[0]
 
+        slide_name = slide_name.lower()
+
         if slide_name not in self.submodules:
+            self.status == 'loading'
             slide = Slide(slide_name, parent=self)
             self.add_submodule(slide)
             self.send('/pyta/load', f)
-
 
     def load_slides_from_dir(self, dir='Common'):
         """
@@ -786,15 +799,20 @@ class PytaVSL(Module):
         """
         Wait until pyta and mentat are synced
         """
-        # timeout = 5
-        step = 0.02
+        timeleft = timeout
+        step = 0.04
+        self.logger.info('waiting for sync')
         while not self.is_ready():
             if self.status == 'ready':
                 for name in self.submodules:
-                    if not self.submodules[name].ready and not self.submodules[name].parameters:
+                    if not self.submodules[name].ready:
                         self.submodules[name].query_slide_state()
 
                 timeout -= step
+            elif self.status == 'loading':
+                timeleft = timeout
+
             self.wait(step, 's')
-            if timeout < 0:
-                self.logger.critical('could not sync with pyta (timed out)')
+            if timeleft < 0:
+                self.logger.critical('could not sync with pyta (timed out, not ready: %s)' % [slide.name for slide in self.submodules.values() if not slide.ready])
+        self.logger.info('sync ok')

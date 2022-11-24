@@ -26,7 +26,7 @@ class Intro(Video, Light, RouteBase):
 
     def activate_pyta(self):
         ### Load slides
-        pytaVSL.send('/pyta/unload', '*')
+        pytaVSL.send('/pyta/slide/*/unload')
         pytaVSL.load_slides_from_dir('Common')
         pytaVSL.load_slides_from_dir('Chapitre1')
         pytaVSL.load_slides_from_dir('Chapitre2')
@@ -79,7 +79,7 @@ class Intro(Video, Light, RouteBase):
         for index in range(1,6):
             pytaVSL.create_group('tv' + str(index), ['plane_horn_' + str(index), 'p_pub' + str(index)])
 
-        pytaVSL.sync()
+        pytaVSL.sync(timeout=30)
 
         # Create text slides
         # pytaVSL.send('/pyta/create_text', 'titre', 'sans')
