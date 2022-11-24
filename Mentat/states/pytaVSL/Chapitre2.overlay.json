@@ -70,7 +70,7 @@
   ["f_arabesque_3", "rotate_z", -180],
   ["f_arabesque_4", "position", 0, -3.04, 0.1],
   ["f_arabesque_4", "visible", 1],
-  ["f_ch2-7-up", "position", 0, 0, 0],
+  ["f_ch2-7_up", "position", 0, 0, 0],
   ["f_ilm_down", "position", 0.2, -0.71, -7],
   ["f_ilm_down", "scale", 0.4, 0.4],
   ["f_arabesques_3", "visible", 1],
@@ -81,5 +81,5 @@
   ["f_arabesque_5", "rotate_z", -180],
   ["f_arabesque_6", "position", 0, -3.04, 0.1],
   ["f_arabesque_6", "visible", 1],
-  ["f_ch2-7-down", "position", 0, 0, 0]
+  ["f_ch2-7_down", "position", 0, 0, 0]
 ]

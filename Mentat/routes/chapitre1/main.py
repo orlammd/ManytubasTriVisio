@@ -297,6 +297,8 @@ class Chapitre1(Video, Light, RouteBase):
         """
         self.start_scene('sequence/f_ch1_12', lambda: [
             pytaVSL.f_switch_video('f_ch1-11', 'f_ch1-12'),
+            self.wait(pytaVSL.get('f_ch1-12', 'video_end'), 's'),
+            pytaVSL.f_switch_video('f_ch1-12', 'f_ch1-12_waiting'),
         ])
 
 
@@ -306,7 +308,10 @@ class Chapitre1(Video, Light, RouteBase):
         Saladin approche / bruit au plateau
         """
         self.start_scene('f_ch1_13', lambda: [
-            pytaVSL.f_noisy_switch_video('f_ch1-12', 'f_ch1-13'),
+            pytaVSL.f_noisy_switch_video('f_ch1-12_waiting', 'f_ch1-13', 0.2),
+            self.wait(pytaVSL.get('f_ch1-13', 'video_end'), 's'),
+            pytaVSL.f_switch_video('f_ch1-13', 'f_ch1-13_waiting'),
+
         ])
 
     @pedalboard_button(6)
@@ -343,7 +348,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.f_switch_video('f_ch1-15', 'f_ch-16'),
             self.wait(pytaVSL.get('f_ch1-16', 'video_end') - 10), # TODO à affiner en fonction de la fin du film
             pytaVSL.trijc_io('in', 'lustre', 7),
-            pytaVSL.trijc_turnlights('off', 3),
+            pytaVSL.trijc_turn_lights('off', 3),
             pytaVSL.animate('f_*', 'alpha', None, 0, 3),
             self.wait(3.2, 's'),
             pytaVSL.set('f_ilm', 'visible', 0),

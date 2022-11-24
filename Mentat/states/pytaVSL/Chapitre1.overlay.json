@@ -69,5 +69,13 @@
   ["f_arabesque_2", "position", 0, 0.005, 0.1],
   ["f_arabesque_2", "visible", 1],
   ["f_ch1-9", "position", 0, 0, 0],
-  ["f_ch1-9", "scale", 1, 0]
+  ["f_ch1-9", "scale", 1, 0],
+  ["f_ch1-11", "position", 0, 0, 0],
+  ["f_ch1-12", "position", 0, 0, 0],
+  ["f_ch1-12_waiting", "position", 0, 0, 0],
+  ["f_ch1-12_waiting", "video_loop", 1],
+  ["f_ch1-13", "position", 0, 0, 0],
+  ["f_ch1-13_waiting", "position", 0, 0, 0],
+  ["f_ch1-13_waiting", "video_loop", 1],
+  ["f_ch1-14", "position", 0, 0, 0]
 ]

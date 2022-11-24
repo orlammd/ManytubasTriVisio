@@ -47,8 +47,8 @@ class Chapitre2(Video, Light, RouteBase):
         pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_' + chapter + '*'])
 
         # Exceptions
-        pytaVSL.create_group('f_ilm_up', ['f_arabesques_2', 'f_ch2-7-up'])
-        pytaVSL.create_group('f_ilm_down', ['f_arabesques_3', 'f_ch2-7-down'])
+        pytaVSL.create_group('f_ilm_up', ['f_arabesques_2', 'f_ch2-7_up'])
+        pytaVSL.create_group('f_ilm_down', ['f_arabesques_3', 'f_ch2-7_down'])
 
         pytaVSL.sync()
 
@@ -96,10 +96,10 @@ class Chapitre2(Video, Light, RouteBase):
     @pedalboard_button(2)
     def jingle_jc_2(self):
         """
-        Jingle intempestif #2
+        Jingle intempestif #2 (repoussé à la fin)
         """
         self.start_scene('sequence/jingle_intempestif_2', lambda: [
-            pytaVSL.jc_jingle_io('top', 0.15, 'elastic-inout'),
+            pytaVSL.jc_jingle_io('top', 0.15, 'elastic-inout'), #### TODO à changer pour pouvoir pousser la fin
             pytaVSL.set('m_ch2-2', 'video_speed', 0),
             self.wait(pytaVSL.get('p_jc', 'video_end'), 's'),
             self.m_ch2_3()
@@ -294,8 +294,8 @@ class Chapitre2(Video, Light, RouteBase):
         self.proposition_entracte()
 
     def proposition_entracte(self):
-        pytaVSL.set('f_ch2-7-up', 'video_time', 209) # A enlever
-        pytaVSL.set('f_ch2-7-down', 'video_time', 212) # A enlever
+        pytaVSL.set('f_ch2-7_up', 'video_time', 209) # A enlever
+        pytaVSL.set('f_ch2-7_down', 'video_time', 212) # A enlever
 
         self.start_scene('sequence/proposition_entracte', lambda: [
             pytaVSL.set('f_ch2-7', 'video_speed', 0),
@@ -308,8 +308,8 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.animate('f_ch2-7', 'alpha', None, 0, 1, 's'),
 
             pytaVSL.set('f_ilm_up', 'visible', 1),
-            pytaVSL.set('f_ch2-7-up', 'visible', 1),
-            pytaVSL.set('f_ch2-7-up', 'video_speed', 1),            #####" A enelever
+            pytaVSL.set('f_ch2-7_up', 'visible', 1),
+            pytaVSL.set('f_ch2-7_up', 'video_speed', 1),            #####" A enelever
             pytaVSL.set('f_ilm_down', 'visible', 1),
 
 
@@ -328,8 +328,8 @@ class Chapitre2(Video, Light, RouteBase):
             #### OPTIONNEL : les panneaux se croisent
             self.wait(0.1,'s'),
             #### Fin OPTIONNEL
-            pytaVSL.set('f_ch2-7-down', 'visible', 1),
-            pytaVSL.set('f_ch2-7-down', 'video_speed', 1),                        ##### A enelever
+            pytaVSL.set('f_ch2-7_down', 'visible', 1),
+            pytaVSL.set('f_ch2-7_down', 'video_speed', 1),                        ##### A enelever
             pytaVSL.animate('f_ilm_down', 'position_y', None, -0.25, 1, 's', 'elastic-inout'),
             self.wait(7, 's'), #### TODO à caler en conction des vrais films
             pytaVSL.animate('f_ilm_up', 'position_y', None, -0.71, 0.4, 's', 'elastic-inout'),
