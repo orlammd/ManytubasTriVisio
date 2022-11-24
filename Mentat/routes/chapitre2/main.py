@@ -381,9 +381,17 @@ class Chapitre2(Video, Light, RouteBase):
         """
         Explosion + fin Dédé
         """
-        pytaVSL.f_noisy_switch_video('f_ch2-9', 'f_ch2-10', 0.5)
-
+        self.start_scene('f_ch2-10', lambda: [
+            pytaVSL.f_noisy_switch_video('f_ch2-9', 'f_ch2-10', 0.5),
+            self.wait(3, 's'), # Affiner avec la vidéo
+            # pytaVSL.set('f_arabesque_1', 'position_y', 2.35),
+            # pytaVSL.set('f_arabesque_2', 'position_y', -1.47),
+            # self.wait('')
+        ])
 
     @pedalboard_button(6)
     def jingle_jc_enedys(self):
+        """
+        Jingle pendant discours Enedys
+        """
         pytaVSL.jc_jingle_io('top', 0.3, 'elastic-inout')
