@@ -49,7 +49,7 @@ class Intro(Video, Light, RouteBase):
             'signs_standleft_visio']:
             pytaVSL.create_clone('signs_standleft_jack', clone_name)
 
-        for index in range (2,6):
+        for index in range (2,7):
             pytaVSL.create_clone('f_arabesque_1', 'f_arabesque_' + str(index))
 
         pytaVSL.create_clone('plane_horn_1', 'plane_horn_jc')

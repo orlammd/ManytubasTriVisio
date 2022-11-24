@@ -277,6 +277,8 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.trijc_io('out', 'lustre', 2),
             self.wait(1, 's'),
             pytaVSL.signs_io('out', duration=1, easing='elastic-inout'),
+            self.wait(1.1, 's'),
+            pytaVSL.set('sub_t_trijc_lustre_allume', 'alpha', 1)
         ])
 
     @pedalboard_button(4)

@@ -13,19 +13,20 @@ class Slide(Module):
 
             super().__init__(*args, **kwargs)
 
+            self.ping = False
             self.ready = False
             self.query_done = False
 
         def query_slide_state(self):
             if self.query_done:
                 return
-            if 'visible' not in self.parameters:
-                # query initiale: 1 seul parametre pour ne pas envoyer trop de message
-                self.send('/pyta/slide/%s/get' % self.name, 'visible', self.engine.port)
+            if not self.ping:
+                # ping jusqu'à ce que le slide existe
+                self.send('/pyta/slide/%s/ping' % self.name, self.engine.port)
             else:
-                # si on a 1 parametre, c'est qu'on peut demander les autres, pour la dernière fois
-                self.send('/pyta/slide/%s/get' % self.name, '*', self.engine.port)
+                # ping ok ? on peut demander les parametres
                 self.query_done = True
+                self.send('/pyta/slide/%s/get' % self.name, '*', self.engine.port)
 
 
 class PytaVSL(Module):
@@ -712,6 +713,13 @@ class PytaVSL(Module):
             """
             slide_name = address.split('/')[-4]
             self.submodules[slide_name].ready = True
+
+        elif '/pyta/slide' in address and '/ping/reply' in address:
+            """
+            if pyta a pyta slide has finished sending its parameters, it is ready
+            """
+            slide_name = address.split('/')[-3]
+            self.submodules[slide_name].ping = True
 
 
         elif '/pyta/slide' in address and '/get/reply' in address:

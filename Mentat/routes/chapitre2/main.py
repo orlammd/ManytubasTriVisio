@@ -37,11 +37,18 @@ class Chapitre2(Video, Light, RouteBase):
         ### Création des groupes du chapitre
         # pytaVSL.create_group('tv_jc', ['plane_horn_jc', 'p_jc'])
         pytaVSL.create_group('tv1', ['plane_horn_1','p_' + chapter + '-5']) # Pub Paillassons
+        pytaVSL.create_group('tv2', ['plane_horn_2', 'p_chaussure']) # Chaussure
+        pytaVSL.create_group('tv3', ['plane_horn_3', 'p_pied']) # Pied
 
         pytaVSL.create_group('m_iraye', ['m_layout', 'm_' + chapter + '*'])
         pytaVSL.create_group('f_arabesques', ['f_arabesque_1', 'f_arabesque_2'])
         pytaVSL.create_group('f_arabesques_2', ['f_arabesque_3', 'f_arabesque_4'])
+        pytaVSL.create_group('f_arabesques_3', ['f_arabesque_5', 'f_arabesque_6'])
         pytaVSL.create_group('f_ilm', ['f_arabesques', 'f_' + chapter + '*'])
+
+        # Exceptions
+        pytaVSL.create_group('f_ilm_up', ['f_arabesques_2', 'f_ch2-7-up'])
+        pytaVSL.create_group('f_ilm_down', ['f_arabesques_3', 'f_ch2-7-down'])
 
         pytaVSL.sync()
 
@@ -146,6 +153,7 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.set('f*', 'visible', 0),
             pytaVSL.set('f*', 'alpha', 1),
             pytaVSL.trijc_change_tool('tuba'),
+            pytaVSL.set('sub_t_trijc_lustre_allume', 'alpha', 1),
             self.wait(0.2, 's'),
             self.m_ch2_6()
         ])
@@ -243,4 +251,68 @@ class Chapitre2(Video, Light, RouteBase):
             pytaVSL.animate('m_iraye', 'position_x', None, 1, 1, 's', 'elastic-inout'),
             self.wait(0.3, 's'),
             pytaVSL.animate('t_trijc_tuba', 'rotate_z', None, 0, 0.5, 's', 'elastic-inout'),
+
+            self.wait(117 - 2 - 0.3, 's'),
+            self.dede_doah_chaussure()
+        ])
+
+    @pedalboard_button(107)
+    def dede_doah_chaussure(self):
+        """
+        Doah rencontre Dédé qui lui demande d'enlever ses chaussures
+        """
+        self.start_scene('sequence/dede_doah_chaussure', lambda: [
+            ### Idées de chaussures de Doah
+            pytaVSL.set('tv2', 'visible', 1),
+            pytaVSL.set('tv3', 'visible', 1),
+            pytaVSL.shaking_tvs(2, 'p_pied'),
+            pytaVSL.shaking_tvs(3, 'p_chaussure'),
+            pytaVSL.animate('tv2', 'position_x', None, -0, 1, 's'),
+            pytaVSL.animate('tv3', 'position_x', None, 0, 1, 's'),
+            self.wait(3, 's'),
+            pytaVSL.animate('tv2', 'position_y', None, 1, 0.2, 's', 'elastic-inout'),
+            pytaVSL.animate('tv3', 'position_y', None, 1, 0.2, 's', 'elastic-inout'),
+            self.wait(0.4, 's'),
+            pytaVSL.set('tv2', 'visible', 0),
+            pytaVSL.set('tv3', 'visible', 0),
+            pytaVSL.stop_animate('plane_horn*', 'position_x'),
+            pytaVSL.stop_animate('plane_horn*', 'position_y'),
+            pytaVSL.stop_animate('p_pied', 'position_x'),
+            pytaVSL.stop_animate('p_pied', 'position_y'),
+            pytaVSL.stop_animate('p_chaussure', 'position_x'),
+            pytaVSL.stop_animate('p_chaussure', 'position_y'),
+
+            #### Fin de la séquence /// Arrivée et tombée Panneau entracte
+            self.wait(208 - 2 - 0.3 -117 - 3 - 0.4, 's'),
+            self.position_entracte()
+        ])
+
+    @pedalboard_button(108)
+    def button_proposition_entracte(self):
+        self.stop_scene('sequence/*')
+        self.proposition_entracte()
+
+    def proposition_entracte(self):
+        pytaVSL.set('f_ch2-7-up', 'video_time', 210) # A enlever
+        pytaVSL.set('f_ch2-7-down', 'video_time', 213) # A enlever
+
+        self.start_scene('sequence/proposition_entracte', lambda: [
+            pytaVSL.set('f_ch2-7', 'video_speed', 0),
+            pytaVSL.trijc_io('in', 'lustre', 0.6, 'elastic-inout'),
+            self.wait(0.65, 's'),
+            pytaVSL.trijc_turn_lights('off', 1),
+            pytaVSL.animate('f_arabesque_1', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('f_arabesque_2', 'alpha', None, 0, 1, 's'),
+            pytaVSL.animate('f_ch2-7', 'alpha', None, 0, 1, 's'),
+
+            pytaVSL.set('f_ilm_up', 'visible', 1),
+            pytaVSL.set('f_ch2-7-up', 'visible', 1),
+            pytaVSL.set('f_ch2-7-up', 'video_speed', 1),            #####" A enelever
+            pytaVSL.set('f_ilm_down', 'visible', 1),
+
+            pytaVSL.animate('f_ilm_up', 'position_y', None, 0.25, 1, 's', 'elastic-inout'),
+            self.wait(2,'s'),
+            pytaVSL.set('f_ch2-7-down', 'visible', 1),
+            pytaVSL.set('f_ch2-7-down', 'video_speed', 1),                        ##### A enelever
+            pytaVSL.animate('f_ilm_down', 'position_y', None, -0.25, 1, 's', 'elastic-inout'),
         ])
