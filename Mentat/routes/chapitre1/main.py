@@ -212,7 +212,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.trijc_io('in', 'tuba', 0.6, 'elastic-inout'),
             self.wait(0.7, 's'),
             pytaVSL.movie_in('f_ch1-9', 0.6),
-            self.wait(pytaVSL.get('f_ch1-9', 'video_end') - 0.6, 's'),
+            self.wait(pytaVSL.get('f_ch1-9', 'video_end') - 5, 's'),
             self.m_ch1_10()
         ])
 
