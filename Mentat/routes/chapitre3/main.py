@@ -95,7 +95,7 @@ class Chapitre3(Video, Light, RouteBase):
             self.wait(0.5, 's'),
             pytaVSL.animate('tv1', 'position_x', None, -0.1, 3, 's'),
             self.wait(3, 's'),
-            pytaVSL.animate('tv1', 'position_x', None, -0.68, 0.5, 's', 'elastic-inout'),
+            pytaVSL.animate('tv1', 'position_x', None, -0.7, 0.5, 's', 'elastic-inout'),
             self.wait(1, 's'),
             pytaVSL.stop_animate('plane_horn_1', 'position_x'),
             pytaVSL.stop_animate('plane_horn_1', 'position_y'),
@@ -128,11 +128,6 @@ class Chapitre3(Video, Light, RouteBase):
             self.wait(0.5, 's'),
             pytaVSL.set('f_ch3-4', 'video_speed', 0),
             self.wait(0.3, 's'),
-            pytaVSL.set('f_ch3-6', 'rgbwave', 0.3),
-            pytaVSL.set('f_ch3-6', 'visible', 1),
-            pytaVSL.set('f_ch3-6', 'video_speed', 0),
-            pytaVSL.set('f_ch3-4', 'visible', 0),
-            pytaVSL.set('f_ch3-4', 'rgbwave', 0),
             self.wait(pytaVSL.get('m_ch3-5', 'video_end') - 0.3 - 1, 's'),
             pytaVSL.trijc_change_tool('aspi'),
             self.wait(0.8, 's'),
@@ -149,8 +144,12 @@ class Chapitre3(Video, Light, RouteBase):
         Les Barons ont du matos à crêpes
         """
         self.start_scene('sequence/f_ch3_6', lambda: [
+            pytaVSL.set('f_ch3-6', 'rgbwave', 0.3),
+            pytaVSL.set('f_ch3-6', 'visible', 1),
+            pytaVSL.set('f_ch3-4', 'visible', 0),
+            pytaVSL.set('f_ch3-4', 'rgbwave', 0),
             pytaVSL.animate('f_ch3-6', 'rgbwave', None, 0, 1, 's'),
-            pytaVSL.set('f_ch3-6', 'video_speed', 1),
+            # pytaVSL.set('f_ch3-6', 'video_speed', 1),
             #### TODO vanupié récupération de la poele et tout
             self.wait(pytaVSL.get('f_ch3-6', 'video_end'), 's'),
             pytaVSL.f_switch_video('f_ch3-6', 'f_ch3-6_waiting'),
