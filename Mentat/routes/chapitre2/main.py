@@ -52,7 +52,7 @@ class Chapitre2(Video, Light, RouteBase):
 
         pytaVSL.sync()
 
-        pytaVSL.position_overlay('Chapitre2'),
+        pytaVSL.position_overlay('Chapitre2')
 
 
     @pedalboard_button(100)
@@ -387,6 +387,8 @@ class Chapitre2(Video, Light, RouteBase):
             # pytaVSL.set('f_arabesque_1', 'position_y', 2.35),
             # pytaVSL.set('f_arabesque_2', 'position_y', -1.47),
             # self.wait('')
+            self.wait(pytaVSL.get('f_ch2-10', 'video_end') - 3, 's'),
+            engine.set_route('Chapitre 3')
         ])
 
     @pedalboard_button(6)

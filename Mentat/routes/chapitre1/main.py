@@ -203,7 +203,7 @@ class Chapitre1(Video, Light, RouteBase):
         Bobine de Fin
         """
         self.start_scene('sequence/f_ch1_9', lambda: [
-            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic'),
+            pytaVSL.animate('t_trijc_aspi', 'rotate_z', None, 0, 0.2, 's', 'elastic-inout'),
             pytaVSL.aspi_slide('m_layout', [0, -0.45], [0, 0.52], 0.6),
             pytaVSL.aspi_slide('m_ch1-8', [-0.02, -0.445], [-0.02, 0.53], 0.6),
             self.wait(1.2, 's'),
