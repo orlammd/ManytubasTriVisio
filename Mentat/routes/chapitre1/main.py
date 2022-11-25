@@ -23,7 +23,7 @@ class Chapitre1(Video, Light, RouteBase):
 
         self.start_scene('init_chapitre1', lambda: [
             # Overlay
-            self.init_pyta(),
+            self.init_chapitre1(),
             # self.wait(0.2, 's'),
 
             # Chapitre 1
@@ -31,7 +31,7 @@ class Chapitre1(Video, Light, RouteBase):
         ])
 
 
-    def init_pyta(self):
+    def init_chapitre1(self):
 
         chapter = 'ch1'
 

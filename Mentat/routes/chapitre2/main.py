@@ -22,7 +22,7 @@ class Chapitre2(Video, Light, RouteBase):
         self.start_scene('init_chapitre2', lambda: [
             # Overlay
             self.init_chapitre2(),
-            self.wait(0.2, 's'),
+            # self.wait(0.2, 's'),
 
             # Chapitre 2
             self.m_ch2_1()
