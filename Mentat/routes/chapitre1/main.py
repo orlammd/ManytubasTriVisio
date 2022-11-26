@@ -334,7 +334,7 @@ class Chapitre1(Video, Light, RouteBase):
         Doah chez la voyante
         """
         self.start_scene('sequence/f_ch1_15', lambda: [
-            pytaVSL.f_switch_video('f_ch1-14', 'f_ch-15'),
+            pytaVSL.f_switch_video('f_ch1-14', 'f_ch1-15'),
             self.wait(pytaVSL.get('f_ch1-15', 'video_end')),
             self.f_ch1_16()
         ])
@@ -345,7 +345,7 @@ class Chapitre1(Video, Light, RouteBase):
         Musée zarbi de l'étrange
         """
         self.start_scene('sequence/f_ch1_16', lambda: [
-            pytaVSL.f_switch_video('f_ch1-15', 'f_ch-16'),
+            pytaVSL.f_switch_video('f_ch1-15', 'f_ch1-16'),
             self.wait(pytaVSL.get('f_ch1-16', 'video_end') - 10), # TODO à affiner en fonction de la fin du film
             pytaVSL.trijc_io('in', 'lustre', 7),
             pytaVSL.trijc_turn_lights('off', 3),

@@ -285,7 +285,7 @@ class Chapitre2(Video, Light, RouteBase):
 
             #### Fin de la séquence /// Arrivée et tombée Panneau entracte
             self.wait(208 - 2 - 0.3 -117 - 3 - 0.4, 's'),
-            self.position_entracte()
+            self.proposition_entracte()
         ])
 
     @pedalboard_button(108)
