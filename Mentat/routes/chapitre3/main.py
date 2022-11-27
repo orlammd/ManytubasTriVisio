@@ -253,6 +253,13 @@ class Chapitre3(Video, Light, RouteBase):
         """
         self.start_scene('sequence/f_ch3_14', lambda: [
             pytaVSL.f_switch_video('f_ch3-13_waiting', 'f_ch3-14'),
-            self.wait(pytaVSL.get('f_ch3-14', 'video_end'), 's'),
+            self.wait(pytaVSL.get('f_ch3-14', 'video_end')-5, 's'),
+            pytaVSL.trijc_io('in', 'lustre', 3),
+            self.wait(2, 's'),
+            pytaVSL.trijc_turn_lights('off', 2),
+            pytaVSL.animate('f_*', 'alpha', None, 0, 2),
+            self.wait(5, 's'),
+            pytaVSL.set('f_ilm', 'visible', 0),
+            pytaVSL.set('f_*', 'alpha', 1),
             engine.set_route('Chapitre 4')
         ])

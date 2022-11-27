@@ -2,25 +2,10 @@ from .intro.main import Intro
 from .chapitre1.main import Chapitre1
 from .chapitre2.main import Chapitre2
 from .chapitre3.main import Chapitre3
-# from .snapshat.main import Snapshat
-# from .mcob.main import Mcob
-# from .agneaugastrik.main import AgneauGastrik
-# from .sapercomjaja.main import SaperComJaja
-# from .stagiaire.main import Stagiaire
-# from .sw.main import SW
-# from .viktorhuguau.main import ViktorHuguau
-# from .ramenermooncup.main import RamenerMooncup
-#
+from .chapitre4.main import Chapitre4
 
 intro = Intro('Intro')
 chapitre1 = Chapitre1('Chapitre 1')
 chapitre2 = Chapitre2('Chapitre 2')
 chapitre3 = Chapitre3('Chapitre 3')
-# snapshat = Snapshat('Snapshat')
-# mcob = Mcob('Mcob')
-# agneaugastrik = AgneauGastrik('AgneauGastrik')
-# sapercomjaja = SaperComJaja('SaperComJaja')
-# stagiaire = Stagiaire('Stagiaire')
-# SW = SW('SW')
-# viktorhuguau = ViktorHuguau('ViktorHuguau')
-# RamenerMooncup = RamenerMooncup('RamenerMooncup')
+chapitre4 = Chapitre3('Chapitre 4')

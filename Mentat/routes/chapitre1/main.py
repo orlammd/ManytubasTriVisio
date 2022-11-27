@@ -348,6 +348,7 @@ class Chapitre1(Video, Light, RouteBase):
             pytaVSL.f_switch_video('f_ch1-15', 'f_ch1-16'),
             self.wait(pytaVSL.get('f_ch1-16', 'video_end') - 10), # TODO à affiner en fonction de la fin du film
             pytaVSL.trijc_io('in', 'lustre', 7),
+            self.wait(2, 's'),
             pytaVSL.trijc_turn_lights('off', 3),
             pytaVSL.animate('f_*', 'alpha', None, 0, 3),
             self.wait(3.2, 's'),
